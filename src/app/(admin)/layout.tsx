@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const adminNavLinks = [
   { href: "/admin/members", label: "Membres" },
+  { href: "/admin/products", label: "Produits" },
+  { href: "/admin/orders", label: "Commandes" },
 ];
 
 /**

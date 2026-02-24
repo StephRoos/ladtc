@@ -84,6 +84,8 @@ export interface Product {
   image: string | null;
   sizes: string[];
   stock: number;
+  sku: string | null;
+  active: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -104,10 +106,32 @@ export interface Order {
   user: User;
   items: OrderItem[];
   status: OrderStatus;
+  subtotal: number;
+  shippingCost: number;
+  tax: number;
   total: number;
+  shippingName: string;
+  shippingEmail: string;
+  shippingPhone: string;
   shippingAddress: string;
+  shippingCity: string;
+  shippingZip: string;
+  shippingCountry: string;
+  notes: string | null;
+  trackingNumber: string | null;
+  shippedAt: Date | null;
+  deliveredAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface CartItem {
+  productId: string;
+  name: string;
+  price: number;
+  image: string | null;
+  quantity: number;
+  size?: string;
 }
 
 export interface Event {

@@ -8,11 +8,13 @@ import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useCart } from "@/hooks/use-cart";
 import { signOut } from "@/lib/auth-client";
 
 const navLinks = [
   { href: "/", label: "Accueil" },
   { href: "/blog", label: "Blog" },
+  { href: "/equipment", label: "Équipement" },
   { href: "/team", label: "Équipe" },
   { href: "/contact", label: "Contact" },
 ];
@@ -25,6 +27,7 @@ export function Header(): React.ReactNode {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isLoading, isAuthenticated } = useAuth();
+  const { itemCount } = useCart();
 
   async function handleSignOut(): Promise<void> {
     await signOut();
@@ -82,15 +85,28 @@ export function Header(): React.ReactNode {
               </li>
               <li>
                 <Link
-                  href="/admin/dashboard"
+                  href="/admin/products"
                   className={cn(
                     "text-sm font-medium transition-colors hover:text-primary",
-                    pathname === "/admin/dashboard"
+                    pathname.startsWith("/admin/products")
                       ? "text-primary"
                       : "text-muted-foreground"
                   )}
                 >
-                  Administration
+                  Produits
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/admin/orders"
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname.startsWith("/admin/orders")
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  Commandes
                 </Link>
               </li>
             </>
@@ -99,6 +115,34 @@ export function Header(): React.ReactNode {
 
         {/* Auth buttons — desktop */}
         <div className="hidden items-center gap-2 md:flex">
+          {/* Cart icon */}
+          <Link
+            href="/equipment/cart"
+            className="relative flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:text-primary"
+            aria-label={`Panier (${itemCount} article${itemCount !== 1 ? "s" : ""})`}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            {itemCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                {itemCount > 9 ? "9+" : itemCount}
+              </span>
+            )}
+          </Link>
+
           {!isLoading && !isAuthenticated && (
             <>
               <Button variant="ghost" size="sm" asChild>
@@ -209,16 +253,30 @@ export function Header(): React.ReactNode {
                 </li>
                 <li>
                   <Link
-                    href="/admin/dashboard"
+                    href="/admin/products"
                     className={cn(
                       "block py-1 text-sm font-medium transition-colors hover:text-primary",
-                      pathname === "/admin/dashboard"
+                      pathname.startsWith("/admin/products")
                         ? "text-primary"
                         : "text-muted-foreground"
                     )}
                     onClick={() => setMenuOpen(false)}
                   >
-                    Administration
+                    Produits
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/admin/orders"
+                    className={cn(
+                      "block py-1 text-sm font-medium transition-colors hover:text-primary",
+                      pathname.startsWith("/admin/orders")
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    )}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Commandes
                   </Link>
                 </li>
               </>

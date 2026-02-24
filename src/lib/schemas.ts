@@ -61,3 +61,43 @@ export const memberUpdateSchema = z.object({
 
 export type ProfileUpdateFormData = z.infer<typeof profileUpdateSchema>;
 export type MemberUpdateFormData = z.infer<typeof memberUpdateSchema>;
+
+/**
+ * Zod validation schema for product creation/update (admin)
+ */
+export const productSchema = z.object({
+  name: z.string().min(3, "Le nom du produit doit contenir au moins 3 caractères"),
+  description: z.string().optional(),
+  price: z.number().positive("Le prix doit être positif"),
+  sizes: z.array(z.string()),
+  stock: z.number().int().nonnegative("Le stock ne peut pas être négatif"),
+  image: z.union([z.string().url("URL d'image invalide"), z.literal(""), z.undefined()]),
+  sku: z.string().optional(),
+  active: z.boolean().optional(),
+});
+
+/**
+ * Zod validation schema for the checkout shipping form
+ */
+export const checkoutSchema = z.object({
+  shippingName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  shippingEmail: z.string().email("Email invalide"),
+  shippingPhone: z.string().min(5, "Le numéro de téléphone est requis"),
+  shippingAddress: z.string().min(5, "L'adresse doit contenir au moins 5 caractères"),
+  shippingCity: z.string().min(2, "La ville doit contenir au moins 2 caractères"),
+  shippingZip: z.string().min(2, "Le code postal est requis"),
+  shippingCountry: z.string().optional(),
+});
+
+/**
+ * Zod validation schema for order status updates (admin)
+ */
+export const orderUpdateSchema = z.object({
+  status: z.enum(["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"]),
+  trackingNumber: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export type ProductFormData = z.infer<typeof productSchema>;
+export type CheckoutFormData = z.infer<typeof checkoutSchema>;
+export type OrderUpdateFormData = z.infer<typeof orderUpdateSchema>;

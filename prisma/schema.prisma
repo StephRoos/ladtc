@@ -29,6 +29,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   membership    Membership?
+  orders        Order[]
 }
 
 model Membership {
@@ -94,4 +95,79 @@ model Verification {
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  image       String?
+  sizes       String[]
+  stock       Int
+  sku         String?     @unique
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  orderItems  OrderItem[]
+
+  @@index([active])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  shippingName    String
+  shippingEmail   String
+  shippingPhone   String
+  shippingAddress String
+  shippingCity    String
+  shippingZip     String
+  shippingCountry String      @default("Belgium")
+
+  items           OrderItem[]
+  subtotal        Float
+  shippingCost    Float       @default(0.0)
+  tax             Float       @default(0.0)
+  total           Float
+
+  status          OrderStatus @default(PENDING)
+  notes           String?
+
+  trackingNumber  String?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+
+  quantity  Int
+  size      String?
+  price     Float
+
+  @@unique([orderId, productId, size])
 }
