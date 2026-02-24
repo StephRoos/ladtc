@@ -3,8 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
+import { signOut } from "@/lib/auth-client";
 
 const navLinks = [
   { href: "/", label: "Accueil" },
@@ -14,11 +18,24 @@ const navLinks = [
 ];
 
 /**
- * Site navigation header with mobile menu
+ * Site navigation header with mobile menu and auth state
  */
 export function Header(): React.ReactNode {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, isLoading, isAuthenticated } = useAuth();
+
+  async function handleSignOut(): Promise<void> {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  }
+
+  const isAdminOrCommittee =
+    user &&
+    "role" in user &&
+    (user.role === "ADMIN" || user.role === "COMMITTEE");
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
@@ -48,7 +65,50 @@ export function Header(): React.ReactNode {
               </Link>
             </li>
           ))}
+          {isAdminOrCommittee && (
+            <li>
+              <Link
+                href="/admin/dashboard"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname.startsWith("/admin")
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                Administration
+              </Link>
+            </li>
+          )}
         </ul>
+
+        {/* Auth buttons — desktop */}
+        <div className="hidden items-center gap-2 md:flex">
+          {!isLoading && !isAuthenticated && (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/auth/login">Se connecter</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/auth/register">S&apos;inscrire</Link>
+              </Button>
+            </>
+          )}
+          {!isLoading && isAuthenticated && user && (
+            <>
+              <span className="text-sm text-muted-foreground">
+                {user.name ?? user.email}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSignOut}
+              >
+                Se déconnecter
+              </Button>
+            </>
+          )}
+        </div>
 
         {/* Mobile menu button */}
         <button
@@ -113,7 +173,58 @@ export function Header(): React.ReactNode {
                 </Link>
               </li>
             ))}
+            {isAdminOrCommittee && (
+              <li>
+                <Link
+                  href="/admin/dashboard"
+                  className={cn(
+                    "block py-1 text-sm font-medium transition-colors hover:text-primary",
+                    pathname.startsWith("/admin")
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  )}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Administration
+                </Link>
+              </li>
+            )}
           </ul>
+
+          {/* Auth — mobile */}
+          <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
+            {!isLoading && !isAuthenticated && (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/auth/login" onClick={() => setMenuOpen(false)}>
+                    Se connecter
+                  </Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/auth/register" onClick={() => setMenuOpen(false)}>
+                    S&apos;inscrire
+                  </Link>
+                </Button>
+              </>
+            )}
+            {!isLoading && isAuthenticated && user && (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  {user.name ?? user.email}
+                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    handleSignOut();
+                  }}
+                >
+                  Se déconnecter
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </header>

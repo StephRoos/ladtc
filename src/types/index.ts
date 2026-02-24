@@ -15,8 +15,21 @@ export type RegistrationStatus = "REGISTERED" | "ATTENDED" | "CANCELLED";
 export interface User {
   id: string;
   email: string;
+  emailVerified: boolean;
   name: string | null;
+  image: string | null;
   role: UserRole;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Session {
+  id: string;
+  userId: string;
+  token: string;
+  expiresAt: Date;
+  ipAddress: string | null;
+  userAgent: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
