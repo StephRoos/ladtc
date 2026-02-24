@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: 255 140 0; /* #FF8C00 - Orange */
+    --primary-light: 255 167 38; /* #FFA726 */
+    --primary-dark: 230 126 0; /* #E67E00 */
+
+    --accent: 8 145 178; /* #0891B2 - Cyan */
+    --accent-light: 6 182 212; /* #06B6D4 */
+    --accent-dark: 14 116 144; /* #0E7490 */
+
+    --background: 15 20 25; /* #0F1419 - Navy (dark bg) */
+    --background-light: 26 35 50; /* #1A2332 - Slate (cards) */
+    --background-lighter: 45 63 82; /* #2D3F52 */
+
+    --foreground: 255 255 255; /* White */
+
+    color-scheme: dark;
+  }
+
+  [data-theme="light"] {
+    --primary: 25 118 210; /* Deep blue */
+    --background: 249 250 251; /* Light gray */
+    --background-light: 255 255 255; /* White */
+    --foreground: 15 20 25; /* Dark navy */
+
+    color-scheme: light;
+  }
+
+  * {
+    @apply border-accent/20;
+  }
+
+  body {
+    @apply bg-background-DEFAULT text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  h3 {
+    @apply text-2xl;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-DEFAULT text-white hover:bg-primary-dark;
+  }
+
+  .btn-secondary {
+    @apply btn bg-background-light text-white hover:bg-background-lighter;
+  }
+
+  .btn-accent {
+    @apply btn bg-accent-DEFAULT text-white hover:bg-accent-dark;
+  }
+
+  .card {
+    @apply bg-background-light rounded-lg p-6 border border-accent/10;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 bg-background-DEFAULT border border-accent/20 rounded-md text-white placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary-DEFAULT focus:border-transparent;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-foreground mb-2;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--accent));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--accent-light));
+}
+
+/* Selection styling */
+::selection {
+  background-color: rgb(var(--primary));
+  color: white;
+}
+
+::-moz-selection {
+  background-color: rgb(var(--primary));
+  color: white;
+}
