@@ -72,4 +72,22 @@ tsconfig.tsbuildinfo
 public/images/**/*.html
 public/images/**/*_files/
 
+# Raw club assets (not used by the site — keep locally only)
+# Only commit images actually referenced in code
+public/images/Comité/
+public/images/Sponsors/
+public/images/Témoignages/
+public/images/Souper du nouvel an 2026/
+public/images/Stage de trail 2026/
+public/images/logo.png
+public/images/logo-DTC.png
+public/images/logo-DTCdarkgrey.png
+public/images/Logo DTC.jpg
+public/images/StephRoos.jpeg
+public/images/Trail en hiver.jpg
+public/images/Trail.avif
+public/images/UTC3 - photoboot.jpg
+public/images/rebecca-hansen-8gVv6nxq6gY-unsplash.jpg
+public/images/566247058_*
+
 /generated/prisma
