@@ -182,7 +182,7 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  bio: string;
+  bio?: string;
   email?: string;
   phone?: string;
   photo?: string;

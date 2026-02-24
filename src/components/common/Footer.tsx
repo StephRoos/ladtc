@@ -13,18 +13,12 @@ export function Footer(): React.ReactNode {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Club info */}
           <div>
-            <h3 className="mb-3 text-lg font-bold text-primary">LADTC</h3>
-            <p className="text-sm text-muted-foreground">{siteConfig.fullName}</p>
+            <h3 className="mb-3 text-lg font-bold text-primary">la dtc</h3>
+            <p className="text-sm text-muted-foreground">
+              Club de trail running
+            </p>
             <p className="mt-2 text-sm text-muted-foreground">
               {siteConfig.contact.address}
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              <a
-                href={`mailto:${siteConfig.contact.email}`}
-                className="hover:text-primary"
-              >
-                {siteConfig.contact.email}
-              </a>
             </p>
           </div>
 
@@ -69,24 +63,16 @@ export function Footer(): React.ReactNode {
             </ul>
 
             <h3 className="mb-3 mt-6 text-sm font-semibold uppercase tracking-wider text-foreground">
-              Réseaux sociaux
+              Nous suivre
             </h3>
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-2">
               <a
-                href={siteConfig.links.facebook}
+                href={siteConfig.links.facebookPublic}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-muted-foreground transition-colors hover:text-primary"
               >
                 Facebook
-              </a>
-              <a
-                href={siteConfig.links.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-muted-foreground transition-colors hover:text-primary"
-              >
-                Instagram
               </a>
             </div>
           </div>
@@ -94,7 +80,7 @@ export function Footer(): React.ReactNode {
 
         <div className="mt-8 border-t border-border pt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} {siteConfig.fullName}. Tous droits réservés.
+            &copy; {currentYear} la dtc. Tous droits réservés.
           </p>
         </div>
       </div>

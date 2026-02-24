@@ -5,14 +5,14 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "LADTC - Les Amis Du Trail des Collines",
-    template: "%s | LADTC",
+    default: "la dtc — trail running club",
+    template: "%s | la dtc",
   },
   description:
-    "Club de trail running basé à Ellezelles, dans le Pays des Collines, en Belgique. Rejoignez notre communauté de passionnés.",
-  keywords: ["trail running", "running club", "Belgique", "Ellezelles", "Collines", "LADTC"],
+    "Club de trail running à Ellezelles, Pays des Collines, Belgique. Rejoignez notre communauté de passionnés.",
+  keywords: ["trail running", "running club", "Belgique", "Ellezelles", "Collines", "la dtc"],
   openGraph: {
-    title: "LADTC - Trail Running Club",
+    title: "la dtc — trail running club",
     description: "Club de trail running à Ellezelles, Pays des Collines, Belgique",
     url: "https://ladtc.be",
     type: "website",

@@ -7,7 +7,7 @@ import type { TeamMember } from "@/types";
 export const metadata: Metadata = {
   title: "Notre Équipe",
   description:
-    "Découvrez le comité et les coachs de LADTC — Les Amis Du Trail des Collines.",
+    "Découvrez le comité et les coachs de la dtc — club de trail running à Ellezelles.",
 };
 
 function getInitials(name: string): string {
@@ -42,17 +42,21 @@ function TeamMemberCard({ member }: TeamMemberCardProps): React.ReactNode {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">{member.bio}</p>
-        {member.email && (
-          <a
-            href={`mailto:${member.email}`}
-            className="mt-3 block text-xs text-accent hover:underline"
-          >
-            {member.email}
-          </a>
-        )}
-      </CardContent>
+      {(member.bio || member.email) && (
+        <CardContent>
+          {member.bio && (
+            <p className="text-sm text-muted-foreground">{member.bio}</p>
+          )}
+          {member.email && (
+            <a
+              href={`mailto:${member.email}`}
+              className="mt-3 block text-xs text-accent hover:underline"
+            >
+              {member.email}
+            </a>
+          )}
+        </CardContent>
+      )}
     </Card>
   );
 }
@@ -67,8 +71,8 @@ export default function TeamPage(): React.ReactNode {
       <div className="mb-12 text-center">
         <h1 className="mb-4 text-4xl font-bold">Notre équipe</h1>
         <p className="mx-auto max-w-2xl text-muted-foreground">
-          LADTC est animé par des bénévoles passionnés et des coachs qualifiés.
-          Découvrez les personnes qui font vivre notre club au quotidien.
+          la dtc est animé par des bénévoles passionnés. Découvrez les personnes
+          qui font vivre notre club au quotidien.
         </p>
       </div>
 
@@ -85,19 +89,21 @@ export default function TeamPage(): React.ReactNode {
         </div>
       </section>
 
-      {/* Coaches section */}
-      <section>
-        <h2 className="mb-2 text-2xl font-bold">Les Coachs</h2>
-        <p className="mb-6 text-muted-foreground">
-          Ils vous accompagnent dans votre progression et animent les
-          entraînements.
-        </p>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {coaches.map((member) => (
-            <TeamMemberCard key={member.id} member={member} />
-          ))}
-        </div>
-      </section>
+      {/* Coaches section — only shown if there are coaches */}
+      {coaches.length > 0 && (
+        <section>
+          <h2 className="mb-2 text-2xl font-bold">Les Coachs</h2>
+          <p className="mb-6 text-muted-foreground">
+            Ils vous accompagnent dans votre progression et animent les
+            entraînements.
+          </p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {coaches.map((member) => (
+              <TeamMemberCard key={member.id} member={member} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

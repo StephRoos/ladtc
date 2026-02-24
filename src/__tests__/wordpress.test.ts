@@ -62,7 +62,7 @@ describe("normalizeBlogPost", () => {
       _embedded: {},
     };
     const post = normalizeBlogPost(postWithoutAuthor);
-    expect(post.author.name).toBe("LADTC");
+    expect(post.author.name).toBe("la dtc");
   });
 });
 

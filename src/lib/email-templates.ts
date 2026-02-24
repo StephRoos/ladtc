@@ -1,7 +1,7 @@
 import type { Order } from "@/types";
 
-const CLUB_NAME = "Les Amis Du Trail des Collines (LADTC)";
-const CLUB_EMAIL = "bureau@ladtc.be";
+const CLUB_NAME = "la dtc";
+const CLUB_EMAIL = "noreply@ladtc.be";
 const CLUB_WEBSITE = "https://ladtc.be";
 const PRIMARY_COLOR = "#FF8C00";
 const BACKGROUND_COLOR = "#0f172a";
@@ -20,7 +20,7 @@ function baseTemplate(content: string): string {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LADTC</title>
+  <title>la dtc</title>
 </head>
 <body style="margin:0;padding:0;background-color:${BACKGROUND_COLOR};font-family:Arial,Helvetica,sans-serif;color:${TEXT_COLOR};">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:${BACKGROUND_COLOR};padding:32px 0;">
@@ -30,8 +30,8 @@ function baseTemplate(content: string): string {
           <!-- Header -->
           <tr>
             <td style="background-color:${SECONDARY_BG};border-radius:8px 8px 0 0;padding:24px 32px;border-bottom:3px solid ${PRIMARY_COLOR};">
-              <h1 style="margin:0;color:${PRIMARY_COLOR};font-size:24px;font-weight:bold;letter-spacing:1px;">LADTC</h1>
-              <p style="margin:4px 0 0 0;color:#94a3b8;font-size:13px;">Les Amis Du Trail des Collines</p>
+              <h1 style="margin:0;color:${PRIMARY_COLOR};font-size:24px;font-weight:bold;letter-spacing:1px;">la dtc</h1>
+              <p style="margin:4px 0 0 0;color:#94a3b8;font-size:13px;">Trail running — Ellezelles</p>
             </td>
           </tr>
           <!-- Body -->
@@ -77,9 +77,9 @@ function buttonHtml(href: string, label: string): string {
  */
 export function welcomeEmailTemplate(name: string): string {
   const content = `
-    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Bienvenue chez LADTC, ${name} !</h2>
+    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Bienvenue chez la dtc, ${name} !</h2>
     <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
-      Nous sommes ravis de vous accueillir dans <strong style="color:${TEXT_COLOR};">Les Amis Du Trail des Collines</strong>.
+      Nous sommes ravis de vous accueillir dans <strong style="color:${TEXT_COLOR};">la dtc</strong>.
       Votre compte a été créé avec succès.
     </p>
     <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
@@ -94,10 +94,10 @@ export function welcomeEmailTemplate(name: string): string {
       Pour toute question, n'hésitez pas à nous contacter à
       <a href="mailto:${CLUB_EMAIL}" style="color:${PRIMARY_COLOR};">${CLUB_EMAIL}</a>.
     </p>
-    ${buttonHtml(CLUB_WEBSITE, "Visiter le site LADTC")}
+    ${buttonHtml(CLUB_WEBSITE, "Visiter le site")}
     <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
       Cordialement,<br/>
-      <strong style="color:${TEXT_COLOR};">L'équipe LADTC</strong>
+      <strong style="color:${TEXT_COLOR};">L'équipe la dtc</strong>
     </p>
   `;
   return baseTemplate(content);
@@ -115,7 +115,7 @@ export function renewalReminderTemplate(name: string, date: string, amount: numb
   const content = `
     <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Rappel de renouvellement, ${name}</h2>
     <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
-      Votre cotisation annuelle LADTC arrive à échéance. Voici un rappel des informations importantes.
+      Votre cotisation annuelle la dtc arrive à échéance. Voici un rappel des informations importantes.
     </p>
     <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
       <table width="100%" cellpadding="0" cellspacing="0">
@@ -140,7 +140,7 @@ export function renewalReminderTemplate(name: string, date: string, amount: numb
     ${buttonHtml(`${CLUB_WEBSITE}/membre`, "Mon espace membre")}
     <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
       Cordialement,<br/>
-      <strong style="color:${TEXT_COLOR};">L'équipe LADTC</strong>
+      <strong style="color:${TEXT_COLOR};">L'équipe la dtc</strong>
     </p>
   `;
   return baseTemplate(content);
@@ -214,7 +214,7 @@ export function orderConfirmationTemplate(order: Order): string {
     </p>
     <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
       Cordialement,<br/>
-      <strong style="color:${TEXT_COLOR};">L'équipe LADTC</strong>
+      <strong style="color:${TEXT_COLOR};">L'équipe la dtc</strong>
     </p>
   `;
   return baseTemplate(content);
@@ -281,7 +281,7 @@ export function orderStatusTemplate(order: Order, status: string): string {
     </p>
     <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
       Cordialement,<br/>
-      <strong style="color:${TEXT_COLOR};">L'équipe LADTC</strong>
+      <strong style="color:${TEXT_COLOR};">L'équipe la dtc</strong>
     </p>
   `;
   return baseTemplate(content);

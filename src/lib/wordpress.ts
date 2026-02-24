@@ -55,7 +55,7 @@ export function normalizeBlogPost(raw: WordPressRawPost): BlogPost {
 
   const author = raw._embedded?.author?.[0]
     ? { id: raw._embedded.author[0].id, name: raw._embedded.author[0].name }
-    : { id: 0, name: "LADTC" };
+    : { id: 0, name: "la dtc" };
 
   const terms = raw._embedded?.["wp:term"] ?? [];
   const categories = (terms[0] ?? [])

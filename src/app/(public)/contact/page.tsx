@@ -5,7 +5,7 @@ import { siteConfig } from "@/config/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contactez LADTC — Les Amis Du Trail des Collines. Posez-nous vos questions ou venez nous rejoindre.",
+    "Contactez la dtc — club de trail running à Ellezelles, Pays des Collines.",
 };
 
 /**
@@ -19,7 +19,7 @@ export default function ContactPage(): React.ReactNode {
         <h1 className="mb-4 text-4xl font-bold">Nous contacter</h1>
         <p className="mx-auto max-w-xl text-muted-foreground">
           Une question sur le club, envie de nous rejoindre ou simplement dire
-          bonjour ? N&apos;hésitez pas à nous écrire !
+          bonjour ? N&apos;hésitez pas !
         </p>
       </div>
 
@@ -41,33 +41,9 @@ export default function ContactPage(): React.ReactNode {
               <h3 className="mb-4 font-semibold">Coordonnées</h3>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-3">
-                  <span className="text-primary">✉</span>
-                  <span>
-                    <a
-                      href={`mailto:${siteConfig.contact.email}`}
-                      className="text-foreground hover:text-primary"
-                    >
-                      {siteConfig.contact.email}
-                    </a>
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
                   <span className="text-primary">📍</span>
                   <span className="text-muted-foreground">
                     {siteConfig.contact.address}
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-primary">🌐</span>
-                  <span>
-                    <a
-                      href="https://ladtc.be"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-foreground hover:text-primary"
-                    >
-                      ladtc.be
-                    </a>
                   </span>
                 </li>
               </ul>
@@ -98,20 +74,12 @@ export default function ContactPage(): React.ReactNode {
               <h3 className="mb-4 font-semibold">Réseaux sociaux</h3>
               <div className="flex gap-4">
                 <a
-                  href={siteConfig.links.facebook}
+                  href={siteConfig.links.facebookPublic}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-md border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary"
                 >
-                  Facebook
-                </a>
-                <a
-                  href={siteConfig.links.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-md border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                >
-                  Instagram
+                  Facebook (public)
                 </a>
               </div>
             </div>

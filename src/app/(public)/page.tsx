@@ -1,42 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BlogGrid } from "@/components/cards/BlogGrid";
 import { useBlogPosts } from "@/hooks/use-blog-posts";
-import { siteConfig } from "@/config/site";
-
-function StatsSection(): React.ReactNode {
-  return (
-    <section className="bg-card py-16">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3">
-          <div>
-            <p className="text-5xl font-bold text-primary">
-              ~{siteConfig.club.memberCount}
-            </p>
-            <p className="mt-2 text-muted-foreground">membres actifs</p>
-          </div>
-          <div>
-            <p className="text-5xl font-bold text-primary">
-              {new Date().getFullYear() - siteConfig.club.founded}
-            </p>
-            <p className="mt-2 text-muted-foreground">
-              ans d&apos;existence (fondé en {siteConfig.club.founded})
-            </p>
-          </div>
-          <div>
-            <p className="text-5xl font-bold text-primary">2</p>
-            <p className="mt-2 text-muted-foreground">
-              entraînements par semaine
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+import { siteConfig, getRandomDtcMeaning } from "@/config/site";
 
 function LatestBlogSection(): React.ReactNode {
   const { data, isLoading, isError } = useBlogPosts(1, 3);
@@ -91,35 +62,51 @@ function LatestBlogSection(): React.ReactNode {
 }
 
 function HeroSection(): React.ReactNode {
+  const [meaning, setMeaning] = useState("");
+  useEffect(() => {
+    setMeaning(getRandomDtcMeaning());
+  }, []);
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-primary/5 py-24">
-      <div className="mx-auto max-w-7xl px-4 text-center">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-          🏔️ Trail Running — {siteConfig.club.location}, Belgique
-        </div>
+    <section className="relative min-h-[70vh] overflow-hidden">
+      {/* Background image with gradient overlay */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/hero-bg.jpg"
+          alt="Trail running dans le Pays des Collines"
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/30" />
+      </div>
+
+      {/* Content */}
+      <div className="relative mx-auto flex min-h-[70vh] max-w-7xl flex-col items-center justify-center px-4 text-center">
         <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl">
-          Bienvenue chez{" "}
-          <span className="text-primary">LADTC</span>
+          Bienvenue à <span className="text-primary">la DTC</span>
         </h1>
-        <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground">
-          Les Amis Du Trail des Collines — une communauté de passionnés de trail
-          running dans le magnifique Pays des Collines, en Belgique.
-          Rejoignez-nous pour nos entraînements et événements !
+        <p className="mx-auto mb-4 text-xl font-semibold text-foreground">
+          Plus qu&apos;un club, une famille
+        </p>
+        <p className="mx-auto mb-8 max-w-2xl text-lg text-foreground/90">
+          Une communauté de passionnés de trail running dans le magnifique Pays
+          des Collines, en Belgique. Rejoignez-nous pour nos entraînements et
+          événements !
         </p>
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button
+            asChild
+            size="lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+          >
             <Link href="/contact">Nous rejoindre</Link>
           </Button>
           <Button asChild size="lg" variant="outline">
             <Link href="/blog">Nos actualités</Link>
           </Button>
         </div>
-      </div>
-
-      {/* Decorative gradient */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-accent/5 blur-3xl" />
       </div>
     </section>
   );
@@ -137,30 +124,37 @@ function TrainingSection(): React.ReactNode {
               magnifiques sentiers du Pays des Collines.
             </p>
             <ul className="space-y-3">
-              {siteConfig.schedule.training.map((session) => (
-                <li key={session.day} className="flex items-center gap-3">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                    {session.day === "Wednesday" ? "Me" : "Di"}
-                  </span>
-                  <span className="font-medium">
-                    {session.day === "Wednesday" ? "Mercredi" : "Dimanche"} à{" "}
-                    {session.time}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    — {session.location}
-                  </span>
-                </li>
-              ))}
+              <li className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                  Me
+                </span>
+                <span className="font-medium">Mercredi à 19:00</span>
+                <span className="text-sm text-muted-foreground">
+                  — Entraînement by Chichi, notre coach expérimenté
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                  Di
+                </span>
+                <span className="font-medium">Dimanche à 08:45</span>
+                <span className="text-sm text-muted-foreground">
+                  — Une sortie trail en groupe, pour toutes les allures
+                </span>
+              </li>
             </ul>
           </div>
           <div>
             <h2 className="mb-4 text-3xl font-bold">Nous rejoindre</h2>
             <p className="mb-6 text-muted-foreground">
-              Que vous soyez débutant ou trail runner expérimenté, le LADTC vous
+              Que vous soyez débutant ou trail runner expérimenté, la dtc vous
               accueille. Venez nous rencontrer lors d&apos;un entraînement ou
               contactez-nous !
             </p>
-            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button
+              asChild
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
               <Link href="/contact">Prendre contact</Link>
             </Button>
           </div>
@@ -171,13 +165,12 @@ function TrainingSection(): React.ReactNode {
 }
 
 /**
- * Homepage — displays hero, stats, latest blog posts and training info
+ * Homepage — displays hero, latest blog posts and training info
  */
 export default function HomePage(): React.ReactNode {
   return (
     <>
       <HeroSection />
-      <StatsSection />
       <LatestBlogSection />
       <TrainingSection />
     </>

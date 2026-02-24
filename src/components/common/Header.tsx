@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { siteConfig } from "@/config/site";
+import { getRandomDtcMeaning } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
@@ -28,6 +29,11 @@ export function Header(): React.ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isLoading, isAuthenticated } = useAuth();
   const { itemCount } = useCart();
+  const [subtitle, setSubtitle] = useState("");
+
+  useEffect(() => {
+    setSubtitle(getRandomDtcMeaning());
+  }, []);
 
   async function handleSignOut(): Promise<void> {
     await signOut();
@@ -45,10 +51,17 @@ export function Header(): React.ReactNode {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl font-bold text-primary">LADTC</span>
-          <span className="hidden text-sm text-muted-foreground sm:block">
-            {siteConfig.fullName}
-          </span>
+          <Image
+            src="/images/logo-transparent.png"
+            alt="la dtc"
+            width={100}
+            height={33}
+          />
+          {subtitle && (
+            <span className="hidden text-sm italic text-muted-foreground lg:block">
+              {subtitle}
+            </span>
+          )}
         </Link>
 
         {/* Desktop nav */}

@@ -77,15 +77,14 @@ describe("welcomeEmailTemplate", () => {
     expect(html).toContain("Jean Dupont");
   });
 
-  it("contains LADTC branding", () => {
+  it("contains la dtc branding", () => {
     const html = welcomeEmailTemplate("Marie");
-    expect(html).toContain("LADTC");
-    expect(html).toContain("Les Amis Du Trail des Collines");
+    expect(html).toContain("la dtc");
   });
 
   it("contains the club contact email", () => {
     const html = welcomeEmailTemplate("Test");
-    expect(html).toContain("bureau@ladtc.be");
+    expect(html).toContain("noreply@ladtc.be");
   });
 
   it("returns a valid HTML string", () => {
