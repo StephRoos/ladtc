@@ -1,14 +1,55 @@
-import type { MemberWithMembership } from "@/types";
+import type { MemberWithMembership, Order } from "@/types";
+import {
+  welcomeEmailTemplate,
+  renewalReminderTemplate,
+  orderConfirmationTemplate,
+  orderStatusTemplate,
+} from "./email-templates";
 
+const FROM_EMAIL = "LADTC <noreply@ladtc.be>";
 const COMMITTEE_EMAIL = "bureau@ladtc.be";
 
 /**
- * Send a renewal reminder email to a member.
- * Stubbed — logs to console until SMTP is configured.
+ * Sends an email using Resend. Falls back to console.log if RESEND_API_KEY is not set.
+ *
+ * @param to - Recipient email address
+ * @param subject - Email subject line
+ * @param html - HTML body content
+ */
+export async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    console.log("[Email fallback] RESEND_API_KEY not set — logging email instead of sending");
+    console.log(`[Email] To: ${to}`);
+    console.log(`[Email] Subject: ${subject}`);
+    console.log(`[Email] HTML length: ${html.length} chars`);
+    return;
+  }
+
+  const { Resend } = await import("resend");
+  const resend = new Resend(apiKey);
+
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to,
+    subject,
+    html,
+  });
+
+  if (error) {
+    console.error("[Email] Failed to send email:", error);
+    throw new Error(`Email send failed: ${error.message}`);
+  }
+}
+
+/**
+ * Sends a renewal reminder email to a member.
+ * Falls back to console.log if RESEND_API_KEY is not set.
  *
  * @param member - Member with membership data
  */
-export function sendRenewalReminder(member: MemberWithMembership): void {
+export async function sendRenewalReminder(member: MemberWithMembership): Promise<void> {
   const membership = member.membership;
   if (!membership) return;
 
@@ -22,27 +63,59 @@ export function sendRenewalReminder(member: MemberWithMembership): void {
       ? "Rappel de renouvellement LADTC"
       : "Votre cotisation LADTC est à renouveler";
 
-  const body =
-    daysUntil > 0
-      ? `Bonjour ${member.name ?? member.email},\n\nVotre cotisation LADTC expire le ${renewalDate}.\nMontant annuel : ${membership.amount} EUR\n\nPour renouveler, veuillez contacter ${COMMITTEE_EMAIL} ou visiter votre espace membre.\n\nCordialement,\nL'équipe LADTC`
-      : `Bonjour ${member.name ?? member.email},\n\nVotre cotisation LADTC est à renouveler aujourd'hui.\nMontant annuel : ${membership.amount} EUR\n\nVeuillez contacter ${COMMITTEE_EMAIL} pour renouveler.\n\nCordialement,\nL'équipe LADTC`;
+  const name = member.name ?? member.email;
+  const html = renewalReminderTemplate(name, renewalDate, membership.amount);
 
-  console.log(`[Email] To: ${member.email}`);
-  console.log(`[Email] Subject: ${subject}`);
-  console.log(`[Email] Body:\n${body}`);
+  await sendEmail(member.email, subject, html);
 }
 
 /**
- * Send a welcome email to a newly registered member.
- * Stubbed — logs to console until SMTP is configured.
+ * Sends a welcome email to a newly registered user.
+ * Falls back to console.log if RESEND_API_KEY is not set.
  *
- * @param user - Newly registered user
+ * @param user - Newly registered user with name and email
  */
-export function sendWelcomeEmail(user: { name: string | null; email: string }): void {
+export async function sendWelcomeEmail(user: { name: string | null; email: string }): Promise<void> {
+  const name = user.name ?? user.email;
   const subject = "Bienvenue chez LADTC !";
-  const body = `Bonjour ${user.name ?? user.email},\n\nBienvenue dans Les Amis Du Trail des Collines !\n\nVotre compte a été créé. Votre statut est en attente de validation par le bureau.\n\nPour toute question, contactez-nous à ${COMMITTEE_EMAIL}.\n\nCordialement,\nL'équipe LADTC`;
+  const html = welcomeEmailTemplate(name);
 
-  console.log(`[Email] To: ${user.email}`);
-  console.log(`[Email] Subject: ${subject}`);
-  console.log(`[Email] Body:\n${body}`);
+  await sendEmail(user.email, subject, html);
 }
+
+/**
+ * Sends an order confirmation email to the buyer.
+ * Falls back to console.log if RESEND_API_KEY is not set.
+ *
+ * @param order - The complete order object with items and user
+ */
+export async function sendOrderConfirmation(order: Order): Promise<void> {
+  const subject = `Confirmation de commande LADTC #${order.id.slice(-8).toUpperCase()}`;
+  const html = orderConfirmationTemplate(order);
+
+  await sendEmail(order.shippingEmail, subject, html);
+}
+
+/**
+ * Sends an order status update email (e.g. shipped, delivered).
+ * Falls back to console.log if RESEND_API_KEY is not set.
+ *
+ * @param order - The complete order object
+ * @param status - New order status string
+ */
+export async function sendOrderStatusUpdate(order: Order, status: string): Promise<void> {
+  const statusLabels: Record<string, string> = {
+    CONFIRMED: "confirmée",
+    SHIPPED: "expédiée",
+    DELIVERED: "livrée",
+    CANCELLED: "annulée",
+  };
+  const label = statusLabels[status] ?? status.toLowerCase();
+  const subject = `Votre commande LADTC a été ${label} — #${order.id.slice(-8).toUpperCase()}`;
+  const html = orderStatusTemplate(order, status);
+
+  await sendEmail(order.shippingEmail, subject, html);
+}
+
+// Export committee contact for convenience
+export { COMMITTEE_EMAIL };

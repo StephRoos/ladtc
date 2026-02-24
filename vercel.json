@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm exec prisma generate && pnpm build",
+  "framework": "nextjs",
+  "regions": ["cdg1"]
+}
