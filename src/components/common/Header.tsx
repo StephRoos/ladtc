@@ -66,19 +66,34 @@ export function Header(): React.ReactNode {
             </li>
           ))}
           {isAdminOrCommittee && (
-            <li>
-              <Link
-                href="/admin/dashboard"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  pathname.startsWith("/admin")
-                    ? "text-primary"
-                    : "text-muted-foreground"
-                )}
-              >
-                Administration
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link
+                  href="/admin/members"
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname.startsWith("/admin/members")
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  Gestion membres
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/admin/dashboard"
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname === "/admin/dashboard"
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  Administration
+                </Link>
+              </li>
+            </>
           )}
         </ul>
 
@@ -96,6 +111,9 @@ export function Header(): React.ReactNode {
           )}
           {!isLoading && isAuthenticated && user && (
             <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/profile">Mon profil</Link>
+              </Button>
               <span className="text-sm text-muted-foreground">
                 {user.name ?? user.email}
               </span>
@@ -174,20 +192,36 @@ export function Header(): React.ReactNode {
               </li>
             ))}
             {isAdminOrCommittee && (
-              <li>
-                <Link
-                  href="/admin/dashboard"
-                  className={cn(
-                    "block py-1 text-sm font-medium transition-colors hover:text-primary",
-                    pathname.startsWith("/admin")
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  )}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Administration
-                </Link>
-              </li>
+              <>
+                <li>
+                  <Link
+                    href="/admin/members"
+                    className={cn(
+                      "block py-1 text-sm font-medium transition-colors hover:text-primary",
+                      pathname.startsWith("/admin/members")
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    )}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Gestion membres
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/admin/dashboard"
+                    className={cn(
+                      "block py-1 text-sm font-medium transition-colors hover:text-primary",
+                      pathname === "/admin/dashboard"
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    )}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Administration
+                  </Link>
+                </li>
+              </>
             )}
           </ul>
 
@@ -212,6 +246,11 @@ export function Header(): React.ReactNode {
                 <p className="text-sm text-muted-foreground">
                   {user.name ?? user.email}
                 </p>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/profile" onClick={() => setMenuOpen(false)}>
+                    Mon profil
+                  </Link>
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"

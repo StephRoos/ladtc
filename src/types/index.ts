@@ -34,6 +34,38 @@ export interface Session {
   updatedAt: Date;
 }
 
+export interface Membership {
+  id: string;
+  userId: string;
+  status: MembershipStatus;
+  joinedAt: Date;
+  renewalDate: Date;
+  paidAt: Date | null;
+  amount: number;
+  phone: string | null;
+  emergencyContact: string | null;
+  emergencyContactPhone: string | null;
+  notes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface MemberWithMembership extends User {
+  membership: Membership | null;
+}
+
+export interface MemberStats {
+  total: number;
+  active: number;
+  pending: number;
+  inactive: number;
+  expired: number;
+  revenue: number;
+  upcomingRenewals: number;
+  newThisWeek: number;
+}
+
+/** @deprecated Use Membership instead */
 export interface Member {
   id: string;
   userId: string;
