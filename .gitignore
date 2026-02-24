@@ -57,4 +57,19 @@ yarn-error.log*
 *.tmp
 .tmp
 
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# Raw/source assets (not for web)
+*.xcf
+*.psd
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Saved web pages
+public/images/**/*.html
+public/images/**/*_files/
+
 /generated/prisma
