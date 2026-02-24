@@ -93,12 +93,12 @@ export interface BlogPost {
   slug: string;
   content: string;
   excerpt: string;
-  featured_image_url: string | null;
+  featuredImageUrl: string | null;
   author: {
     id: number;
     name: string;
   };
-  published_date: string;
+  publishedDate: string;
   categories: Array<{
     id: number;
     name: string;
@@ -107,4 +107,23 @@ export interface BlogPost {
     id: number;
     name: string;
   }>;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  email?: string;
+  phone?: string;
+  photo?: string;
+  specialty?: string;
+}
+
+export interface ContactFormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  newsletter?: boolean;
 }
