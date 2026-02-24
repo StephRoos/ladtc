@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { use } from "react";
+import { marked } from "marked";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,11 +34,13 @@ function BlogPostSkeleton(): React.ReactNode {
 }
 
 /**
- * Single blog post detail page — renders full article with author, date, featured image
+ * Single blog post detail page — renders full article with Markdown content
  */
 export default function BlogPostPage({ params }: BlogPostPageProps): React.ReactNode {
   const { slug } = use(params);
   const { data: post, isLoading, isError } = useBlogPost(slug);
+
+  const htmlContent = post?.content ? marked.parse(post.content) : "";
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -72,18 +75,15 @@ export default function BlogPostPage({ params }: BlogPostPageProps): React.React
 
       {post && (
         <article>
-          {/* Categories */}
-          {post.categories.length > 0 && (
-            <div className="mb-4 flex gap-2">
-              {post.categories.map((cat) => (
-                <Badge
-                  key={cat.id}
-                  variant="secondary"
-                  className="bg-primary/10 text-primary"
-                >
-                  {cat.name}
-                </Badge>
-              ))}
+          {/* Category */}
+          {post.category && (
+            <div className="mb-4">
+              <Badge
+                variant="secondary"
+                className="bg-primary/10 text-primary"
+              >
+                {post.category}
+              </Badge>
             </div>
           )}
 
@@ -94,11 +94,13 @@ export default function BlogPostPage({ params }: BlogPostPageProps): React.React
 
           {/* Meta */}
           <div className="mb-8 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            <span>Par {post.author.name}</span>
+            <span>Par {post.author.name ?? "LADTC"}</span>
             <span>·</span>
-            <time dateTime={post.publishedDate}>
-              {formatDate(post.publishedDate)}
-            </time>
+            {post.publishedAt && (
+              <time dateTime={post.publishedAt}>
+                {formatDate(post.publishedAt)}
+              </time>
+            )}
           </div>
 
           {/* Featured image */}
@@ -115,10 +117,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps): React.React
             </div>
           )}
 
-          {/* Content */}
+          {/* Content (Markdown rendered to HTML) */}
           <div
             className="prose prose-invert max-w-none prose-headings:font-bold prose-headings:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
 
           {/* Tags */}
@@ -126,8 +128,8 @@ export default function BlogPostPage({ params }: BlogPostPageProps): React.React
             <div className="mt-8 flex flex-wrap gap-2 border-t border-border pt-6">
               <span className="text-sm text-muted-foreground">Tags :</span>
               {post.tags.map((tag) => (
-                <Badge key={tag.id} variant="outline" className="text-xs">
-                  {tag.name}
+                <Badge key={tag} variant="outline" className="text-xs">
+                  {tag}
                 </Badge>
               ))}
             </div>

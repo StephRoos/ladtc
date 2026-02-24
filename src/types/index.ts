@@ -157,25 +157,23 @@ export interface EventRegistration {
 }
 
 export interface BlogPost {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   content: string;
-  excerpt: string;
+  excerpt: string | null;
   featuredImageUrl: string | null;
+  authorId: string;
   author: {
-    id: number;
-    name: string;
+    id: string;
+    name: string | null;
   };
-  publishedDate: string;
-  categories: Array<{
-    id: number;
-    name: string;
-  }>;
-  tags: Array<{
-    id: number;
-    name: string;
-  }>;
+  category: string | null;
+  tags: string[];
+  published: boolean;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface TeamMember {

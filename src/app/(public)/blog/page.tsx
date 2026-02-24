@@ -25,7 +25,7 @@ function BlogListSkeleton(): React.ReactNode {
 }
 
 /**
- * Blog list page — paginated list of blog posts
+ * Blog list page — paginated list of published blog posts
  */
 export default function BlogPage(): React.ReactNode {
   const [page, setPage] = useState(1);

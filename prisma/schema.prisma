@@ -31,6 +31,7 @@ model User {
   membership    Membership?
   orders        Order[]
   activityLogs  ActivityLog[]
+  blogPosts     BlogPost[]
 }
 
 model ActivityLog {
@@ -186,4 +187,23 @@ model OrderItem {
   price     Float
 
   @@unique([orderId, productId, size])
+}
+
+model BlogPost {
+  id               String    @id @default(cuid())
+  title            String
+  slug             String    @unique
+  content          String
+  excerpt          String?
+  featuredImageUrl String?
+  authorId         String
+  author           User      @relation(fields: [authorId], references: [id])
+  category         String?
+  tags             String[]
+  published        Boolean   @default(false)
+  publishedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([published, publishedAt(sort: Desc)])
 }

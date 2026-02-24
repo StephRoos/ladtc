@@ -13,8 +13,6 @@ interface BlogCardProps {
  * Blog post card component — displays image, title, excerpt, date and category badge
  */
 export function BlogCard({ post }: BlogCardProps): React.ReactNode {
-  const firstCategory = post.categories[0];
-
   return (
     <Link href={`/blog/${post.slug}`} className="group block">
       <Card className="h-full overflow-hidden border-border bg-card transition-all duration-200 group-hover:border-primary/40">
@@ -54,12 +52,12 @@ export function BlogCard({ post }: BlogCardProps): React.ReactNode {
         </div>
 
         <CardHeader className="pb-2">
-          {firstCategory && (
+          {post.category && (
             <Badge
               variant="secondary"
               className="mb-2 w-fit bg-primary/10 text-primary hover:bg-primary/20"
             >
-              {firstCategory.name}
+              {post.category}
             </Badge>
           )}
           <h3 className="line-clamp-2 text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
@@ -68,14 +66,18 @@ export function BlogCard({ post }: BlogCardProps): React.ReactNode {
         </CardHeader>
 
         <CardContent>
-          <p className="mb-3 line-clamp-3 text-sm text-muted-foreground">
-            {post.excerpt}
-          </p>
+          {post.excerpt && (
+            <p className="mb-3 line-clamp-3 text-sm text-muted-foreground">
+              {post.excerpt}
+            </p>
+          )}
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>{post.author.name}</span>
-            <time dateTime={post.publishedDate}>
-              {formatDate(post.publishedDate)}
-            </time>
+            <span>{post.author.name ?? "LADTC"}</span>
+            {post.publishedAt && (
+              <time dateTime={post.publishedAt}>
+                {formatDate(post.publishedAt)}
+              </time>
+            )}
           </div>
         </CardContent>
       </Card>

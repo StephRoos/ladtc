@@ -123,24 +123,28 @@ function TrainingSection(): React.ReactNode {
               Chaque semaine, deux rendez-vous pour courir ensemble dans les
               magnifiques sentiers du Pays des Collines.
             </p>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                   Me
                 </span>
-                <span className="font-medium">Mercredi à 19:00</span>
-                <span className="text-sm text-muted-foreground">
-                  — Entraînement by Chichi, notre coach expérimenté
-                </span>
+                <div>
+                  <p className="font-medium">Mercredi à 18:45</p>
+                  <p className="text-sm text-muted-foreground">
+                    Entraînement by Chichi, notre coach expérimenté
+                  </p>
+                </div>
               </li>
-              <li className="flex items-center gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+              <li className="flex items-start gap-3">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                   Di
                 </span>
-                <span className="font-medium">Dimanche à 08:45</span>
-                <span className="text-sm text-muted-foreground">
-                  — Une sortie trail en groupe, pour toutes les allures
-                </span>
+                <div>
+                  <p className="font-medium">Dimanche à 08:45</p>
+                  <p className="text-sm text-muted-foreground">
+                    Une sortie trail en groupe, pour toutes les allures
+                  </p>
+                </div>
               </li>
             </ul>
           </div>
