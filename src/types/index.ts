@@ -196,3 +196,40 @@ export interface ContactFormData {
   message: string;
   newsletter?: boolean;
 }
+
+export interface DashboardStats {
+  totalMembers: number;
+  activeMembers: number;
+  pendingRenewals: number;
+  pendingOrders: number;
+  recentRegistrations: number;
+}
+
+export interface ActivityLogEntry {
+  id: string;
+  userId: string;
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+  };
+  action: string;
+  target: string | null;
+  targetId: string | null;
+  changes: Record<string, unknown> | null;
+  createdAt: Date | string;
+}
+
+export interface StatisticsData {
+  memberBreakdown: {
+    ACTIVE: number;
+    PENDING: number;
+    INACTIVE: number;
+    EXPIRED: number;
+  };
+  memberTrend: Array<{ month: string; count: number }>;
+  orderTrend: Array<{ month: string; count: number }>;
+  topProducts: Array<{ productId: string; name: string; salesCount: number }>;
+  totalRevenue: number;
+  totalOrders: number;
+}

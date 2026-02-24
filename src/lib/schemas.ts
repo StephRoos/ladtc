@@ -101,3 +101,25 @@ export const orderUpdateSchema = z.object({
 export type ProductFormData = z.infer<typeof productSchema>;
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
 export type OrderUpdateFormData = z.infer<typeof orderUpdateSchema>;
+
+/**
+ * Zod validation schema for user role updates (admin only)
+ */
+export const roleUpdateSchema = z.object({
+  role: z.enum(["MEMBER", "COACH", "COMMITTEE", "ADMIN"]),
+});
+
+/**
+ * Zod validation schema for activity log filtering
+ */
+export const activityLogFilterSchema = z.object({
+  action: z.string().optional(),
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
+  userId: z.string().optional(),
+  skip: z.coerce.number().default(0),
+  take: z.coerce.number().default(50),
+});
+
+export type RoleUpdateFormData = z.infer<typeof roleUpdateSchema>;
+export type ActivityLogFilterData = z.infer<typeof activityLogFilterSchema>;

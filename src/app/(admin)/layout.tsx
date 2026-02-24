@@ -10,16 +10,27 @@ import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const adminNavLinks = [
-  { href: "/admin/members", label: "Membres" },
+interface NavLink {
+  href: string;
+  label: string;
+  adminOnly?: boolean;
+}
+
+const adminNavLinks: NavLink[] = [
+  { href: "/admin/dashboard", label: "Tableau de bord" },
+  { href: "/members", label: "Membres" },
   { href: "/admin/products", label: "Produits" },
   { href: "/admin/orders", label: "Commandes" },
+  { href: "/admin/statistics", label: "Statistiques" },
+  { href: "/admin/activity-logs", label: "Logs d'activité" },
+  { href: "/admin/users", label: "Utilisateurs", adminOnly: true },
 ];
 
 /**
  * Protected layout for admin/committee pages.
  * Redirects to /auth/login if not authenticated.
  * Shows a forbidden message if the user lacks the required role.
+ * Admin-only links are hidden from committee members.
  */
 export default function AdminLayout({
   children,
@@ -34,6 +45,8 @@ export default function AdminLayout({
     user &&
     "role" in user &&
     (user.role === "ADMIN" || user.role === "COMMITTEE");
+
+  const isAdmin = user && "role" in user && user.role === "ADMIN";
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -81,19 +94,23 @@ export default function AdminLayout({
     );
   }
 
+  const visibleLinks = adminNavLinks.filter(
+    (link) => !link.adminOnly || isAdmin
+  );
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <div className="border-b border-border bg-muted/30">
-        <nav className="mx-auto flex max-w-7xl gap-6 px-4 py-3">
-          {adminNavLinks.map((link) => (
+        <nav className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2">
+          {visibleLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname.startsWith(link.href)
-                  ? "text-primary"
+                "shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:text-primary",
+                pathname === link.href || pathname.startsWith(link.href + "/")
+                  ? "bg-primary/10 text-primary"
                   : "text-muted-foreground"
               )}
             >
