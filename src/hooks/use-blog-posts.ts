@@ -194,6 +194,7 @@ export function useCreateBlogPost() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-blog-posts"] });
       queryClient.invalidateQueries({ queryKey: ["blog-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });
 }
@@ -213,6 +214,7 @@ export function useUpdateBlogPost() {
       queryClient.invalidateQueries({ queryKey: ["admin-blog-posts"] });
       queryClient.invalidateQueries({ queryKey: ["admin-blog-post", id] });
       queryClient.invalidateQueries({ queryKey: ["blog-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });
 }
@@ -227,6 +229,7 @@ export function useDeleteBlogPost() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-blog-posts"] });
       queryClient.invalidateQueries({ queryKey: ["blog-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });
 }

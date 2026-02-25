@@ -18,6 +18,9 @@ interface EventWithCount {
   createdAt: string;
   updatedAt: string;
   _count: { registrations: number };
+  source?: "event" | "blog-event";
+  slug?: string;
+  featuredImageUrl?: string | null;
 }
 
 interface EventWithRegistrations extends EventWithCount {

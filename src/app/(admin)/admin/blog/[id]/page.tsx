@@ -54,6 +54,8 @@ export default function EditBlogPostPage(): React.ReactNode {
     category: post.category ?? undefined,
     tags: post.tags,
     published: post.published,
+    eventDate: post.eventDate ?? undefined,
+    eventLocation: post.eventLocation ?? undefined,
   };
 
   return (

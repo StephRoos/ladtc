@@ -6,9 +6,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { blogPostSchema, type BlogPostFormData } from "@/lib/schemas";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  blogPostSchema,
+  BLOG_CATEGORIES,
+  CATEGORY_TO_EVENT_TYPE,
+  type BlogPostFormData,
+  type BlogCategory,
+} from "@/lib/schemas";
 import { slugify } from "@/lib/utils";
-import { ImageIcon, Upload, Link, X } from "lucide-react";
+import { ImageIcon, Upload, Link, X, CalendarDays, Info } from "lucide-react";
 
 interface BlogPostFormProps {
   defaultValues?: Partial<BlogPostFormData>;
@@ -21,6 +34,7 @@ interface BlogPostFormProps {
  * Blog post create/edit form.
  * Uses React Hook Form + Zod validation with auto-slug generation.
  * Supports both URL input and local file upload for featured image.
+ * Shows conditional event fields (date, location) when an event-related category is selected.
  */
 export function BlogPostForm({
   defaultValues,
@@ -46,7 +60,13 @@ export function BlogPostForm({
   const submitting = isSubmitting || formSubmitting;
   const title = watch("title");
   const featuredImageUrl = watch("featuredImageUrl");
+  const category = watch("category");
   const isEditing = !!defaultValues?.slug;
+
+  const isEventCategory =
+    category != null &&
+    BLOG_CATEGORIES.includes(category as BlogCategory) &&
+    CATEGORY_TO_EVENT_TYPE[category as BlogCategory] !== null;
 
   const [imageMode, setImageMode] = useState<"url" | "upload">(
     defaultValues?.featuredImageUrl ? "url" : "upload"
@@ -176,11 +196,23 @@ export function BlogPostForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="category">Catégorie</Label>
-          <Input
-            id="category"
-            placeholder="Trail, Course, Club..."
-            {...register("category")}
-          />
+          <Select
+            value={category ?? ""}
+            onValueChange={(value) =>
+              setValue("category", value || undefined)
+            }
+          >
+            <SelectTrigger id="category">
+              <SelectValue placeholder="Choisir une catégorie" />
+            </SelectTrigger>
+            <SelectContent>
+              {BLOG_CATEGORIES.map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {errors.category && (
             <p className="text-sm text-destructive">{errors.category.message}</p>
           )}
@@ -205,6 +237,66 @@ export function BlogPostForm({
           )}
         </div>
       </div>
+
+      {/* Conditional event fields */}
+      {isEventCategory && (
+        <div className="space-y-4 rounded-lg border border-primary/20 bg-primary/5 p-4">
+          <div className="flex items-center gap-2 text-sm text-primary">
+            <Info className="h-4 w-4" />
+            <span>
+              Cet article sera affiché dans la section Événements s&apos;il a
+              une date d&apos;événement.
+            </span>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="eventDate" className="flex items-center gap-1.5">
+                <CalendarDays className="h-3.5 w-3.5" />
+                Date de l&apos;événement
+              </Label>
+              <Input
+                id="eventDate"
+                type="datetime-local"
+                defaultValue={
+                  defaultValues?.eventDate
+                    ? defaultValues.eventDate.slice(0, 16)
+                    : ""
+                }
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setValue(
+                    "eventDate",
+                    val ? new Date(val).toISOString() : null
+                  );
+                }}
+              />
+              {errors.eventDate && (
+                <p className="text-sm text-destructive">
+                  {errors.eventDate.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="eventLocation">Lieu</Label>
+              <Input
+                id="eventLocation"
+                placeholder="Bois de la Cambre, Bruxelles"
+                defaultValue={defaultValues?.eventLocation ?? ""}
+                onChange={(e) =>
+                  setValue("eventLocation", e.target.value || null)
+                }
+              />
+              {errors.eventLocation && (
+                <p className="text-sm text-destructive">
+                  {errors.eventLocation.message}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Featured image: URL or file upload */}
       <div className="space-y-3">

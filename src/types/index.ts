@@ -172,6 +172,8 @@ export interface BlogPost {
   tags: string[];
   published: boolean;
   publishedAt: string | null;
+  eventDate: string | null;
+  eventLocation: string | null;
   createdAt: string;
   updatedAt: string;
 }

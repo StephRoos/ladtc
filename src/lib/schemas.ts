@@ -1,4 +1,39 @@
 import { z } from "zod";
+import type { EventType } from "@/types";
+
+/**
+ * Predefined blog post categories.
+ * Categories with a non-null EventType mapping will be treated as events
+ * when the post has an eventDate.
+ */
+export const BLOG_CATEGORIES = [
+  "Actualité",
+  "Stage",
+  "Course",
+  "Entraînement",
+  "Social",
+] as const;
+
+export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
+
+/**
+ * Maps blog categories to their corresponding EventType.
+ * A null value means the category is not event-related.
+ */
+export const CATEGORY_TO_EVENT_TYPE: Record<BlogCategory, EventType | null> = {
+  "Actualité": null,
+  "Stage": "CAMP",
+  "Course": "RACE",
+  "Entraînement": "TRAINING",
+  "Social": "SOCIAL",
+};
+
+/**
+ * Blog categories that qualify as events.
+ */
+export const EVENT_CATEGORIES = BLOG_CATEGORIES.filter(
+  (c) => CATEGORY_TO_EVENT_TYPE[c] !== null
+);
 
 /**
  * Zod validation schema for the login form
@@ -141,6 +176,8 @@ export const blogPostSchema = z.object({
   category: z.string().optional(),
   tags: z.array(z.string()).optional(),
   published: z.boolean().optional(),
+  eventDate: z.string().datetime().optional().nullable(),
+  eventLocation: z.string().optional().nullable(),
 });
 
 export type BlogPostFormData = z.infer<typeof blogPostSchema>;

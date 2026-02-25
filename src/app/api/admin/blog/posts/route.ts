@@ -62,7 +62,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { featuredImageUrl, published, ...rest } = parsed.data;
+  const { featuredImageUrl, published, eventDate, eventLocation, ...rest } = parsed.data;
 
   const post = await prisma.blogPost.create({
     data: {
@@ -71,6 +71,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       tags: rest.tags ?? [],
       published: published ?? false,
       publishedAt: published ? new Date() : null,
+      eventDate: eventDate ? new Date(eventDate) : null,
+      eventLocation: eventLocation || null,
       authorId: session.user.id,
     },
     include: {

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { CalendarDays, MapPin, Users } from "lucide-react";
+import { CalendarDays, MapPin, Users, FileText } from "lucide-react";
 
 interface EventCardProps {
   event: {
@@ -14,6 +14,9 @@ interface EventCardProps {
     difficulty: string | null;
     maxParticipants: number | null;
     _count: { registrations: number };
+    source?: "event" | "blog-event";
+    slug?: string;
+    featuredImageUrl?: string | null;
   };
 }
 
@@ -32,9 +35,14 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 /**
- * Event card component — displays date, location, type badge and available spots
+ * Event card component — displays date, location, type badge and available spots.
+ * Supports both real events (links to /events/:id) and blog-events (links to /blog/:slug).
  */
 export function EventCard({ event }: EventCardProps): React.ReactNode {
+  const isBlogEvent = event.source === "blog-event";
+  const href =
+    isBlogEvent && event.slug ? `/blog/${event.slug}` : `/events/${event.id}`;
+
   const eventDate = new Date(event.date);
   const day = eventDate.toLocaleDateString("fr-FR", { day: "numeric" });
   const month = eventDate.toLocaleDateString("fr-FR", { month: "short" });
@@ -48,7 +56,7 @@ export function EventCard({ event }: EventCardProps): React.ReactNode {
     : null;
 
   return (
-    <Link href={`/events/${event.id}`} className="group block">
+    <Link href={href} className="group block">
       <Card className="h-full overflow-hidden border-border bg-card transition-all duration-200 group-hover:border-primary/40">
         <CardHeader className="flex flex-row items-start gap-4 pb-2">
           {/* Date block */}
@@ -74,6 +82,15 @@ export function EventCard({ event }: EventCardProps): React.ReactNode {
                   {event.difficulty}
                 </Badge>
               )}
+              {isBlogEvent && (
+                <Badge
+                  variant="outline"
+                  className="flex items-center gap-1 text-xs text-muted-foreground"
+                >
+                  <FileText className="h-3 w-3" />
+                  Article
+                </Badge>
+              )}
             </div>
             <h3 className="line-clamp-2 text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
               {event.title}
@@ -93,28 +110,32 @@ export function EventCard({ event }: EventCardProps): React.ReactNode {
               <CalendarDays className="h-3.5 w-3.5" />
               {time}
             </span>
-            <span className="flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5" />
-              {event.location}
-            </span>
-            <span className="flex items-center gap-1">
-              <Users className="h-3.5 w-3.5" />
-              {event._count.registrations} inscrit
-              {event._count.registrations !== 1 ? "s" : ""}
-              {spotsLeft !== null && (
-                <span
-                  className={
-                    spotsLeft <= 3
-                      ? "font-medium text-orange-400"
-                      : ""
-                  }
-                >
-                  {" "}
-                  ({spotsLeft} place{spotsLeft !== 1 ? "s" : ""} restante
-                  {spotsLeft !== 1 ? "s" : ""})
-                </span>
-              )}
-            </span>
+            {event.location && (
+              <span className="flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5" />
+                {event.location}
+              </span>
+            )}
+            {!isBlogEvent && (
+              <span className="flex items-center gap-1">
+                <Users className="h-3.5 w-3.5" />
+                {event._count.registrations} inscrit
+                {event._count.registrations !== 1 ? "s" : ""}
+                {spotsLeft !== null && (
+                  <span
+                    className={
+                      spotsLeft <= 3
+                        ? "font-medium text-orange-400"
+                        : ""
+                    }
+                  >
+                    {" "}
+                    ({spotsLeft} place{spotsLeft !== 1 ? "s" : ""} restante
+                    {spotsLeft !== 1 ? "s" : ""})
+                  </span>
+                )}
+              </span>
+            )}
           </div>
         </CardContent>
       </Card>

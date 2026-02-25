@@ -79,7 +79,7 @@ export async function PATCH(
     );
   }
 
-  const { featuredImageUrl, published, ...rest } = parsed.data;
+  const { featuredImageUrl, published, eventDate, eventLocation, ...rest } = parsed.data;
 
   const updateData: Record<string, unknown> = { ...rest };
 
@@ -95,6 +95,14 @@ export async function PATCH(
     if (!published) {
       updateData.publishedAt = null;
     }
+  }
+
+  if (eventDate !== undefined) {
+    updateData.eventDate = eventDate ? new Date(eventDate) : null;
+  }
+
+  if (eventLocation !== undefined) {
+    updateData.eventLocation = eventLocation || null;
   }
 
   const post = await prisma.blogPost.update({
