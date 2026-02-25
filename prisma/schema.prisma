@@ -256,3 +256,18 @@ model BlogPost {
   @@index([published, publishedAt(sort: Desc)])
   @@index([eventDate])
 }
+
+model GalleryPhoto {
+  id           String   @id @default(cuid())
+  url          String
+  title        String
+  description  String?
+  category     String?
+  uploadedById String
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([category])
+  @@index([createdAt])
+}

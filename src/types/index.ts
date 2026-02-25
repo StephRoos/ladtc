@@ -220,6 +220,18 @@ export interface ActivityLogEntry {
   createdAt: Date | string;
 }
 
+export interface GalleryPhoto {
+  id: string;
+  url: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  uploadedById: string;
+  uploadedBy: { id: string; name: string | null };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface StatisticsData {
   memberBreakdown: {
     ACTIVE: number;

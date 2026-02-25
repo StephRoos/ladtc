@@ -176,7 +176,7 @@ export const blogPostSchema = z.object({
   category: z.string().optional(),
   tags: z.array(z.string()).optional(),
   published: z.boolean().optional(),
-  eventDate: z.string().datetime().optional().nullable(),
+  eventDate: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/).optional().nullable(),
   eventLocation: z.string().optional().nullable(),
 });
 
@@ -188,7 +188,7 @@ export type BlogPostFormData = z.infer<typeof blogPostSchema>;
 export const eventSchema = z.object({
   title: z.string().min(3, "Le titre doit contenir au moins 3 caractères"),
   description: z.string().optional(),
-  date: z.string().datetime("Date invalide"),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/, "Date invalide"),
   location: z.string().min(1, "Le lieu est requis"),
   type: z.enum(["TRAINING", "RACE", "CAMP", "SOCIAL"]),
   difficulty: z.string().optional(),
@@ -201,3 +201,14 @@ export const eventSchema = z.object({
 });
 
 export type EventFormData = z.infer<typeof eventSchema>;
+
+/**
+ * Zod validation schema for gallery photo metadata
+ */
+export const galleryPhotoSchema = z.object({
+  title: z.string().min(1, "Le titre est requis"),
+  description: z.string().optional(),
+  category: z.string().optional(),
+});
+
+export type GalleryPhotoFormData = z.infer<typeof galleryPhotoSchema>;
