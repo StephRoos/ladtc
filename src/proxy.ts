@@ -21,10 +21,10 @@ export function proxy(request: NextRequest): NextResponse {
     return NextResponse.next();
   }
 
-  // Check for BetterAuth session cookie
+  // Check for BetterAuth session cookie (with __Secure- prefix in production HTTPS)
   const sessionCookie =
-    request.cookies.get("ladtc.session_token") ??
-    request.cookies.get("better-auth.session_token");
+    request.cookies.get("better-auth.session_token") ??
+    request.cookies.get("__Secure-better-auth.session_token");
 
   if (!sessionCookie) {
     const loginUrl = new URL("/auth/login", request.url);

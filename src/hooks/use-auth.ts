@@ -4,21 +4,21 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 
+type AuthUser = { id: string; name: string; email: string; role?: string };
+
 /**
- * Hook to access current auth state
- * Wraps BetterAuth's useSession with a simpler API
- *
- * @returns Auth state with user, loading state, and authentication status
+ * Hook to access current auth state.
+ * Wraps BetterAuth's useSession with a simpler API.
  */
 export function useAuth(): {
-  user: NonNullable<ReturnType<typeof useSession>["data"]>["user"] | null;
+  user: AuthUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
 } {
   const { data: session, isPending } = useSession();
 
   return {
-    user: session?.user ?? null,
+    user: (session?.user as AuthUser) ?? null,
     isLoading: isPending,
     isAuthenticated: !!session?.user,
   };
@@ -26,13 +26,9 @@ export function useAuth(): {
 
 /**
  * Hook that redirects to login if the user is not authenticated.
- * Use in client components that require authentication.
- *
- * @param redirectTo - Path to redirect unauthenticated users to (default: /auth/login)
- * @returns Auth state
  */
 export function useRequireAuth(redirectTo: string = "/auth/login"): {
-  user: NonNullable<ReturnType<typeof useSession>["data"]>["user"] | null;
+  user: AuthUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
 } {

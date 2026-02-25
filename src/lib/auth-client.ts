@@ -1,16 +1,10 @@
-"use client";
-
 import { createAuthClient } from "better-auth/react";
-import { inferAdditionalFields } from "better-auth/client/plugins";
-import type { auth } from "./auth";
 
 /**
- * BetterAuth client for use in React components
- * Provides hooks and methods for authentication
+ * BetterAuth client — matches HillsRun pattern exactly
  */
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-  plugins: [inferAdditionalFields<typeof auth>()],
+  baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
 });
 
 export const { useSession, signIn, signUp, signOut } = authClient;
