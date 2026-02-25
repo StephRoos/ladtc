@@ -21,15 +21,18 @@ Trois projets interconnectés autour du trail running et du bien-être :
 
 ## 1. LADTC — État actuel et plan
 
-### 1.1 Ce qui est fait (MVP complet)
+### 1.1 Ce qui est fait (MVP + améliorations)
 
-- **Auth** : BetterAuth (email/password), 4 rôles (MEMBER, COACH, COMMITTEE, ADMIN)
-- **Blog** : Intégré Prisma (remplace WordPress), CRUD admin, Markdown
+- **Auth** : BetterAuth (email/password), 4 rôles (MEMBER, COACH, COMMITTEE, ADMIN), emails via Resend
+- **Blog** : Intégré Prisma (remplace WordPress), CRUD admin, Markdown, recherche, SEO
+- **Événements** : Calendrier complet, articles blog-events hybrides, inscription membres, CRUD admin
+- **Galerie photos** : Upload Vercel Blob (drag & drop multi), CRUD admin, grille publique, filtres catégories, lightbox
 - **Équipement** : Catalogue, panier localStorage, checkout, gestion stocks/commandes
 - **Membres** : Profils, adhésions, renouvellements, annuaire
-- **Admin** : Dashboard stats, logs d'activité, gestion rôles, Recharts
-- **Email** : Templates Resend (welcome, commandes, rappels)
-- **Tests** : 6 fichiers, ~70 tests (Vitest)
+- **Admin** : Dashboard stats, logs d'activité, gestion rôles, Recharts, upload images
+- **Email** : Templates Resend (welcome, commandes, rappels, auth)
+- **SEO** : Métadonnées Open Graph sur les pages publiques (blog, événements, galerie)
+- **Tests** : 8 fichiers, 164 tests (Vitest)
 - **CI/CD** : GitHub Actions (lint, typecheck, build, test)
 - **Déploiement** : Vercel + Neon PostgreSQL, domaine ladtc.be configuré
 
@@ -47,42 +50,46 @@ Trois projets interconnectés autour du trail running et du bien-être :
 
 ### 1.3 Améliorations suggérées
 
+#### Fait (terminé)
+
+| # | Amélioration | Statut |
+|---|-------------|--------|
+| ~~1~~ | ~~Connecter les emails auth à Resend~~ | ✅ Fait |
+| ~~2~~ | ~~Calendrier d'événements~~ | ✅ Fait (événements + blog-events hybrides) |
+| ~~3~~ | ~~Galerie photos~~ | ✅ Fait (Vercel Blob, lightbox, admin CRUD) |
+| ~~4~~ | ~~Recherche blog~~ | ✅ Fait |
+| ~~5~~ | ~~SEO & métadonnées~~ | ✅ Fait (blog, événements, galerie) |
+| ~~9~~ | ~~Image upload~~ | ✅ Fait (Vercel Blob pour blog + galerie) |
+
 #### Priorité haute (prochaines sessions)
-
-| # | Amélioration | Effort | Impact |
-|---|-------------|--------|--------|
-| 1 | **Connecter les emails auth à Resend** — Les emails de vérification et reset password sont en `console.log`. Resend est déjà intégré pour les templates. | 30 min | Auth complète |
-| 2 | **Calendrier d'événements** — Le modèle Event existe dans le PRD mais aucune page. Ajouter : liste événements, détail, inscription membres. | 3-4h | Feature PRD manquante |
-| 3 | **Galerie photos** — Prévue dans le PRD, pas implémentée. Upload vers un bucket S3/Cloudflare R2, affichage en grille. | 3-4h | Feature PRD manquante |
-| 4 | **Recherche blog** — La fonctionnalité de recherche est dans le PRD mais pas implémentée. | 1h | UX blog |
-| 5 | **SEO & métadonnées** — Ajouter `generateMetadata()` sur les pages publiques (blog, équipement, team). Open Graph pour le partage social. | 1-2h | Visibilité |
-
-#### Priorité moyenne (mois prochain)
 
 | # | Amélioration | Effort | Impact |
 |---|-------------|--------|--------|
 | 6 | **Paiement en ligne** — Stripe pour les cotisations et les commandes d'équipement (actuellement hors-ligne). | 4-6h | Revenue |
 | 7 | **Notifications email automatiques** — Rappels de renouvellement, confirmations de commande automatiques (cron ou webhook). | 2-3h | Rétention |
 | 8 | **Export CSV** — Admin : export membres, commandes, stats en CSV. | 1-2h | Gestion club |
-| 9 | **Image upload** — Pour les articles blog et les produits. Actuellement URL manuelle. Utiliser Cloudflare R2 ou Vercel Blob. | 2-3h | UX admin |
-| 10 | **Middleware auth** — Remplacer le check client-side (useEffect + redirect) par un middleware Next.js server-side pour les routes protégées. Plus rapide, pas de flash. | 2h | Performance/UX |
+
+#### Priorité moyenne (mois prochain)
+
+| # | Amélioration | Effort | Impact |
+|---|-------------|--------|--------|
+| 11 | **Newsletter** — Collecte d'emails, envoi via Resend. | 3h | Communication |
+| 15 | **Sentry** — Monitoring d'erreurs (prévu dans .env.example mais pas configuré). | 30 min | Stabilité |
+| 16 | **SEO équipement & team** — Ajouter métadonnées Open Graph sur les pages équipement et team. | 1h | Visibilité |
 
 #### Priorité basse (futur)
 
 | # | Amélioration | Effort | Impact |
 |---|-------------|--------|--------|
-| 11 | **Newsletter** — Collecte d'emails, envoi via Resend. | 3h | Communication |
 | 12 | **PWA** — Service worker pour consultation offline du calendrier et du blog. | 2-3h | Mobile UX |
 | 13 | **Intégration HillsRun** — Leaderboard club, stats collectives des membres connectés à Garmin. | 4-6h | Écosystème |
 | 14 | **Multi-langue** — Le site est en français uniquement. Si le club s'internationalise (néerlandais/anglais). | 4-6h | Accessibilité |
-| 15 | **Sentry** — Monitoring d'erreurs (prévu dans .env.example mais pas configuré). | 30 min | Stabilité |
 
 ### 1.4 Dette technique
 
-- `CLAUDE.md` et `ARCHITECTURE.md` mentionnent encore WordPress comme CMS (à mettre à jour)
-- Le PRD mentionne des features non implémentées (Events, Gallery, Newsletter) — à marquer comme post-MVP
-- Le fichier `src/lib/wordpress.ts` a été supprimé mais des références peuvent subsister dans la doc
+- Le PRD mentionne Newsletter comme non implémentée — à planifier
 - `src/config/team.ts` contient des données en dur — à migrer en DB si le comité change souvent
+- Le fix datetime-local (regex au lieu de `.datetime()`) est appliqué dans `eventSchema` et `blogPostSchema.eventDate`
 
 ---
 
@@ -275,22 +282,28 @@ Des éléments sont dupliqués entre les projets :
 
 ## 6. Priorités globales — Roadmap
 
-### Immédiat (cette session)
-- [ ] Résoudre l'auth LADTC en production (cookies + relogin)
-- [ ] Supprimer l'endpoint debug
-- [ ] Vérifier le blog admin (créer 1er article)
+### Fait
+- [x] Résoudre l'auth LADTC en production (cookies + relogin)
+- [x] Supprimer l'endpoint debug
+- [x] LADTC : Connecter emails auth à Resend
+- [x] LADTC : Mettre à jour CLAUDE.md et ARCHITECTURE.md (plus de WordPress)
+- [x] LADTC : SEO métadonnées sur les pages publiques (blog, événements, galerie)
+- [x] LADTC : Calendrier d'événements (+ blog-events hybrides)
+- [x] LADTC : Galerie photos (Vercel Blob, lightbox, admin CRUD)
+- [x] LADTC : Upload images blog + galerie (Vercel Blob)
+- [x] LADTC : Recherche blog
 
-### Court terme (1-2 semaines)
-- [ ] LADTC : Connecter emails auth à Resend
-- [ ] LADTC : Mettre à jour CLAUDE.md et ARCHITECTURE.md (plus de WordPress)
-- [ ] LADTC : SEO métadonnées sur les pages publiques
-- [ ] LADTC : Ajouter Sentry
+### Court terme (prochaines sessions)
+- [ ] LADTC : Déployer en production (Vercel) et tester galerie + événements
+- [ ] LADTC : Paiement en ligne (Stripe cotisations + équipement)
+- [ ] LADTC : Notifications email automatiques (rappels renouvellement)
+- [ ] LADTC : Export CSV (membres, commandes)
 - [ ] HillsRun : Vérifier le cron sync quotidien fonctionne
 
 ### Moyen terme (1-2 mois)
 - [ ] RecettesApp : Créer le projet (PRD → Architecture → Tasks → Implémentation)
-- [ ] LADTC : Calendrier d'événements
-- [ ] LADTC : Galerie photos
+- [ ] LADTC : Newsletter (collecte emails + envoi Resend)
+- [ ] LADTC : Sentry monitoring
 - [ ] HillsRun : Intégration RecettesApp (nutrition)
 - [ ] Monitoring : Sentry + Uptime sur tous les projets
 
@@ -306,8 +319,8 @@ Des éléments sont dupliqués entre les projets :
 ## 7. Notes de reprise
 
 Quand tu reviens :
-1. **Ouvre un onglet privé** sur https://ladtc.be/auth/login
-2. Connecte-toi avec `stephaneroos@gmail.com`
-3. Va sur https://ladtc.be/api/debug-auth et colle le résultat
-4. Si `session` est non-null → l'auth est réparée, on supprime le debug endpoint
-5. Si `session` est null → on investigue les cookies/config plus en profondeur
+1. **Déployer en prod** : `npx vercel --prod` ou push sur master (auto-deploy)
+2. Tester la galerie sur https://ladtc.be/gallery
+3. Tester la création d'événement sur https://ladtc.be/admin/events/new
+4. Vérifier que l'upload de photos fonctionne sur https://ladtc.be/admin/gallery/upload
+5. Prochaine feature à attaquer : **Paiement Stripe** ou **Export CSV**
