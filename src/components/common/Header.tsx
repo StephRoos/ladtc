@@ -82,47 +82,19 @@ export function Header(): React.ReactNode {
             </li>
           ))}
           {isAdminOrCommittee && (
-            <>
-              <li>
-                <Link
-                  href="/admin/members"
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    pathname.startsWith("/admin/members")
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  Gestion membres
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/admin/products"
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    pathname.startsWith("/admin/products")
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  Produits
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/admin/orders"
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    pathname.startsWith("/admin/orders")
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  Commandes
-                </Link>
-              </li>
-            </>
+            <li>
+              <Link
+                href="/admin/dashboard"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname.startsWith("/admin")
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                Admin
+              </Link>
+            </li>
           )}
         </ul>
 
@@ -249,50 +221,20 @@ export function Header(): React.ReactNode {
               </li>
             ))}
             {isAdminOrCommittee && (
-              <>
-                <li>
-                  <Link
-                    href="/admin/members"
-                    className={cn(
-                      "block py-1 text-sm font-medium transition-colors hover:text-primary",
-                      pathname.startsWith("/admin/members")
-                        ? "text-primary"
-                        : "text-muted-foreground"
-                    )}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Gestion membres
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/admin/products"
-                    className={cn(
-                      "block py-1 text-sm font-medium transition-colors hover:text-primary",
-                      pathname.startsWith("/admin/products")
-                        ? "text-primary"
-                        : "text-muted-foreground"
-                    )}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Produits
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/admin/orders"
-                    className={cn(
-                      "block py-1 text-sm font-medium transition-colors hover:text-primary",
-                      pathname.startsWith("/admin/orders")
-                        ? "text-primary"
-                        : "text-muted-foreground"
-                    )}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Commandes
-                  </Link>
-                </li>
-              </>
+              <li>
+                <Link
+                  href="/admin/dashboard"
+                  className={cn(
+                    "block py-1 text-sm font-medium transition-colors hover:text-primary",
+                    pathname.startsWith("/admin")
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  )}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              </li>
             )}
           </ul>
 
