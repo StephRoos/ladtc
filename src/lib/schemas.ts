@@ -132,10 +132,35 @@ export const blogPostSchema = z.object({
   slug: z.string().min(1, "Le slug est requis").regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug invalide (lettres minuscules, chiffres et tirets)"),
   content: z.string().min(1, "Le contenu est requis"),
   excerpt: z.string().optional(),
-  featuredImageUrl: z.union([z.string().url("URL d'image invalide"), z.literal(""), z.undefined()]),
+  featuredImageUrl: z.union([
+    z.string().url("URL d'image invalide"),
+    z.string().startsWith("/images/", "Chemin d'image invalide"),
+    z.literal(""),
+    z.undefined(),
+  ]),
   category: z.string().optional(),
   tags: z.array(z.string()).optional(),
   published: z.boolean().optional(),
 });
 
 export type BlogPostFormData = z.infer<typeof blogPostSchema>;
+
+/**
+ * Zod validation schema for event creation/update (committee/admin)
+ */
+export const eventSchema = z.object({
+  title: z.string().min(3, "Le titre doit contenir au moins 3 caractères"),
+  description: z.string().optional(),
+  date: z.string().datetime("Date invalide"),
+  location: z.string().min(1, "Le lieu est requis"),
+  type: z.enum(["TRAINING", "RACE", "CAMP", "SOCIAL"]),
+  difficulty: z.string().optional(),
+  maxParticipants: z
+    .number()
+    .int()
+    .positive("Le nombre de places doit être positif")
+    .optional()
+    .nullable(),
+});
+
+export type EventFormData = z.infer<typeof eventSchema>;

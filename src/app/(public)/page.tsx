@@ -6,7 +6,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BlogGrid } from "@/components/cards/BlogGrid";
+import { EventCard } from "@/components/cards/EventCard";
 import { useBlogPosts } from "@/hooks/use-blog-posts";
+import { useEvents } from "@/hooks/use-events";
 import { siteConfig, getRandomDtcMeaning } from "@/config/site";
 
 function LatestBlogSection(): React.ReactNode {
@@ -112,6 +114,74 @@ function HeroSection(): React.ReactNode {
   );
 }
 
+function UpcomingEventsSection(): React.ReactNode {
+  const { data, isLoading, isError } = useEvents(1, 3);
+
+  return (
+    <section className="py-16 bg-muted/30">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="mb-10 flex items-end justify-between">
+          <div>
+            <h2 className="text-3xl font-bold">Prochains événements</h2>
+            <p className="mt-2 text-muted-foreground">
+              Rejoignez-nous lors de nos prochains rendez-vous
+            </p>
+          </div>
+          <Link
+            href="/events"
+            className="hidden text-sm font-medium text-primary hover:underline sm:block"
+          >
+            Voir tous les événements →
+          </Link>
+        </div>
+
+        {isLoading && (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="space-y-3 rounded-lg border border-border p-4">
+                <div className="flex gap-4">
+                  <Skeleton className="h-16 w-14 rounded-lg" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-1/3" />
+                    <Skeleton className="h-5 w-3/4" />
+                  </div>
+                </div>
+                <Skeleton className="h-4 w-full" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {isError && (
+          <p className="text-center text-muted-foreground">
+            Impossible de charger les événements pour le moment.
+          </p>
+        )}
+
+        {data && data.events.length > 0 && (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {data.events.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+        )}
+
+        {data && data.events.length === 0 && (
+          <p className="text-center text-muted-foreground">
+            Aucun événement à venir pour le moment.
+          </p>
+        )}
+
+        <div className="mt-8 text-center sm:hidden">
+          <Button asChild variant="outline">
+            <Link href="/events">Voir tous les événements</Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function TrainingSection(): React.ReactNode {
   return (
     <section className="bg-gradient-to-r from-primary/10 to-accent/10 py-20">
@@ -175,6 +245,7 @@ export default function HomePage(): React.ReactNode {
   return (
     <>
       <HeroSection />
+      <UpcomingEventsSection />
       <LatestBlogSection />
       <TrainingSection />
     </>

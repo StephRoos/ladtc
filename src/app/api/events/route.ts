@@ -4,13 +4,13 @@ import { prisma } from "@/lib/prisma";
 const PAGE_SIZE = 10;
 
 /**
- * GET /api/blog/posts
- * Returns a paginated list of published blog posts. Public endpoint.
+ * GET /api/events
+ * Returns a paginated list of upcoming events. Public endpoint.
  *
  * Query params:
  *   - page: number (default: 1)
  *   - per_page: number (default: 10, max: 50)
- *   - search: string (optional, filters by title or content)
+ *   - type: EventType filter (optional)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
@@ -20,35 +20,31 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     50
   );
   const skip = (page - 1) * perPage;
-  const search = searchParams.get("search")?.trim();
+  const type = searchParams.get("type");
 
   const where: Record<string, unknown> = {
-    published: true,
-    publishedAt: { not: null },
+    date: { gte: new Date() },
   };
 
-  if (search && search.length > 0) {
-    where.OR = [
-      { title: { contains: search, mode: "insensitive" } },
-      { content: { contains: search, mode: "insensitive" } },
-    ];
+  if (type && ["TRAINING", "RACE", "CAMP", "SOCIAL"].includes(type)) {
+    where.type = type;
   }
 
-  const [posts, total] = await Promise.all([
-    prisma.blogPost.findMany({
+  const [events, total] = await Promise.all([
+    prisma.event.findMany({
       where,
-      orderBy: { publishedAt: "desc" },
+      orderBy: { date: "asc" },
       skip,
       take: perPage,
       include: {
-        author: { select: { id: true, name: true } },
+        _count: { select: { registrations: { where: { status: "REGISTERED" } } } },
       },
     }),
-    prisma.blogPost.count({ where }),
+    prisma.event.count({ where }),
   ]);
 
   return NextResponse.json({
-    posts,
+    events,
     total,
     totalPages: Math.ceil(total / perPage),
   });

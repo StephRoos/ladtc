@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Search } from "lucide-react";
 import { BlogGrid } from "@/components/cards/BlogGrid";
 import { useBlogPosts } from "@/hooks/use-blog-posts";
 
@@ -29,15 +31,43 @@ function BlogListSkeleton(): React.ReactNode {
  */
 export default function BlogPage(): React.ReactNode {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError } = useBlogPosts(page, PER_PAGE);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { data, isLoading, isError } = useBlogPosts(
+    page,
+    PER_PAGE,
+    debouncedSearch || undefined
+  );
+
+  function handleSearchChange(value: string): void {
+    setSearch(value);
+    setPage(1);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setDebouncedSearch(value);
+    }, 300);
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
-      <div className="mb-10">
-        <h1 className="text-4xl font-bold">Blog</h1>
-        <p className="mt-2 text-muted-foreground">
-          Actualités, comptes-rendus de courses et vie du club
-        </p>
+      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-4xl font-bold">Blog</h1>
+          <p className="mt-2 text-muted-foreground">
+            Actualités, comptes-rendus de courses et vie du club
+          </p>
+        </div>
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Rechercher un article..."
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9"
+          />
+        </div>
       </div>
 
       {isLoading && <BlogListSkeleton />}

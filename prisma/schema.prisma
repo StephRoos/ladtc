@@ -32,6 +32,7 @@ model User {
   orders        Order[]
   activityLogs  ActivityLog[]
   blogPosts     BlogPost[]
+  eventRegistrations EventRegistration[]
 }
 
 model ActivityLog {
@@ -187,6 +188,50 @@ model OrderItem {
   price     Float
 
   @@unique([orderId, productId, size])
+}
+
+enum EventType {
+  TRAINING
+  RACE
+  CAMP
+  SOCIAL
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  ATTENDED
+  CANCELLED
+}
+
+model Event {
+  id              String              @id @default(cuid())
+  title           String
+  description     String?
+  date            DateTime
+  location        String
+  type            EventType
+  difficulty      String?
+  maxParticipants Int?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  registrations   EventRegistration[]
+
+  @@index([date])
+  @@index([type])
+}
+
+model EventRegistration {
+  id        String             @id @default(cuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId   String
+  event     Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  status    RegistrationStatus @default(REGISTERED)
+  createdAt DateTime           @default(now())
+
+  @@unique([userId, eventId])
+  @@index([eventId])
+  @@index([userId])
 }
 
 model BlogPost {

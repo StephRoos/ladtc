@@ -25,14 +25,20 @@ interface AdminBlogPostsResponse {
  * Fetch published blog posts from the public API
  * @param page - Page number
  * @param perPage - Posts per page
+ * @param search - Search query
  */
 async function getBlogPosts(
   page: number,
-  perPage: number
+  perPage: number,
+  search?: string
 ): Promise<BlogPostsResponse> {
-  const res = await fetch(
-    `/api/blog/posts?page=${page}&per_page=${perPage}`
-  );
+  const params = new URLSearchParams({
+    page: String(page),
+    per_page: String(perPage),
+  });
+  if (search) params.set("search", search);
+
+  const res = await fetch(`/api/blog/posts?${params}`);
   if (!res.ok) {
     throw new Error("Impossible de charger les articles");
   }
@@ -125,11 +131,16 @@ async function deleteBlogPost(id: string): Promise<{ success: boolean }> {
  * TanStack Query hook for paginated published blog posts
  * @param page - Page number (default: 1)
  * @param perPage - Posts per page (default: 10)
+ * @param search - Search query (optional)
  */
-export function useBlogPosts(page: number = 1, perPage: number = 10) {
+export function useBlogPosts(
+  page: number = 1,
+  perPage: number = 10,
+  search?: string
+) {
   return useQuery({
-    queryKey: ["blog-posts", page, perPage],
-    queryFn: () => getBlogPosts(page, perPage),
+    queryKey: ["blog-posts", page, perPage, search],
+    queryFn: () => getBlogPosts(page, perPage, search),
     staleTime: STALE_TIME,
     gcTime: GC_TIME,
   });

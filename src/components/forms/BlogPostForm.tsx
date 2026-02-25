@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { blogPostSchema, type BlogPostFormData } from "@/lib/schemas";
 import { slugify } from "@/lib/utils";
+import { ImageIcon, Upload, Link, X } from "lucide-react";
 
 interface BlogPostFormProps {
   defaultValues?: Partial<BlogPostFormData>;
@@ -19,6 +20,7 @@ interface BlogPostFormProps {
 /**
  * Blog post create/edit form.
  * Uses React Hook Form + Zod validation with auto-slug generation.
+ * Supports both URL input and local file upload for featured image.
  */
 export function BlogPostForm({
   defaultValues,
@@ -43,13 +45,70 @@ export function BlogPostForm({
 
   const submitting = isSubmitting || formSubmitting;
   const title = watch("title");
+  const featuredImageUrl = watch("featuredImageUrl");
   const isEditing = !!defaultValues?.slug;
+
+  const [imageMode, setImageMode] = useState<"url" | "upload">(
+    defaultValues?.featuredImageUrl ? "url" : "upload"
+  );
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    defaultValues?.featuredImageUrl || null
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isEditing && title) {
       setValue("slug", slugify(title));
     }
   }, [title, isEditing, setValue]);
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>): Promise<void> {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadError(null);
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setUploadError(data.error || "Erreur lors de l'upload");
+        return;
+      }
+
+      setValue("featuredImageUrl", data.url);
+      setPreviewUrl(data.url);
+    } catch {
+      setUploadError("Erreur réseau lors de l'upload");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function handleClearImage(): void {
+    setValue("featuredImageUrl", "");
+    setPreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
+
+  function handleUrlChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    const url = e.target.value;
+    setValue("featuredImageUrl", url);
+    setPreviewUrl(url || null);
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -147,17 +206,101 @@ export function BlogPostForm({
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="featuredImageUrl">Image de couverture (URL)</Label>
-        <Input
-          id="featuredImageUrl"
-          type="url"
-          placeholder="https://exemple.com/image.jpg"
-          {...register("featuredImageUrl")}
-        />
+      {/* Featured image: URL or file upload */}
+      <div className="space-y-3">
+        <Label>Image de couverture</Label>
+
+        <div className="flex gap-1 rounded-lg bg-muted p-1 w-fit">
+          <button
+            type="button"
+            onClick={() => setImageMode("upload")}
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              imageMode === "upload"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Upload className="h-3.5 w-3.5" />
+            Uploader
+          </button>
+          <button
+            type="button"
+            onClick={() => setImageMode("url")}
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              imageMode === "url"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Link className="h-3.5 w-3.5" />
+            URL
+          </button>
+        </div>
+
+        {imageMode === "upload" ? (
+          <div className="space-y-2">
+            <div
+              className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 transition-colors hover:border-muted-foreground/50 cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
+              <p className="text-sm text-muted-foreground">
+                {uploading
+                  ? "Upload en cours..."
+                  : "Cliquez ou glissez une image ici"}
+              </p>
+              <p className="text-xs text-muted-foreground/70">
+                JPG, PNG, WebP ou GIF — 5 Mo max
+              </p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={handleFileUpload}
+                className="hidden"
+                disabled={uploading}
+              />
+            </div>
+            {uploadError && (
+              <p className="text-sm text-destructive">{uploadError}</p>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <Input
+              type="url"
+              placeholder="https://exemple.com/image.jpg"
+              value={featuredImageUrl || ""}
+              onChange={handleUrlChange}
+            />
+          </div>
+        )}
+
         {errors.featuredImageUrl && (
           <p className="text-sm text-destructive">{errors.featuredImageUrl.message}</p>
         )}
+
+        {/* Image preview */}
+        {previewUrl && (
+          <div className="relative w-full max-w-sm">
+            <img
+              src={previewUrl}
+              alt="Aperçu"
+              className="rounded-lg border border-border object-cover w-full aspect-video"
+              onError={() => setPreviewUrl(null)}
+            />
+            <button
+              type="button"
+              onClick={handleClearImage}
+              className="absolute -top-2 -right-2 rounded-full bg-destructive p-1 text-destructive-foreground shadow-sm hover:bg-destructive/90"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+
+        {/* Hidden input to register the field with react-hook-form */}
+        <input type="hidden" {...register("featuredImageUrl")} />
       </div>
 
       <div className="flex items-center gap-3">
