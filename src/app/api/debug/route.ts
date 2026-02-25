@@ -12,7 +12,7 @@ export async function GET(): Promise<NextResponse> {
 
   // Step 2: Try importing PrismaClient
   try {
-    const { PrismaClient } = await import("@prisma/client");
+    const { PrismaClient } = await import("@/generated/prisma/client");
     steps.PrismaClient = "imported OK";
 
     // Step 3: Try importing PrismaPg

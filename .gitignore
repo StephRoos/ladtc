@@ -90,4 +90,5 @@ public/images/UTC3 - photoboot.jpg
 public/images/rebecca-hansen-8gVv6nxq6gY-unsplash.jpg
 public/images/566247058_*
 
-/generated/prisma
+/src/generated
+.vercel
