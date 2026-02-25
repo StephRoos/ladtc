@@ -1,10 +1,26 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProductCatalog } from "./ProductCatalog";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Équipement - LADTC",
+  title: `Équipement | ${siteConfig.name}`,
   description: "Commandez l'équipement officiel du club LADTC.",
+  openGraph: {
+    title: `Équipement | ${siteConfig.name}`,
+    description: "Commandez l'équipement officiel du club LADTC.",
+    url: `${siteConfig.url}/equipment`,
+    siteName: siteConfig.fullName,
+    type: "website",
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.fullName,
+      },
+    ],
+  },
 };
 
 /**

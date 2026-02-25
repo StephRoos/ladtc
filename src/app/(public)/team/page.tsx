@@ -3,11 +3,28 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { committeeMembers, coaches } from "@/config/team";
 import type { TeamMember } from "@/types";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Notre Équipe",
+  title: `Notre équipe | ${siteConfig.name}`,
   description:
     "Découvrez le comité et les coachs de la dtc — club de trail running à Ellezelles.",
+  openGraph: {
+    title: `Notre équipe | ${siteConfig.name}`,
+    description:
+      "Découvrez le comité et les coachs de la dtc — club de trail running à Ellezelles.",
+    url: `${siteConfig.url}/team`,
+    siteName: siteConfig.fullName,
+    type: "website",
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.fullName,
+      },
+    ],
+  },
 };
 
 function getInitials(name: string): string {

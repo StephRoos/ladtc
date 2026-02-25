@@ -1,6 +1,7 @@
 import type { Order } from "@/types";
 
 const CLUB_NAME = "la dtc";
+const CLUB_FULL_NAME = "Les Amis Du Trail des Collines";
 const CLUB_EMAIL = "noreply@ladtc.be";
 const CLUB_WEBSITE = "https://ladtc.be";
 const PRIMARY_COLOR = "#FF8C00";
@@ -98,6 +99,69 @@ export function welcomeEmailTemplate(name: string): string {
     <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
       Cordialement,<br/>
       <strong style="color:${TEXT_COLOR};">L'équipe la dtc</strong>
+    </p>
+  `;
+  return baseTemplate(content);
+}
+
+/**
+ * Generates the password reset email HTML template.
+ *
+ * @param name - User's display name or email
+ * @param url - Password reset link
+ * @returns Full HTML email string
+ */
+export function passwordResetTemplate(name: string, url: string): string {
+  const content = `
+    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Réinitialisation de mot de passe</h2>
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
+      Bonjour ${name},<br/>
+      Vous avez demandé la réinitialisation de votre mot de passe pour votre compte ${CLUB_NAME}.
+    </p>
+    <p style="margin:0 0 8px 0;color:#cbd5e1;line-height:1.6;">
+      Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe :
+    </p>
+    ${buttonHtml(url, "Réinitialiser mon mot de passe")}
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0;color:#94a3b8;font-size:13px;line-height:1.6;">
+        Si vous n'avez pas demandé cette réinitialisation, ignorez simplement cet email.
+        Ce lien expire dans 1 heure.
+      </p>
+    </div>
+    <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
+      Cordialement,<br/>
+      <strong style="color:${TEXT_COLOR};">L'équipe ${CLUB_NAME}</strong>
+    </p>
+  `;
+  return baseTemplate(content);
+}
+
+/**
+ * Generates the email verification HTML template.
+ *
+ * @param name - User's display name or email
+ * @param url - Verification link
+ * @returns Full HTML email string
+ */
+export function emailVerificationTemplate(name: string, url: string): string {
+  const content = `
+    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Vérifiez votre adresse email</h2>
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
+      Bonjour ${name},<br/>
+      Merci de vous être inscrit(e) chez <strong style="color:${TEXT_COLOR};">${CLUB_NAME}</strong> — ${CLUB_FULL_NAME}.
+    </p>
+    <p style="margin:0 0 8px 0;color:#cbd5e1;line-height:1.6;">
+      Cliquez sur le bouton ci-dessous pour confirmer votre adresse email :
+    </p>
+    ${buttonHtml(url, "Vérifier mon email")}
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0;color:#94a3b8;font-size:13px;line-height:1.6;">
+        Si vous n'avez pas créé de compte chez ${CLUB_NAME}, ignorez cet email.
+      </p>
+    </div>
+    <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
+      Cordialement,<br/>
+      <strong style="color:${TEXT_COLOR};">L'équipe ${CLUB_NAME}</strong>
     </p>
   `;
   return baseTemplate(content);

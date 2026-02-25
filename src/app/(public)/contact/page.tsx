@@ -3,9 +3,25 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: `Contact | ${siteConfig.name}`,
   description:
     "Contactez la dtc — club de trail running à Ellezelles, Pays des Collines.",
+  openGraph: {
+    title: `Contact | ${siteConfig.name}`,
+    description:
+      "Contactez la dtc — club de trail running à Ellezelles, Pays des Collines.",
+    url: `${siteConfig.url}/contact`,
+    siteName: siteConfig.fullName,
+    type: "website",
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.fullName,
+      },
+    ],
+  },
 };
 
 /**

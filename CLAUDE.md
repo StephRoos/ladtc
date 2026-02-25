@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-LADTC (Les Amis Du Trail des Collines) is a modern Next.js website for a Belgian trail running club. It consumes the existing WordPress REST API for editorial content (blog, events, photos) while maintaining a PostgreSQL database for member management, authentication, and equipment orders.
+LADTC (Les Amis Du Trail des Collines) is a modern Next.js website for a Belgian trail running club. It uses an integrated Prisma/PostgreSQL blog for editorial content and maintains a PostgreSQL database for member management, authentication, equipment orders, and blog posts.
 
 The project is part of an ecosystem with HillsRun and RecettesApp, sharing the same design system, theme, and technical conventions.
 
@@ -20,10 +20,11 @@ The project is part of an ecosystem with HillsRun and RecettesApp, sharing the s
 | **Data Fetching** | TanStack Query | 5.60+ |
 | **Forms** | React Hook Form | 7.54+ |
 | **Validation** | Zod | 3.24+ |
-| **CMS** | WordPress REST API | (external) |
-| **Database** | PostgreSQL | 15+ |
-| **ORM** | Prisma | (not yet installed) |
-| **Auth** | BetterAuth | (not yet installed) |
+| **Blog** | Integrated (Prisma + Markdown) | — |
+| **Database** | PostgreSQL (Neon) | 15+ |
+| **ORM** | Prisma | 7.4+ |
+| **Auth** | BetterAuth | 1.4+ |
+| **Email** | Resend | Latest |
 | **Tests** | Vitest | 3+ |
 
 ## Language Rules
@@ -56,9 +57,12 @@ src/
 │   └── admin/
 ├── lib/                  # Utilities & helpers
 │   ├── api.ts
-│   ├── wordpress.ts
 │   ├── auth.ts
-│   ├── hooks.ts
+│   ├── auth-client.ts
+│   ├── prisma.ts
+│   ├── email.ts
+│   ├── email-templates.ts
+│   ├── schemas.ts
 │   └── utils.ts
 ├── hooks/               # Custom React hooks
 ├── types/              # TypeScript types
@@ -81,16 +85,16 @@ src/
 Example:
 ```typescript
 /**
- * Fetch blog posts from WordPress API
+ * Fetch published blog posts with pagination.
  * @param page - Page number
  * @param perPage - Items per page
- * @returns Blog posts with pagination info
+ * @returns Blog posts with total count
  */
 export async function fetchBlogPosts(
   page: number = 1,
   perPage: number = 10
 ): Promise<{ posts: BlogPost[]; total: number }> {
-  // Implementation
+  // Implementation using Prisma
 }
 ```
 
@@ -157,30 +161,29 @@ export function Card({ title, children }: CardProps): React.ReactNode {
 
 ## Database (PostgreSQL + Prisma)
 
-**Note**: Not set up yet — documented for future use.
-
-- Prisma ORM for type-safe queries
-- Migrations: `prisma migrate dev`
+- Prisma ORM for type-safe queries (output: `src/generated/prisma`)
+- Database: Neon PostgreSQL (cloud)
+- Migrations: `npx prisma migrate dev`
 - Schema file: `prisma/schema.prisma`
 - Types auto-generated from schema
 - Never commit `.env` or `.env.local`
 
 ## Authentication (BetterAuth)
 
-**Note**: Not set up yet — documented for future use.
-
 - Email-based registration and login
 - Session stored in PostgreSQL
 - Role-based access control (MEMBER, COACH, COMMITTEE, ADMIN)
 - Password hashing handled by BetterAuth
-- CSRF protection on forms
+- Route protection via `src/proxy.ts` (Next.js 16 proxy, replaces middleware)
+- Cookie names: `better-auth.session_token` (dev) / `__Secure-better-auth.session_token` (prod HTTPS)
 
-## WordPress Integration
+## Blog (Integrated Prisma)
 
-- Base URL: `process.env.NEXT_PUBLIC_WP_API_URL` (default: `https://ladtc.be`)
-- Endpoints: `/wp-json/wp/v2/posts`, `/wp-json/wp/v2/media`, etc.
-- Caching: `revalidate: 3600` (1 hour server-side) + TanStack Query client-side
-- Error handling: Graceful fallback UI on API failures
+- Blog posts stored in PostgreSQL (BlogPost model)
+- Markdown content rendered with `marked`
+- Admin CRUD at `/admin/blog`
+- Public pages at `/blog` and `/blog/[slug]`
+- No external CMS dependency
 
 ## TanStack Query Best Practices
 
@@ -206,18 +209,20 @@ See `.env.example` for required variables. Never commit `.env` or `.env.local`.
 Template:
 ```
 NEXT_PUBLIC_APP_URL=...
-NEXT_PUBLIC_WP_API_URL=...
 DATABASE_URL=...
 BETTER_AUTH_SECRET=...
 BETTER_AUTH_URL=...
+RESEND_API_KEY=...
+ADMIN_EMAIL=...
 ```
 
 ## Deployment
 
 - **Hosting**: Vercel
-- **Database**: PostgreSQL (Vercel or Supabase)
-- **Auto-deploy**: On `git push` to main
-- **Env vars**: Set in Vercel dashboard or via CLI
+- **Database**: Neon PostgreSQL (cloud)
+- **Domain**: ladtc.be
+- **Deploy**: `npx vercel --prod` or `git push` to master
+- **Env vars**: Set in Vercel dashboard
 
 ## Security
 
@@ -247,12 +252,11 @@ BETTER_AUTH_URL=...
 
 - **PRD.md** — Product requirements and features
 - **ARCHITECTURE.md** — Technical architecture and data models
+- **PLAN-ECOSYSTEME.md** — Roadmap for LADTC, HillsRun, RecettesApp
 - **specs/** — Detailed implementation tasks
-- **NEXT_PUBLIC_WP_API_URL** — WordPress API docs at `https://ladtc.be/wp-json/wp/v2`
 
 ## Known Constraints
 
-- WordPress site remains at `ladtc.be` (source of truth for editorial)
 - Committee members are trusted users (simple auth, no advanced permissions initially)
 - No offline functionality
 - French language for UI/docs, English for code

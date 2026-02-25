@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   // React strict mode for development
@@ -10,7 +11,6 @@ const nextConfig: NextConfig = {
   // Environment variables
   env: {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-    NEXT_PUBLIC_WP_API_URL: process.env.NEXT_PUBLIC_WP_API_URL || "https://ladtc.be",
   },
 
   // Image optimization
@@ -20,10 +20,6 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "ladtc.be",
         pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "**.wp.com",
       },
     ],
   },
@@ -36,4 +32,8 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  silent: true,
+  org: "",
+  project: "",
+});

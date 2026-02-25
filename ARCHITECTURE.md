@@ -2,7 +2,7 @@
 
 ## High-Level Overview
 
-The LADTC website is a modern Next.js fullstack application that consumes the existing WordPress REST API for editorial content (blog, events, photos) while maintaining a PostgreSQL database for member management, authentication, and equipment orders.
+The LADTC website is a modern Next.js fullstack application with an integrated Prisma/PostgreSQL blog, member management, authentication, and equipment orders. All data lives in a single Neon PostgreSQL database.
 
 The architecture follows the design patterns and conventions established in HillsRun and RecettesApp, ensuring consistency across the ecosystem.
 
@@ -16,16 +16,17 @@ The architecture follows the design patterns and conventions established in Hill
 │                    Next.js App Router                            │
 │  (API Routes, Server Components, Client Components)             │
 └─────────────────────────────────────────────────────────────────┘
-                    ↙               ↘
-        ┌──────────────────┐  ┌──────────────────┐
-        │ WordPress API    │  │ PostgreSQL DB    │
-        │ (Editorial)      │  │ (Members, Orders)│
-        └──────────────────┘  └──────────────────┘
-                ↓                       ↓
-        ┌──────────────────┐  ┌──────────────────┐
-        │ TanStack Query   │  │ Prisma ORM       │
-        │ (Client cache)   │  │ (Type-safe)      │
-        └──────────────────┘  └──────────────────┘
+                              ↓
+              ┌──────────────────────────────┐
+              │   Neon PostgreSQL (cloud)     │
+              │   Blog, Members, Orders,     │
+              │   Auth, Products             │
+              └──────────────────────────────┘
+                              ↓
+              ┌──────────────────────────────┐
+              │   Prisma ORM (type-safe)     │
+              │   + TanStack Query (cache)   │
+              └──────────────────────────────┘
 ```
 
 ## Technology Stack
@@ -51,14 +52,15 @@ The architecture follows the design patterns and conventions established in Hill
 | **Database** | PostgreSQL 15+ | Primary data store (members, orders, etc.) |
 | **ORM** | Prisma | Type-safe database queries and migrations |
 | **Authentication** | BetterAuth | Email-based auth, sessions, roles |
-| **CMS Integration** | WordPress REST API | Editorial content (blog, events, photos) |
+| **Blog** | Integrated (Prisma + marked) | Markdown blog posts managed via admin |
+| **Email** | Resend | Transactional emails (welcome, orders, reminders) |
 
 ### DevOps & Deployment
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | **Hosting** | Vercel | Edge deployment, serverless functions |
-| **Database Hosting** | Vercel PostgreSQL or Supabase | Managed PostgreSQL |
+| **Database Hosting** | Neon PostgreSQL | Managed serverless PostgreSQL |
 | **Environment** | Node.js 20+ | Runtime environment |
 | **Package Manager** | pnpm | Fast, efficient dependency management |
 | **Version Control** | Git + GitHub | Code repository |
@@ -143,11 +145,15 @@ ladtc/
 │   │   │   │   ├── route.ts
 │   │   │   │   └── [id]/
 │   │   │   │       └── route.ts
-│   │   │   └── wordpress/       # WordPress API integration
-│   │   │       ├── posts/
-│   │   │       │   └── route.ts
-│   │   │       └── events/
-│   │   │           └── route.ts
+│   │   │   ├── blog/             # Public blog API
+│   │   │   │   ├── posts/
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── posts/[slug]/
+│   │   │   │       └── route.ts
+│   │   │   └── admin/            # Admin API (blog, etc.)
+│   │   │       └── blog/posts/
+│   │   │           ├── route.ts
+│   │   │           └── [id]/route.ts
 │   │   ├── layout.tsx           # Root layout
 │   │   ├── globals.css          # Global styles (theme, tailwind config)
 │   │   └── error.tsx            # Error boundary
@@ -183,9 +189,12 @@ ladtc/
 │   │   └── Theme.tsx            # Theme provider/switcher
 │   ├── lib/
 │   │   ├── api.ts               # API client helpers
-│   │   ├── wordpress.ts         # WordPress API integration
-│   │   ├── auth.ts              # Auth utilities
-│   │   ├── hooks.ts             # Custom React hooks
+│   │   ├── auth.ts              # BetterAuth server config
+│   │   ├── auth-client.ts       # BetterAuth client
+│   │   ├── prisma.ts            # Prisma client singleton
+│   │   ├── email.ts             # Resend email helpers
+│   │   ├── email-templates.ts   # HTML email templates
+│   │   ├── schemas.ts           # Zod validation schemas
 │   │   └── utils.ts             # Utility functions
 │   ├── hooks/
 │   │   ├── useAuth.ts           # Auth context hook
@@ -193,7 +202,7 @@ ladtc/
 │   │   └── useSession.ts        # Session management
 │   ├── types/
 │   │   ├── index.ts             # TypeScript types
-│   │   ├── wordpress.ts         # WordPress API types
+│   │   ├── blog.ts              # Blog post types
 │   │   ├── member.ts            # Member types
 │   │   └── order.ts             # Order types
 │   ├── context/
@@ -205,14 +214,14 @@ ladtc/
 │   │   └── animations.css       # Animations
 │   └── config/
 │       ├── site.ts              # Site metadata
-│       └── wordpress.ts         # WordPress API config
+│       └── team.ts              # Team members data
 ├── prisma/
-│   ├── schema.prisma            # Database schema (NOT set up yet)
-│   └── migrations/              # Database migrations (future)
+│   ├── schema.prisma            # Database schema
+│   └── migrations/              # Database migrations
 ├── specs/                       # Implementation specs
 │   ├── README.md
 │   └── 01-mvp/
-│       ├── 01-wordpress-integration.md
+│       ├── 01-blog-integration.md
 │       ├── 02-static-pages.md
 │       ├── 03-auth-setup.md
 │       ├── 04-member-management.md
@@ -232,9 +241,7 @@ ladtc/
 └── README.md                    # Project overview
 ```
 
-## Data Models (Prisma Schema Overview)
-
-**Note**: Not set up yet—documented for reference.
+## Data Models (Prisma Schema)
 
 ```prisma
 model User {
@@ -356,33 +363,36 @@ enum RegistrationStatus {
 }
 ```
 
-## WordPress Integration
+## Blog (Integrated Prisma)
 
 ### Strategy
 
-- The existing WordPress site at `ladtc.be` remains the source of truth for editorial content (blog posts, events, photos)
-- Next.js fetches data from the WordPress REST API (`https://ladtc.be/wp-json/wp/v2/`)
-- Caching strategy:
-  - Server-side: Revalidate on-demand or every 1 hour
-  - Client-side: TanStack Query with `staleTime: 5 minutes` and manual invalidation after updates
+- Blog posts are stored in PostgreSQL via the BlogPost Prisma model
+- Content is written in Markdown and rendered to HTML with `marked`
+- Admin CRUD at `/admin/blog` (create, edit, publish, delete)
+- Public pages at `/blog` (list) and `/blog/[slug]` (detail)
+- No external CMS dependency — all content managed via the admin panel
 
-### Endpoints Used
+### BlogPost Model
 
+```prisma
+model BlogPost {
+  id               String    @id @default(cuid())
+  title            String
+  slug             String    @unique
+  content          String    // Markdown
+  excerpt          String?
+  featuredImageUrl  String?
+  authorId         String
+  author           User      @relation(fields: [authorId], references: [id])
+  category         String?
+  tags             String[]
+  published        Boolean   @default(false)
+  publishedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
 ```
-GET /wp-json/wp/v2/posts              # Blog articles
-GET /wp-json/wp/v2/posts/{id}         # Single article
-GET /wp-json/wp/v2/events             # Custom events post type (if available)
-GET /wp-json/wp/v2/media              # Photos/gallery
-GET /wp-json/wp/v2/categories         # Categories
-GET /wp-json/wp/v2/tags               # Tags
-```
-
-### Error Handling
-
-- Fallback UI for failed API calls
-- Retry logic with exponential backoff (TanStack Query)
-- User-friendly error messages
-- Server-side error logging
 
 ## Authentication & Authorization
 
@@ -442,10 +452,15 @@ GET /wp-json/wp/v2/tags               # Tags
 - `POST /api/events/{id}/register` — Register for event
 - `DELETE /api/events/{id}/register` — Unregister from event
 
-**WordPress Proxy**
-- `GET /api/wordpress/posts` — Fetch blog posts from WP API
-- `GET /api/wordpress/posts/{id}` — Fetch single post from WP API
-- `GET /api/wordpress/events` — Fetch events from WP API (custom post type)
+**Blog (Public)**
+- `GET /api/blog/posts` — List published blog posts (paginated)
+- `GET /api/blog/posts/{slug}` — Get single published blog post
+
+**Blog (Admin)**
+- `GET /api/admin/blog/posts` — List all blog posts (including drafts)
+- `POST /api/admin/blog/posts` — Create blog post
+- `PATCH /api/admin/blog/posts/{id}` — Update blog post
+- `DELETE /api/admin/blog/posts/{id}` — Delete blog post
 
 ## State Management
 
@@ -490,9 +505,9 @@ const mutation = useMutation({
 - Manual invalidation after mutations
 - Network-only refetch on error
 
-### WordPress API
-- Cache responses for 1 hour (server)
-- `staleTime: 5 minutes` on client
+### Blog
+- Server-side rendering for SEO (generateMetadata)
+- `staleTime: 5 minutes` on client for blog list
 
 ## Error Handling
 
@@ -537,11 +552,12 @@ const mutation = useMutation({
 ### Environment Setup
 
 ```
-NEXT_PUBLIC_APP_URL=https://ladtc.fr
+NEXT_PUBLIC_APP_URL=https://ladtc.be
 DATABASE_URL=postgresql://...
-WORDPRESS_API_URL=https://ladtc.be
 BETTER_AUTH_SECRET=...
-BETTER_AUTH_URL=https://ladtc.fr
+BETTER_AUTH_URL=https://ladtc.be
+RESEND_API_KEY=re_xxx
+ADMIN_EMAIL=admin@ladtc.be
 ```
 
 ### CI/CD Pipeline
@@ -562,7 +578,7 @@ BETTER_AUTH_URL=https://ladtc.fr
 - **Analytics**: Vercel Analytics, Vercel Web Vitals
 - **Logs**: Vercel logs, structured server-side logging
 - **Uptime**: Vercel uptime monitoring
-- **Database**: Supabase or PostgreSQL provider monitoring
+- **Database**: Neon PostgreSQL dashboard monitoring
 
 ## Future Considerations
 
