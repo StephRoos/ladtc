@@ -144,6 +144,16 @@ describe("eventSchema validation", () => {
     }
   });
 
+  it("accepts datetime-local format (no seconds/timezone)", () => {
+    const result = eventSchema.safeParse({
+      title: "Stage de Trail",
+      date: "2026-02-20T12:00",
+      location: "La Roche-en-Ardenne",
+      type: "CAMP",
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("validates partial schema for updates", () => {
     const partial = eventSchema.partial();
     const result = partial.safeParse({
