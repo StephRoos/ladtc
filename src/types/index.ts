@@ -139,6 +139,8 @@ export interface Event {
   title: string;
   description: string | null;
   date: Date;
+  endDate: Date | null;
+  image: string | null;
   location: string;
   type: EventType;
   difficulty: string | null;

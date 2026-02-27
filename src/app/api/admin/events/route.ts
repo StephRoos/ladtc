@@ -82,6 +82,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       title: parsed.data.title,
       description: parsed.data.description ?? null,
       date: new Date(parsed.data.date),
+      endDate: parsed.data.endDate ? new Date(parsed.data.endDate) : null,
+      image: parsed.data.image || null,
       location: parsed.data.location,
       type: parsed.data.type,
       difficulty: parsed.data.difficulty ?? null,

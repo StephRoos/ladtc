@@ -15,9 +15,14 @@ export default function AdminBlogPage(): React.ReactNode {
     <div className="mx-auto max-w-7xl px-4 py-10">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">Blog</h1>
-        <Button asChild>
-          <Link href="/admin/blog/new">Nouvel article</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/admin/events/new">Nouvel événement</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/blog/new">Nouvel article</Link>
+          </Button>
+        </div>
       </div>
 
       {isError ? (

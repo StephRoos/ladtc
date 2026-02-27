@@ -189,6 +189,7 @@ export const eventSchema = z.object({
   title: z.string().min(3, "Le titre doit contenir au moins 3 caractères"),
   description: z.string().optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/, "Date invalide"),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/, "Date de fin invalide").optional().nullable(),
   location: z.string().min(1, "Le lieu est requis"),
   type: z.enum(["TRAINING", "RACE", "CAMP", "SOCIAL"]),
   difficulty: z.string().optional(),
@@ -198,6 +199,12 @@ export const eventSchema = z.object({
     .positive("Le nombre de places doit être positif")
     .optional()
     .nullable(),
+  image: z.union([
+    z.string().url("URL d'image invalide"),
+    z.string().startsWith("/images/", "Chemin d'image invalide"),
+    z.literal(""),
+    z.undefined(),
+  ]).optional().nullable(),
 });
 
 export type EventFormData = z.infer<typeof eventSchema>;

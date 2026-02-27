@@ -132,7 +132,7 @@ export function MemberTable({
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/admin/members/${member.id}`}>Voir</Link>
+                      <Link href={`/members/${member.id}`}>Voir</Link>
                     </Button>
                     {onSendReminder && (
                       <Button

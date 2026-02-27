@@ -9,6 +9,8 @@ interface EventCardProps {
     title: string;
     description: string | null;
     date: string;
+    endDate?: string | null;
+    image?: string | null;
     location: string;
     type: "TRAINING" | "RACE" | "CAMP" | "SOCIAL";
     difficulty: string | null;
@@ -44,12 +46,22 @@ export function EventCard({ event }: EventCardProps): React.ReactNode {
     isBlogEvent && event.slug ? `/blog/${event.slug}` : `/events/${event.id}`;
 
   const eventDate = new Date(event.date);
+  const endDate = event.endDate ? new Date(event.endDate) : null;
   const day = eventDate.toLocaleDateString("fr-FR", { day: "numeric" });
   const month = eventDate.toLocaleDateString("fr-FR", { month: "short" });
   const time = eventDate.toLocaleTimeString("fr-FR", {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  // Format date range for multi-day events
+  const endDay = endDate
+    ? endDate.toLocaleDateString("fr-FR", { day: "numeric" })
+    : null;
+  const endMonth = endDate
+    ? endDate.toLocaleDateString("fr-FR", { month: "short" })
+    : null;
+  const isSameMonth = endDate && endMonth === month;
 
   const spotsLeft = event.maxParticipants
     ? event.maxParticipants - event._count.registrations
@@ -58,14 +70,23 @@ export function EventCard({ event }: EventCardProps): React.ReactNode {
   return (
     <Link href={href} className="group block">
       <Card className="h-full overflow-hidden border-border bg-card transition-all duration-200 group-hover:border-primary/40">
+        {(event.image || event.featuredImageUrl) && (
+          <div className="relative aspect-video w-full overflow-hidden">
+            <img
+              src={event.image || event.featuredImageUrl || ""}
+              alt={event.title}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        )}
         <CardHeader className="flex flex-row items-start gap-4 pb-2">
           {/* Date block */}
           <div className="flex shrink-0 flex-col items-center rounded-lg bg-primary/10 px-3 py-2 text-center">
             <span className="text-2xl font-bold leading-none text-primary">
-              {day}
+              {endDay ? (isSameMonth ? `${day}-${endDay}` : day) : day}
             </span>
             <span className="text-xs font-medium uppercase text-primary/80">
-              {month}
+              {endDay && !isSameMonth ? `${month} - ${endDay} ${endMonth}` : month}
             </span>
           </div>
 

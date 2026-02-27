@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { eventSchema, type EventFormData } from "@/lib/schemas";
+import { ImagePicker } from "@/components/admin/ImagePicker";
 
 interface EventFormProps {
   defaultValues?: Partial<EventFormData>;
@@ -33,6 +34,8 @@ export function EventForm({
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting: formSubmitting },
   } = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
@@ -42,15 +45,21 @@ export function EventForm({
       date: defaultValues?.date
         ? new Date(defaultValues.date).toISOString().slice(0, 16)
         : undefined,
+      endDate: defaultValues?.endDate
+        ? new Date(defaultValues.endDate).toISOString().slice(0, 16)
+        : undefined,
     },
   });
 
   const submitting = isSubmitting || formSubmitting;
+  const imageValue = watch("image");
 
   function handleFormSubmit(data: EventFormData): Promise<void> {
     return onSubmit({
       ...data,
       date: new Date(data.date).toISOString(),
+      endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
+      image: data.image || null,
     });
   }
 
@@ -95,7 +104,7 @@ export function EventForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="date">Date et heure</Label>
+          <Label htmlFor="date">Date de début</Label>
           <Input
             id="date"
             type="datetime-local"
@@ -106,6 +115,22 @@ export function EventForm({
           )}
         </div>
 
+        <div className="space-y-2">
+          <Label htmlFor="endDate">Date de fin (optionnel)</Label>
+          <Input
+            id="endDate"
+            type="datetime-local"
+            {...register("endDate", {
+              setValueAs: (v: string) => (v === "" ? null : v),
+            })}
+          />
+          {errors.endDate && (
+            <p className="text-sm text-destructive">{errors.endDate.message}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="location">Lieu</Label>
           <Input
@@ -119,9 +144,7 @@ export function EventForm({
             </p>
           )}
         </div>
-      </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="type">Type</Label>
           <select
@@ -139,7 +162,9 @@ export function EventForm({
             <p className="text-sm text-destructive">{errors.type.message}</p>
           )}
         </div>
+      </div>
 
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="difficulty">Difficulté (optionnel)</Label>
           <Input
@@ -153,22 +178,34 @@ export function EventForm({
             </p>
           )}
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="maxParticipants">Max participants (optionnel)</Label>
+          <Input
+            id="maxParticipants"
+            type="number"
+            placeholder="Illimité si vide"
+            {...register("maxParticipants", {
+              setValueAs: (v: string) => (v === "" ? null : parseInt(v, 10)),
+            })}
+          />
+          {errors.maxParticipants && (
+            <p className="text-sm text-destructive">
+              {errors.maxParticipants.message}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="maxParticipants">Nombre max de participants (optionnel)</Label>
-        <Input
-          id="maxParticipants"
-          type="number"
-          placeholder="Illimité si vide"
-          {...register("maxParticipants", {
-            setValueAs: (v: string) => (v === "" ? null : parseInt(v, 10)),
-          })}
+        <Label>Image (optionnel)</Label>
+        <ImagePicker
+          value={imageValue || undefined}
+          onSelect={(url) => setValue("image", url)}
+          onClear={() => setValue("image", "")}
         />
-        {errors.maxParticipants && (
-          <p className="text-sm text-destructive">
-            {errors.maxParticipants.message}
-          </p>
+        {errors.image && (
+          <p className="text-sm text-destructive">{errors.image.message}</p>
         )}
       </div>
 

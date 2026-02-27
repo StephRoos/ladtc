@@ -161,4 +161,108 @@ describe("eventSchema validation", () => {
     });
     expect(result.success).toBe(true);
   });
+
+  it("accepts a valid endDate", () => {
+    const result = eventSchema.safeParse({
+      title: "Stage weekend",
+      date: "2026-03-20T09:00",
+      endDate: "2026-03-22T17:00",
+      location: "Flobecq",
+      type: "CAMP",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.endDate).toBe("2026-03-22T17:00");
+    }
+  });
+
+  it("accepts null endDate (single-day event)", () => {
+    const result = eventSchema.safeParse({
+      title: "Course du dimanche",
+      date: "2026-04-05T08:00",
+      endDate: null,
+      location: "Renaix",
+      type: "RACE",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.endDate).toBeNull();
+    }
+  });
+
+  it("allows omitting endDate", () => {
+    const result = eventSchema.safeParse({
+      title: "Entraînement",
+      date: "2026-04-01T19:00",
+      location: "Ellezelles",
+      type: "TRAINING",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.endDate).toBeUndefined();
+    }
+  });
+
+  it("rejects an invalid endDate format", () => {
+    const result = eventSchema.safeParse({
+      title: "Stage",
+      date: "2026-03-20T09:00",
+      endDate: "not-a-date",
+      location: "Flobecq",
+      type: "CAMP",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].path).toContain("endDate");
+    }
+  });
+
+  it("accepts a valid image URL", () => {
+    const result = eventSchema.safeParse({
+      title: "Course photo",
+      date: "2026-05-01T08:00",
+      location: "Bruxelles",
+      type: "RACE",
+      image: "https://example.com/event.jpg",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.image).toBe("https://example.com/event.jpg");
+    }
+  });
+
+  it("accepts a local image path", () => {
+    const result = eventSchema.safeParse({
+      title: "Course locale",
+      date: "2026-05-01T08:00",
+      location: "Bruxelles",
+      type: "RACE",
+      image: "/images/event.jpg",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts null image", () => {
+    const result = eventSchema.safeParse({
+      title: "Course sans image",
+      date: "2026-05-01T08:00",
+      location: "Bruxelles",
+      type: "RACE",
+      image: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("allows omitting image", () => {
+    const result = eventSchema.safeParse({
+      title: "Course sans image",
+      date: "2026-05-01T08:00",
+      location: "Bruxelles",
+      type: "RACE",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.image).toBeUndefined();
+    }
+  });
 });

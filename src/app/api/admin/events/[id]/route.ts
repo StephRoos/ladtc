@@ -50,6 +50,12 @@ export async function PATCH(
   if (parsed.data.date) {
     updateData.date = new Date(parsed.data.date);
   }
+  if (parsed.data.endDate !== undefined) {
+    updateData.endDate = parsed.data.endDate ? new Date(parsed.data.endDate) : null;
+  }
+  if (parsed.data.image !== undefined) {
+    updateData.image = parsed.data.image || null;
+  }
 
   const event = await prisma.event.update({
     where: { id },

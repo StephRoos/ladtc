@@ -11,6 +11,8 @@ interface EventWithCount {
   title: string;
   description: string | null;
   date: string;
+  endDate: string | null;
+  image: string | null;
   location: string;
   type: "TRAINING" | "RACE" | "CAMP" | "SOCIAL";
   difficulty: string | null;

@@ -40,9 +40,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const now = new Date();
 
-  // --- Real events ---
+  // --- Real events (upcoming or ongoing: date in future OR endDate in future) ---
   const eventWhere: Record<string, unknown> = {
-    date: { gte: now },
+    OR: [
+      { date: { gte: now } },
+      { endDate: { gte: now } },
+    ],
   };
   if (type && ["TRAINING", "RACE", "CAMP", "SOCIAL"].includes(type)) {
     eventWhere.type = type;
@@ -98,6 +101,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     title: bp.title,
     description: bp.excerpt,
     date: bp.eventDate!.toISOString(),
+    endDate: null as string | null,
+    image: null as string | null,
     location: bp.eventLocation ?? "",
     type: CATEGORY_TO_EVENT_TYPE[bp.category as BlogCategory] ?? ("SOCIAL" as const),
     difficulty: null,
@@ -114,6 +119,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const normalizedEvents = events.map((e) => ({
     ...e,
     date: e.date.toISOString(),
+    endDate: e.endDate ? e.endDate.toISOString() : null,
+    image: e.image ?? null,
     createdAt: e.createdAt.toISOString(),
     updatedAt: e.updatedAt.toISOString(),
     source: "event" as const,
