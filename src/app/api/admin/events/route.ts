@@ -77,22 +77,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
   }
 
-  const event = await prisma.event.create({
-    data: {
-      title: parsed.data.title,
-      description: parsed.data.description ?? null,
-      date: new Date(parsed.data.date),
-      endDate: parsed.data.endDate ? new Date(parsed.data.endDate) : null,
-      image: parsed.data.image || null,
-      location: parsed.data.location,
-      type: parsed.data.type,
-      difficulty: parsed.data.difficulty ?? null,
-      maxParticipants: parsed.data.maxParticipants ?? null,
-    },
-    include: {
-      _count: { select: { registrations: { where: { status: "REGISTERED" } } } },
-    },
-  });
+  try {
+    const event = await prisma.event.create({
+      data: {
+        title: parsed.data.title,
+        description: parsed.data.description ?? null,
+        date: new Date(parsed.data.date),
+        endDate: parsed.data.endDate ? new Date(parsed.data.endDate) : null,
+        image: parsed.data.image || null,
+        location: parsed.data.location,
+        type: parsed.data.type,
+        difficulty: parsed.data.difficulty ?? null,
+        maxParticipants: parsed.data.maxParticipants ?? null,
+      },
+      include: {
+        _count: { select: { registrations: { where: { status: "REGISTERED" } } } },
+      },
+    });
 
-  return NextResponse.json({ event }, { status: 201 });
+    return NextResponse.json({ event }, { status: 201 });
+  } catch (err) {
+    console.error("Failed to create event:", err);
+    return NextResponse.json(
+      { error: "Erreur lors de la création de l'événement" },
+      { status: 500 }
+    );
+  }
 }

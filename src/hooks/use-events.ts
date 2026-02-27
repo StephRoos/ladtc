@@ -109,8 +109,14 @@ async function createEvent(data: EventFormData): Promise<AdminEventResponse> {
     body: JSON.stringify(data),
   });
   if (!res.ok) {
-    const err = (await res.json()) as { error?: string };
-    throw new Error(err.error ?? "Impossible de créer l'événement");
+    let message = "Impossible de créer l'événement";
+    try {
+      const err = (await res.json()) as { error?: string };
+      if (err.error) message = err.error;
+    } catch {
+      // Server returned non-JSON (e.g. HTML error page)
+    }
+    throw new Error(message);
   }
   return res.json() as Promise<AdminEventResponse>;
 }
@@ -128,8 +134,14 @@ async function updateEvent(
     body: JSON.stringify(data),
   });
   if (!res.ok) {
-    const err = (await res.json()) as { error?: string };
-    throw new Error(err.error ?? "Impossible de mettre à jour l'événement");
+    let message = "Impossible de mettre à jour l'événement";
+    try {
+      const err = (await res.json()) as { error?: string };
+      if (err.error) message = err.error;
+    } catch {
+      // Server returned non-JSON (e.g. HTML error page)
+    }
+    throw new Error(message);
   }
   return res.json() as Promise<AdminEventResponse>;
 }

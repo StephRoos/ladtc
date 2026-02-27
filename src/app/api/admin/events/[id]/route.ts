@@ -57,15 +57,23 @@ export async function PATCH(
     updateData.image = parsed.data.image || null;
   }
 
-  const event = await prisma.event.update({
-    where: { id },
-    data: updateData,
-    include: {
-      _count: { select: { registrations: { where: { status: "REGISTERED" } } } },
-    },
-  });
+  try {
+    const event = await prisma.event.update({
+      where: { id },
+      data: updateData,
+      include: {
+        _count: { select: { registrations: { where: { status: "REGISTERED" } } } },
+      },
+    });
 
-  return NextResponse.json({ event });
+    return NextResponse.json({ event });
+  } catch (err) {
+    console.error("Failed to update event:", err);
+    return NextResponse.json(
+      { error: "Erreur lors de la mise à jour de l'événement" },
+      { status: 500 }
+    );
+  }
 }
 
 /**
