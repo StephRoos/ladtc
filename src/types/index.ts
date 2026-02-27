@@ -4,12 +4,6 @@
 
 export type UserRole = "MEMBER" | "COACH" | "COMMITTEE" | "ADMIN";
 
-export type CommitteeRole =
-  | "PRESIDENT"
-  | "VICE_PRESIDENT"
-  | "TREASURER"
-  | "SECRETARY"
-  | "COMMUNICATIONS";
 
 export type MembershipStatus = "PENDING" | "ACTIVE" | "INACTIVE" | "EXPIRED";
 
@@ -26,7 +20,7 @@ export interface User {
   name: string | null;
   image: string | null;
   role: UserRole;
-  committeeRole: CommitteeRole | null;
+  committeeRole: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

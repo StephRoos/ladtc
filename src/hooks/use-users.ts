@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { CommitteeRole, User, UserRole } from "@/types";
+import type { User, UserRole } from "@/types";
 
 interface UsersListResponse {
   users: User[];
@@ -27,7 +27,7 @@ async function fetchUsers(page: number): Promise<UsersListResponse> {
 async function updateUserRole(
   id: string,
   role: UserRole,
-  committeeRole?: CommitteeRole | null,
+  committeeRole?: string | null,
 ): Promise<{ user: User }> {
   const res = await fetch(`/api/admin/users/${id}/role`, {
     method: "PATCH",
@@ -60,7 +60,7 @@ export function useUsers(
 interface UpdateUserRoleVars {
   id: string;
   role: UserRole;
-  committeeRole?: CommitteeRole | null;
+  committeeRole?: string | null;
 }
 
 /**

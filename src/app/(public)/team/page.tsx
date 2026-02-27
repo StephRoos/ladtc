@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { COMMITTEE_ROLE_LABELS } from "@/lib/schemas";
 import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
-import type { CommitteeRole } from "@/types";
 
 export const metadata: Metadata = {
   title: `Notre équipe | ${siteConfig.name}`,
@@ -41,14 +39,14 @@ interface TeamMemberData {
   id: string;
   name: string | null;
   role: string;
-  committeeRole: CommitteeRole | null;
+  committeeRole: string | null;
   image: string | null;
 }
 
 function TeamMemberCard({ member }: { member: TeamMemberData }): React.ReactNode {
   const displayRole =
     member.committeeRole
-      ? COMMITTEE_ROLE_LABELS[member.committeeRole]
+      ? member.committeeRole
       : member.role === "COACH"
         ? "Coach"
         : "Comité";

@@ -16,8 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { COMMITTEE_ROLE_LABELS } from "@/lib/schemas";
-import type { CommitteeRole, UserRole } from "@/types";
+import type { UserRole } from "@/types";
 import Link from "next/link";
 
 const ROLE_BADGE_VARIANTS: Record<UserRole, "default" | "secondary" | "destructive" | "outline"> = {
@@ -57,7 +56,7 @@ export default function AdminUsersPage(): React.ReactNode {
   async function handleRoleChange(
     userId: string,
     role: UserRole,
-    committeeRole?: CommitteeRole | null,
+    committeeRole?: string | null,
   ): Promise<void> {
     try {
       await updateRole.mutateAsync({ id: userId, role, committeeRole });
@@ -105,7 +104,7 @@ export default function AdminUsersPage(): React.ReactNode {
                     </Badge>
                     {u.role === "COMMITTEE" && u.committeeRole && (
                         <span className="ml-2 text-xs text-muted-foreground">
-                          — {COMMITTEE_ROLE_LABELS[u.committeeRole]}
+                          — {u.committeeRole}
                         </span>
                       )}
                   </TableCell>

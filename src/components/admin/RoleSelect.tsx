@@ -8,9 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { COMMITTEE_ROLE_LABELS } from "@/lib/schemas";
-import type { CommitteeRole, UserRole } from "@/types";
+import { COMMITTEE_ROLE_SUGGESTIONS } from "@/lib/schemas";
+import type { UserRole } from "@/types";
 
 const ROLE_LABELS: Record<UserRole, string> = {
   MEMBER: "Membre",
@@ -22,18 +23,19 @@ const ROLE_LABELS: Record<UserRole, string> = {
 interface RoleSelectProps {
   userId: string;
   currentRole: UserRole;
-  currentCommitteeRole?: CommitteeRole | null;
+  currentCommitteeRole?: string | null;
   onRoleChange: (
     userId: string,
     role: UserRole,
-    committeeRole?: CommitteeRole | null,
+    committeeRole?: string | null,
   ) => Promise<void>;
   isLoading?: boolean;
 }
 
 /**
  * Role dropdown with inline confirmation before applying the change.
- * When COMMITTEE is selected, a secondary dropdown appears for the committee function.
+ * When COMMITTEE is selected, a free-text input with suggestions appears
+ * for the committee function.
  */
 export function RoleSelect({
   userId,
@@ -43,46 +45,40 @@ export function RoleSelect({
   isLoading,
 }: RoleSelectProps): React.ReactNode {
   const [selectedRole, setSelectedRole] = useState<UserRole>(currentRole);
-  const [selectedCommitteeRole, setSelectedCommitteeRole] = useState<
-    CommitteeRole | null
-  >(currentCommitteeRole ?? null);
+  const [committeeRoleInput, setCommitteeRoleInput] = useState(
+    currentCommitteeRole ?? "",
+  );
   const [confirming, setConfirming] = useState(false);
 
   const hasChanged =
     selectedRole !== currentRole ||
-    selectedCommitteeRole !== (currentCommitteeRole ?? null);
+    committeeRoleInput !== (currentCommitteeRole ?? "");
 
   function handleSelect(role: string): void {
     const r = role as UserRole;
     setSelectedRole(r);
     if (r !== "COMMITTEE") {
-      setSelectedCommitteeRole(null);
+      setCommitteeRoleInput("");
     }
-    setConfirming(
-      r !== currentRole || selectedCommitteeRole !== (currentCommitteeRole ?? null),
-    );
-  }
-
-  function handleCommitteeRoleSelect(value: string): void {
-    const cr = value as CommitteeRole;
-    setSelectedCommitteeRole(cr);
     setConfirming(true);
   }
 
   async function handleConfirm(): Promise<void> {
-    await onRoleChange(
-      userId,
-      selectedRole,
-      selectedRole === "COMMITTEE" ? selectedCommitteeRole : null,
-    );
+    const cr =
+      selectedRole === "COMMITTEE" && committeeRoleInput.trim()
+        ? committeeRoleInput.trim()
+        : null;
+    await onRoleChange(userId, selectedRole, cr);
     setConfirming(false);
   }
 
   function handleCancel(): void {
     setSelectedRole(currentRole);
-    setSelectedCommitteeRole(currentCommitteeRole ?? null);
+    setCommitteeRoleInput(currentCommitteeRole ?? "");
     setConfirming(false);
   }
+
+  const datalistId = `committee-roles-${userId}`;
 
   return (
     <div className="flex flex-col gap-2">
@@ -113,22 +109,24 @@ export function RoleSelect({
       </div>
 
       {selectedRole === "COMMITTEE" && (
-        <Select
-          value={selectedCommitteeRole ?? ""}
-          onValueChange={handleCommitteeRoleSelect}
-          disabled={isLoading}
-        >
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Fonction…" />
-          </SelectTrigger>
-          <SelectContent>
-            {(Object.keys(COMMITTEE_ROLE_LABELS) as CommitteeRole[]).map((cr) => (
-              <SelectItem key={cr} value={cr}>
-                {COMMITTEE_ROLE_LABELS[cr]}
-              </SelectItem>
+        <>
+          <Input
+            list={datalistId}
+            value={committeeRoleInput}
+            onChange={(e) => {
+              setCommitteeRoleInput(e.target.value);
+              setConfirming(true);
+            }}
+            placeholder="Fonction (ex: Président, Trésorier…)"
+            className="w-56"
+            disabled={isLoading}
+          />
+          <datalist id={datalistId}>
+            {COMMITTEE_ROLE_SUGGESTIONS.map((s) => (
+              <option key={s} value={s} />
             ))}
-          </SelectContent>
-        </Select>
+          </datalist>
+        </>
       )}
     </div>
   );

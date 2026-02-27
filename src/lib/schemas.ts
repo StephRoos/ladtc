@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { CommitteeRole, EventType } from "@/types";
+import type { EventType } from "@/types";
 
 /**
  * Predefined blog post categories.
@@ -156,22 +156,19 @@ export type OrderUpdateFormData = z.infer<typeof orderUpdateSchema>;
  */
 export const roleUpdateSchema = z.object({
   role: z.enum(["MEMBER", "COACH", "COMMITTEE", "ADMIN"]),
-  committeeRole: z
-    .enum(["PRESIDENT", "VICE_PRESIDENT", "TREASURER", "SECRETARY", "COMMUNICATIONS"])
-    .nullable()
-    .optional(),
+  committeeRole: z.string().nullable().optional(),
 });
 
 /**
- * French labels for committee roles.
+ * Common committee role suggestions shown in the UI.
  */
-export const COMMITTEE_ROLE_LABELS: Record<CommitteeRole, string> = {
-  PRESIDENT: "Président",
-  VICE_PRESIDENT: "Vice-Président",
-  TREASURER: "Trésorier",
-  SECRETARY: "Secrétaire",
-  COMMUNICATIONS: "Communication",
-};
+export const COMMITTEE_ROLE_SUGGESTIONS = [
+  "Président",
+  "Vice-Président",
+  "Trésorier",
+  "Secrétaire",
+  "Communication",
+] as const;
 
 /**
  * Zod validation schema for activity log filtering
