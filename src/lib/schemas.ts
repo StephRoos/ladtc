@@ -154,10 +154,20 @@ export type OrderUpdateFormData = z.infer<typeof orderUpdateSchema>;
 /**
  * Zod validation schema for user role updates (admin only)
  */
-export const roleUpdateSchema = z.object({
-  role: z.enum(["MEMBER", "COACH", "COMMITTEE", "ADMIN"]),
-  committeeRole: z.string().nullable().optional(),
-});
+export const roleUpdateSchema = z
+  .object({
+    role: z.enum(["MEMBER", "COACH", "COMMITTEE", "ADMIN"]),
+    committeeRole: z
+      .string()
+      .trim()
+      .max(100, "La fonction ne peut pas dépasser 100 caractères")
+      .nullable()
+      .optional(),
+  })
+  .refine(
+    (d) => d.role === "COMMITTEE" || !d.committeeRole,
+    { message: "La fonction ne peut être définie que pour le rôle Comité", path: ["committeeRole"] },
+  );
 
 /**
  * Common committee role suggestions shown in the UI.

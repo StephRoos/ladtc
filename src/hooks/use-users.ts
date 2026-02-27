@@ -57,6 +57,25 @@ export function useUsers(
   });
 }
 
+/**
+ * Update a user's avatar image via the API.
+ */
+async function updateUserImage(
+  id: string,
+  image: string | null,
+): Promise<{ user: User }> {
+  const res = await fetch(`/api/admin/users/${id}/image`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ image }),
+  });
+  if (!res.ok) {
+    const err = (await res.json()) as { error?: string };
+    throw new Error(err.error ?? "Impossible de modifier l'image");
+  }
+  return res.json() as Promise<{ user: User }>;
+}
+
 interface UpdateUserRoleVars {
   id: string;
   role: UserRole;
@@ -74,6 +93,27 @@ export function useUpdateUserRole(): ReturnType<
   return useMutation<{ user: User }, Error, UpdateUserRoleVars>({
     mutationFn: ({ id, role, committeeRole }) =>
       updateUserRole(id, role, committeeRole),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+    },
+  });
+}
+
+interface UpdateUserImageVars {
+  id: string;
+  image: string | null;
+}
+
+/**
+ * Hook to update a user's avatar image. Invalidates users list on success.
+ */
+export function useUpdateUserImage(): ReturnType<
+  typeof useMutation<{ user: User }, Error, UpdateUserImageVars>
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ user: User }, Error, UpdateUserImageVars>({
+    mutationFn: ({ id, image }) => updateUserImage(id, image),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
     },

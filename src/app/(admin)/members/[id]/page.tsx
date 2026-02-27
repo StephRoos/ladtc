@@ -15,6 +15,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import type { User, Membership } from "@/types";
 
 interface MemberDetailResponse {
@@ -98,6 +99,19 @@ export default function AdminMemberDetailPage({
         <Button variant="ghost" size="sm" asChild>
           <Link href="/admin/members">← Retour</Link>
         </Button>
+        <Avatar className="h-12 w-12">
+          {user.image && (
+            <AvatarImage src={user.image} alt={user.name ?? "Avatar"} />
+          )}
+          <AvatarFallback className="bg-primary/10 text-primary font-bold">
+            {(user.name ?? user.email)
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2)}
+          </AvatarFallback>
+        </Avatar>
         <h1 className="text-2xl font-bold">{user.name ?? user.email}</h1>
       </div>
 

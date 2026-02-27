@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
+
+/** Revalidate every hour — team composition rarely changes. */
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: `Notre équipe | ${siteConfig.name}`,
@@ -56,6 +59,9 @@ function TeamMemberCard({ member }: { member: TeamMemberData }): React.ReactNode
       <CardHeader className="pb-3">
         <div className="flex items-center gap-4">
           <Avatar className="h-14 w-14">
+            {member.image && (
+              <AvatarImage src={member.image} alt={member.name ?? "Avatar"} />
+            )}
             <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
               {getInitials(member.name ?? "?")}
             </AvatarFallback>

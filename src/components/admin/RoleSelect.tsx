@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -49,6 +49,13 @@ export function RoleSelect({
     currentCommitteeRole ?? "",
   );
   const [confirming, setConfirming] = useState(false);
+
+  // Sync local state when props change (e.g. after another admin's mutation)
+  useEffect(() => {
+    setSelectedRole(currentRole);
+    setCommitteeRoleInput(currentCommitteeRole ?? "");
+    setConfirming(false);
+  }, [currentRole, currentCommitteeRole]);
 
   const hasChanged =
     selectedRole !== currentRole ||

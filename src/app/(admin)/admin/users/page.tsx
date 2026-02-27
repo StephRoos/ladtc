@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUsers, useUpdateUserRole } from "@/hooks/use-users";
 import { RoleSelect } from "@/components/admin/RoleSelect";
+import { UserAvatarEditor } from "@/components/admin/UserAvatarEditor";
 import {
   Table,
   TableBody,
@@ -86,6 +87,7 @@ export default function AdminUsersPage(): React.ReactNode {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-14">Avatar</TableHead>
                 <TableHead>Nom</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Rôle actuel</TableHead>
@@ -96,6 +98,13 @@ export default function AdminUsersPage(): React.ReactNode {
             <TableBody>
               {(data?.users ?? []).map((u) => (
                 <TableRow key={u.id}>
+                  <TableCell>
+                    <UserAvatarEditor
+                      userId={u.id}
+                      currentImage={u.image}
+                      userName={u.name}
+                    />
+                  </TableCell>
                   <TableCell className="font-medium">{u.name ?? "—"}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{u.email}</TableCell>
                   <TableCell>
