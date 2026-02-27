@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth";
 import { useMembers, useMemberStats } from "@/hooks/use-members";
 import { MemberTable } from "@/components/admin/MemberTable";
@@ -61,7 +62,12 @@ export default function AdminMembersPage(): React.ReactNode {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-10">
-      <h1 className="text-2xl font-bold">Gestion des membres</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Gestion des membres</h1>
+        <Button asChild>
+          <Link href="/members/new">Nouveau membre</Link>
+        </Button>
+      </div>
 
       {/* Stats cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

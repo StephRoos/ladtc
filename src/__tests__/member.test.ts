@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { profileUpdateSchema, memberUpdateSchema } from "@/lib/schemas";
+import { profileUpdateSchema, memberUpdateSchema, memberCreateSchema } from "@/lib/schemas";
 import {
   getMembershipStatusConfig,
   getDaysUntilRenewal,
@@ -117,6 +117,147 @@ describe("memberUpdateSchema", () => {
       status: "PENDING",
       renewalDate: "2026-12-31",
       paidAt: null,
+      amount: 50,
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
+// ─── memberCreateSchema ──────────────────────────────────────────────────────
+
+describe("memberCreateSchema", () => {
+  it("accepts valid full member creation data", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "Jean Dupont",
+      email: "jean@example.com",
+      status: "ACTIVE",
+      renewalDate: "2027-01-01",
+      paidAt: "2026-02-27",
+      amount: 50,
+      notes: "Inscription en personne",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts minimal required data", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "Marie Martin",
+      email: "marie@example.com",
+      status: "PENDING",
+      renewalDate: "2027-01-01",
+      amount: 50,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects name shorter than 2 characters", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "J",
+      email: "j@example.com",
+      status: "PENDING",
+      renewalDate: "2027-01-01",
+      amount: 50,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const nameError = result.error.issues.find((i) => i.path[0] === "name");
+      expect(nameError?.message).toBe("Le nom doit contenir au moins 2 caractères");
+    }
+  });
+
+  it("rejects invalid email", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "Jean Dupont",
+      email: "not-an-email",
+      status: "PENDING",
+      renewalDate: "2027-01-01",
+      amount: 50,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const emailError = result.error.issues.find((i) => i.path[0] === "email");
+      expect(emailError?.message).toBe("Email invalide");
+    }
+  });
+
+  it("rejects missing name", () => {
+    const result = memberCreateSchema.safeParse({
+      email: "jean@example.com",
+      status: "PENDING",
+      renewalDate: "2027-01-01",
+      amount: 50,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects missing email", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "Jean Dupont",
+      status: "PENDING",
+      renewalDate: "2027-01-01",
+      amount: 50,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects negative amount", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "Jean Dupont",
+      email: "jean@example.com",
+      status: "ACTIVE",
+      renewalDate: "2027-01-01",
+      amount: -10,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const amountError = result.error.issues.find((i) => i.path[0] === "amount");
+      expect(amountError?.message).toBe("Le montant doit être positif");
+    }
+  });
+
+  it("rejects invalid status value", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "Jean Dupont",
+      email: "jean@example.com",
+      renewalDate: "2027-01-01",
+      amount: 50,
+      status: "INVALID",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts all valid status values", () => {
+    const statuses = ["PENDING", "ACTIVE", "INACTIVE", "EXPIRED"] as const;
+    for (const status of statuses) {
+      const result = memberCreateSchema.safeParse({
+        name: "Jean Dupont",
+        email: "jean@example.com",
+        renewalDate: "2027-01-01",
+        amount: 50,
+        status,
+      });
+      expect(result.success).toBe(true);
+    }
+  });
+
+  it("accepts null paidAt", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "Jean Dupont",
+      email: "jean@example.com",
+      status: "PENDING",
+      renewalDate: "2027-01-01",
+      amount: 50,
+      paidAt: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts datetime format for renewalDate", () => {
+    const result = memberCreateSchema.safeParse({
+      name: "Jean Dupont",
+      email: "jean@example.com",
+      status: "ACTIVE",
+      renewalDate: "2027-01-01T00:00:00.000Z",
       amount: 50,
     });
     expect(result.success).toBe(true);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { MemberUpdateFormData } from "@/lib/schemas";
+import type { MemberUpdateFormData, MemberCreateFormData } from "@/lib/schemas";
 import type { User, Membership, MemberStats } from "@/types";
 
 export interface MembersFilters {
@@ -99,6 +99,46 @@ export function useUpdateMember(): ReturnType<
 
   return useMutation<MemberDetailResponse, Error, { id: string; data: MemberUpdateFormData }>({
     mutationFn: ({ id, data }) => patchMember(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["member-stats"] });
+    },
+  });
+}
+
+/**
+ * Create a new member via the admin API.
+ */
+async function createMember(data: MemberCreateFormData): Promise<MemberDetailResponse> {
+  const res = await fetch("/api/admin/members", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    let message = "Impossible de créer le membre";
+    try {
+      const err = (await res.json()) as { error?: string };
+      if (err.error) message = err.error;
+    } catch {}
+    throw new Error(message);
+  }
+  return res.json() as Promise<MemberDetailResponse>;
+}
+
+/**
+ * Hook to create a new member (user + membership).
+ * Invalidates members list and stats on success.
+ *
+ * @returns TanStack Mutation for member creation
+ */
+export function useCreateMember(): ReturnType<
+  typeof useMutation<MemberDetailResponse, Error, MemberCreateFormData>
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation<MemberDetailResponse, Error, MemberCreateFormData>({
+    mutationFn: createMember,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["members"] });
       queryClient.invalidateQueries({ queryKey: ["member-stats"] });

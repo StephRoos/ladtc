@@ -94,8 +94,22 @@ export const memberUpdateSchema = z.object({
   notes: z.string().optional(),
 });
 
+/**
+ * Zod validation schema for creating a new member (committee/admin)
+ */
+export const memberCreateSchema = z.object({
+  name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  email: z.string().email("Email invalide"),
+  status: z.enum(["PENDING", "ACTIVE", "INACTIVE", "EXPIRED"]),
+  renewalDate: z.string().datetime().or(z.string().date()),
+  paidAt: z.string().datetime().or(z.string().date()).nullable().optional(),
+  amount: z.number().positive("Le montant doit être positif"),
+  notes: z.string().optional(),
+});
+
 export type ProfileUpdateFormData = z.infer<typeof profileUpdateSchema>;
 export type MemberUpdateFormData = z.infer<typeof memberUpdateSchema>;
+export type MemberCreateFormData = z.infer<typeof memberCreateSchema>;
 
 /**
  * Zod validation schema for product creation/update (admin)
