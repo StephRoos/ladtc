@@ -36,21 +36,25 @@ export async function PATCH(
     return NextResponse.json({ error: "Rôle invalide" }, { status: 400 });
   }
 
-  const { role } = parsed.data;
+  const { role, committeeRole } = parsed.data;
 
   const target = await prisma.user.findUnique({ where: { id } });
   if (!target) {
     return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
   }
 
+  // Clear committeeRole when the user is no longer COMMITTEE
+  const resolvedCommitteeRole = role === "COMMITTEE" ? (committeeRole ?? null) : null;
+
   const updated = await prisma.user.update({
     where: { id },
-    data: { role },
+    data: { role, committeeRole: resolvedCommitteeRole },
     select: {
       id: true,
       name: true,
       email: true,
       role: true,
+      committeeRole: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -59,6 +63,8 @@ export async function PATCH(
   await logActivity(session.user.id, "USER_ROLE_UPDATED", "user", id, {
     previousRole: target.role,
     newRole: role,
+    previousCommitteeRole: target.committeeRole,
+    newCommitteeRole: resolvedCommitteeRole,
   });
 
   return NextResponse.json({ user: updated });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { User, UserRole } from "@/types";
+import type { CommitteeRole, User, UserRole } from "@/types";
 
 interface UsersListResponse {
   users: User[];
@@ -22,13 +22,17 @@ async function fetchUsers(page: number): Promise<UsersListResponse> {
 }
 
 /**
- * Update a user's role via the API.
+ * Update a user's role (and optional committee function) via the API.
  */
-async function updateUserRole(id: string, role: UserRole): Promise<{ user: User }> {
+async function updateUserRole(
+  id: string,
+  role: UserRole,
+  committeeRole?: CommitteeRole | null,
+): Promise<{ user: User }> {
   const res = await fetch(`/api/admin/users/${id}/role`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ role }),
+    body: JSON.stringify({ role, committeeRole }),
   });
   if (!res.ok) {
     const err = (await res.json()) as { error?: string };
@@ -53,16 +57,23 @@ export function useUsers(
   });
 }
 
+interface UpdateUserRoleVars {
+  id: string;
+  role: UserRole;
+  committeeRole?: CommitteeRole | null;
+}
+
 /**
  * Hook to update a user's role. Invalidates users list on success.
  */
 export function useUpdateUserRole(): ReturnType<
-  typeof useMutation<{ user: User }, Error, { id: string; role: UserRole }>
+  typeof useMutation<{ user: User }, Error, UpdateUserRoleVars>
 > {
   const queryClient = useQueryClient();
 
-  return useMutation<{ user: User }, Error, { id: string; role: UserRole }>({
-    mutationFn: ({ id, role }) => updateUserRole(id, role),
+  return useMutation<{ user: User }, Error, UpdateUserRoleVars>({
+    mutationFn: ({ id, role, committeeRole }) =>
+      updateUserRole(id, role, committeeRole),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
     },

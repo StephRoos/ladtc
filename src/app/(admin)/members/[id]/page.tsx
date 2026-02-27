@@ -15,6 +15,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { COMMITTEE_ROLE_LABELS } from "@/lib/schemas";
 import type { User, Membership } from "@/types";
 
 interface MemberDetailResponse {
@@ -115,7 +116,14 @@ export default function AdminMemberDetailPage({
             </div>
             <div>
               <dt className="text-muted-foreground">Rôle</dt>
-              <dd className="font-medium capitalize">{user.role.toLowerCase()}</dd>
+              <dd className="font-medium capitalize">
+                {user.role.toLowerCase()}
+                {user.role === "COMMITTEE" && user.committeeRole && (
+                    <span className="ml-1 normal-case text-muted-foreground">
+                      — {COMMITTEE_ROLE_LABELS[user.committeeRole]}
+                    </span>
+                  )}
+              </dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Téléphone</dt>

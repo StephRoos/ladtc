@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { committeeMembers, coaches } from "@/config/team";
-import type { TeamMember } from "@/types";
+import { COMMITTEE_ROLE_LABELS } from "@/lib/schemas";
+import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
+import type { CommitteeRole } from "@/types";
 
 export const metadata: Metadata = {
   title: `Notre équipe | ${siteConfig.name}`,
@@ -36,52 +37,61 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
-interface TeamMemberCardProps {
-  member: TeamMember;
+interface TeamMemberData {
+  id: string;
+  name: string | null;
+  role: string;
+  committeeRole: CommitteeRole | null;
+  image: string | null;
 }
 
-function TeamMemberCard({ member }: TeamMemberCardProps): React.ReactNode {
+function TeamMemberCard({ member }: { member: TeamMemberData }): React.ReactNode {
+  const displayRole =
+    member.committeeRole
+      ? COMMITTEE_ROLE_LABELS[member.committeeRole]
+      : member.role === "COACH"
+        ? "Coach"
+        : "Comité";
+
   return (
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-4">
           <Avatar className="h-14 w-14">
             <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
-              {getInitials(member.name)}
+              {getInitials(member.name ?? "?")}
             </AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-bold text-foreground">{member.name}</h3>
-            <p className="text-sm font-medium text-primary">{member.role}</p>
-            {member.specialty && (
-              <p className="text-xs text-muted-foreground">{member.specialty}</p>
-            )}
+            <h3 className="font-bold text-foreground">{member.name ?? "—"}</h3>
+            <p className="text-sm font-medium text-primary">{displayRole}</p>
           </div>
         </div>
       </CardHeader>
-      {(member.bio || member.email) && (
-        <CardContent>
-          {member.bio && (
-            <p className="text-sm text-muted-foreground">{member.bio}</p>
-          )}
-          {member.email && (
-            <a
-              href={`mailto:${member.email}`}
-              className="mt-3 block text-xs text-accent hover:underline"
-            >
-              {member.email}
-            </a>
-          )}
-        </CardContent>
-      )}
+      <CardContent />
     </Card>
   );
 }
 
 /**
- * Team page — displays committee members and coaches in a responsive grid
+ * Team page — displays committee members and coaches from the database.
  */
-export default function TeamPage(): React.ReactNode {
+export default async function TeamPage(): Promise<React.ReactNode> {
+  const members = await prisma.user.findMany({
+    where: { role: { in: ["COMMITTEE", "COACH"] } },
+    select: {
+      id: true,
+      name: true,
+      role: true,
+      committeeRole: true,
+      image: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+  const committeeMembers = members.filter((m) => m.role === "COMMITTEE");
+  const coaches = members.filter((m) => m.role === "COACH");
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
       {/* Page header */}
@@ -99,11 +109,15 @@ export default function TeamPage(): React.ReactNode {
         <p className="mb-6 text-muted-foreground">
           Ils gèrent et représentent le club tout au long de l&apos;année.
         </p>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {committeeMembers.map((member) => (
-            <TeamMemberCard key={member.id} member={member} />
-          ))}
-        </div>
+        {committeeMembers.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {committeeMembers.map((member) => (
+              <TeamMemberCard key={member.id} member={member} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">Aucun membre du comité pour le moment.</p>
+        )}
       </section>
 
       {/* Coaches section — only shown if there are coaches */}

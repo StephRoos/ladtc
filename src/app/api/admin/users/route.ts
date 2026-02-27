@@ -32,6 +32,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         email: true,
         emailVerified: true,
         role: true,
+        committeeRole: true,
         image: true,
         createdAt: true,
         updatedAt: true,

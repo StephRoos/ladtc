@@ -16,7 +16,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import type { UserRole } from "@/types";
+import { COMMITTEE_ROLE_LABELS } from "@/lib/schemas";
+import type { CommitteeRole, UserRole } from "@/types";
 import Link from "next/link";
 
 const ROLE_BADGE_VARIANTS: Record<UserRole, "default" | "secondary" | "destructive" | "outline"> = {
@@ -53,9 +54,13 @@ export default function AdminUsersPage(): React.ReactNode {
     );
   }
 
-  async function handleRoleChange(userId: string, role: UserRole): Promise<void> {
+  async function handleRoleChange(
+    userId: string,
+    role: UserRole,
+    committeeRole?: CommitteeRole | null,
+  ): Promise<void> {
     try {
-      await updateRole.mutateAsync({ id: userId, role });
+      await updateRole.mutateAsync({ id: userId, role, committeeRole });
       toast.success("Rôle mis à jour avec succès");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erreur lors de la mise à jour");
@@ -98,12 +103,18 @@ export default function AdminUsersPage(): React.ReactNode {
                     <Badge variant={ROLE_BADGE_VARIANTS[u.role as UserRole] ?? "outline"}>
                       {u.role}
                     </Badge>
+                    {u.role === "COMMITTEE" && u.committeeRole && (
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          — {COMMITTEE_ROLE_LABELS[u.committeeRole]}
+                        </span>
+                      )}
                   </TableCell>
                   <TableCell>
                     {u.id !== user?.id ? (
                       <RoleSelect
                         userId={u.id}
                         currentRole={u.role as UserRole}
+                        currentCommitteeRole={u.committeeRole}
                         onRoleChange={handleRoleChange}
                         isLoading={updateRole.isPending}
                       />
