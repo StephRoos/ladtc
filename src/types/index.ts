@@ -47,6 +47,7 @@ export interface Membership {
   phone: string | null;
   emergencyContact: string | null;
   emergencyContactPhone: string | null;
+  stripeSessionId: string | null;
   notes: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -120,6 +121,9 @@ export interface Order {
   shippingZip: string;
   shippingCountry: string;
   notes: string | null;
+  stripeSessionId: string | null;
+  stripePaymentIntentId: string | null;
+  paidAt: Date | null;
   trackingNumber: string | null;
   shippedAt: Date | null;
   deliveredAt: Date | null;

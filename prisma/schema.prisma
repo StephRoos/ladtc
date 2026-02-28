@@ -64,6 +64,7 @@ model Membership {
   phone                 String?
   emergencyContact      String?
   emergencyContactPhone String?
+  stripeSessionId       String?          @unique
   notes                 String?
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
@@ -164,6 +165,10 @@ model Order {
 
   status          OrderStatus @default(PENDING)
   notes           String?
+
+  stripeSessionId       String?   @unique
+  stripePaymentIntentId String?
+  paidAt                DateTime?
 
   trackingNumber  String?
   shippedAt       DateTime?

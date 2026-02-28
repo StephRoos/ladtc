@@ -1,7 +1,8 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useRequireAuth } from "@/hooks/use-auth";
 import { useOrder } from "@/hooks/use-orders";
 import { Badge } from "@/components/ui/badge";
@@ -9,14 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getOrderStatusConfig } from "@/components/admin/OrderTable";
 
-/**
- * Order confirmation page after successful checkout.
- * Requires authentication.
- */
-export default function OrderConfirmationPage(): React.ReactNode {
+function OrderConfirmationContent(): React.ReactNode {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const { isLoading: authLoading } = useRequireAuth();
   const { data, isLoading, isError } = useOrder(id);
+  const [payLoading, setPayLoading] = useState(false);
+  const paymentCancelled = searchParams.get("payment") === "cancelled";
 
   if (authLoading || isLoading) {
     return (
@@ -60,11 +60,26 @@ export default function OrderConfirmationPage(): React.ReactNode {
             </svg>
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-foreground">Merci pour votre commande !</h1>
-        <p className="mt-2 text-muted-foreground">
-          Votre commande a bien été enregistrée. Le comité vous contactera pour le paiement.
-        </p>
+        <h1 className="text-3xl font-bold text-foreground">
+          {order.paidAt ? "Commande confirmée !" : "Merci pour votre commande !"}
+        </h1>
+        {order.paidAt ? (
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-green-500/20 px-4 py-1.5 text-sm font-medium text-green-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12" /></svg>
+            Paiement reçu le {new Date(order.paidAt).toLocaleDateString("fr-BE")}
+          </div>
+        ) : (
+          <p className="mt-2 text-muted-foreground">
+            Votre commande a bien été enregistrée.
+          </p>
+        )}
       </div>
+
+      {paymentCancelled && !order.paidAt && (
+        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-400">
+          Le paiement a été annulé. Vous pouvez réessayer ci-dessous.
+        </div>
+      )}
 
       <div className="rounded-md border border-border p-6 space-y-6">
         {/* Order ID & status */}
@@ -116,6 +131,38 @@ export default function OrderConfirmationPage(): React.ReactNode {
         </div>
       </div>
 
+      {/* Pay now button for unpaid pending orders */}
+      {order.status === "PENDING" && !order.paidAt && (
+        <div className="mt-6">
+          <Button
+            className="w-full sm:w-auto"
+            disabled={payLoading}
+            onClick={async () => {
+              setPayLoading(true);
+              try {
+                const res = await fetch("/api/stripe/checkout", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ orderId: order.id }),
+                });
+                if (res.ok) {
+                  const { url } = (await res.json()) as { url: string };
+                  if (url) {
+                    window.location.href = url;
+                    return;
+                  }
+                }
+              } catch {
+                // Stripe unavailable
+              }
+              setPayLoading(false);
+            }}
+          >
+            {payLoading ? "Redirection..." : "Payer maintenant"}
+          </Button>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <Button asChild>
@@ -126,5 +173,24 @@ export default function OrderConfirmationPage(): React.ReactNode {
         </Button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Order confirmation page after successful checkout.
+ * Wrapped in Suspense for useSearchParams().
+ */
+export default function OrderConfirmationPage(): React.ReactNode {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-2xl px-4 py-10">
+          <Skeleton className="h-8 w-64 mb-4" />
+          <Skeleton className="h-48 w-full" />
+        </div>
+      }
+    >
+      <OrderConfirmationContent />
+    </Suspense>
   );
 }

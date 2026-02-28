@@ -48,6 +48,26 @@ export default function CheckoutPage(): React.ReactNode {
 
     const result = await createOrder.mutateAsync({ ...data, items: orderItems });
     clear();
+
+    // Redirect to Stripe Checkout
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: result.orderId }),
+      });
+
+      if (res.ok) {
+        const { url } = (await res.json()) as { url: string };
+        if (url) {
+          window.location.href = url;
+          return;
+        }
+      }
+    } catch {
+      // Stripe unavailable — fallback to classic confirmation
+    }
+
     router.push(`/equipment/order/${result.orderId}`);
   }
 
@@ -97,7 +117,7 @@ export default function CheckoutPage(): React.ReactNode {
             <span>{total.toFixed(2)} €</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            Le paiement est traité manuellement par le comité.
+            Paiement sécurisé par Stripe (carte ou Bancontact).
           </p>
         </div>
       </div>

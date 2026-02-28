@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Membership, MembershipStatus } from "@/types";
 
@@ -103,18 +105,33 @@ export function MembershipCard({ membership }: MembershipCardProps): React.React
         </div>
 
         {membership.status === "ACTIVE" && daysUntil <= 30 && daysUntil > 0 && (
-          <div className="rounded-md bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
-            Renouvellement dans {daysUntil} jour{daysUntil > 1 ? "s" : ""}
+          <div className="space-y-2">
+            <div className="rounded-md bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
+              Renouvellement dans {daysUntil} jour{daysUntil > 1 ? "s" : ""}
+            </div>
+            <Button asChild size="sm" className="w-full">
+              <Link href="/membership/pay">Renouveler en ligne</Link>
+            </Button>
           </div>
         )}
         {membership.status === "EXPIRED" && (
-          <div className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">
-            Cotisation expirée — contactez le bureau pour renouveler
+          <div className="space-y-2">
+            <div className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">
+              Cotisation expirée
+            </div>
+            <Button asChild size="sm" className="w-full">
+              <Link href="/membership/pay">Renouveler en ligne</Link>
+            </Button>
           </div>
         )}
         {membership.status === "PENDING" && (
-          <div className="rounded-md bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
-            En attente de paiement — contactez le bureau à bureau@ladtc.be
+          <div className="space-y-2">
+            <Button asChild size="sm" className="w-full">
+              <Link href="/membership/pay">Payer en ligne</Link>
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              ou contactez le bureau à bureau@ladtc.be
+            </p>
           </div>
         )}
       </CardContent>

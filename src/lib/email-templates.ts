@@ -291,6 +291,111 @@ export function orderConfirmationTemplate(order: Order): string {
  * @param status - New order status (e.g. "SHIPPED", "DELIVERED")
  * @returns Full HTML email string
  */
+/**
+ * Generates the payment confirmation email HTML template.
+ *
+ * @param order - The full order object with items
+ * @returns Full HTML email string
+ */
+export function paymentConfirmationTemplate(order: Order): string {
+  const itemRows = order.items
+    .map(
+      (item) => `
+      <tr>
+        <td style="color:#cbd5e1;padding:8px 0;border-bottom:1px solid #334155;">
+          ${item.product.name}${item.size ? ` <span style="color:#94a3b8;font-size:12px;">(${item.size})</span>` : ""}
+        </td>
+        <td style="color:#94a3b8;text-align:center;padding:8px 0;border-bottom:1px solid #334155;">x${item.quantity}</td>
+        <td style="color:${TEXT_COLOR};text-align:right;padding:8px 0;border-bottom:1px solid #334155;font-weight:bold;">
+          ${(item.price * item.quantity).toFixed(2)} EUR
+        </td>
+      </tr>`
+    )
+    .join("");
+
+  const content = `
+    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Paiement reçu</h2>
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
+      Merci, ${order.shippingName} ! Votre paiement a bien été reçu pour la commande #${order.id.slice(-8).toUpperCase()}.
+    </p>
+    <div style="border-left:4px solid #22c55e;padding:12px 16px;margin-bottom:24px;background-color:${BACKGROUND_COLOR};border-radius:0 6px 6px 0;">
+      <p style="margin:0;color:#22c55e;font-weight:bold;">Paiement confirmé</p>
+    </div>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
+      <p style="margin:0 0 12px 0;color:#94a3b8;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;">
+        Récapitulatif
+      </p>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${itemRows}
+        <tr>
+          <td colspan="3" style="padding:8px 0;"></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="color:${TEXT_COLOR};font-weight:bold;padding:8px 0;font-size:16px;">Total payé</td>
+          <td style="color:${PRIMARY_COLOR};text-align:right;font-weight:bold;padding:8px 0;font-size:16px;">${order.total.toFixed(2)} EUR</td>
+        </tr>
+      </table>
+    </div>
+    <p style="margin:0 0 8px 0;color:#cbd5e1;line-height:1.6;">
+      Votre commande est confirmée et sera préparée prochainement.
+    </p>
+    ${buttonHtml(`${CLUB_WEBSITE}/orders`, "Voir mes commandes")}
+    <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
+      Cordialement,<br/>
+      <strong style="color:${TEXT_COLOR};">L'équipe la dtc</strong>
+    </p>
+  `;
+  return baseTemplate(content);
+}
+
+/**
+ * Generates the membership payment confirmation email HTML template.
+ *
+ * @param name - Member's display name
+ * @param amount - Amount paid in EUR
+ * @param renewalDate - New renewal date formatted as string
+ * @returns Full HTML email string
+ */
+export function membershipPaymentConfirmationTemplate(
+  name: string,
+  amount: number,
+  renewalDate: string,
+): string {
+  const content = `
+    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Cotisation confirmée</h2>
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
+      Merci, ${name} ! Votre cotisation annuelle a bien été réglée.
+    </p>
+    <div style="border-left:4px solid #22c55e;padding:12px 16px;margin-bottom:24px;background-color:${BACKGROUND_COLOR};border-radius:0 6px 6px 0;">
+      <p style="margin:0;color:#22c55e;font-weight:bold;">Paiement confirmé</p>
+    </div>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="color:#94a3b8;font-size:13px;padding:6px 0;">Montant payé</td>
+          <td style="color:${PRIMARY_COLOR};font-weight:bold;text-align:right;padding:6px 0;">${amount.toFixed(2)} EUR</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="border-top:1px solid #334155;padding:0;height:1px;"></td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;font-size:13px;padding:6px 0;">Valide jusqu'au</td>
+          <td style="color:${TEXT_COLOR};font-weight:bold;text-align:right;padding:6px 0;">${renewalDate}</td>
+        </tr>
+      </table>
+    </div>
+    <p style="margin:0 0 8px 0;color:#cbd5e1;line-height:1.6;">
+      Votre adhésion est désormais active. Profitez de tous les avantages du club !
+    </p>
+    ${buttonHtml(`${CLUB_WEBSITE}/profile`, "Mon profil")}
+    <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
+      Cordialement,<br/>
+      <strong style="color:${TEXT_COLOR};">L'équipe la dtc</strong>
+    </p>
+  `;
+  return baseTemplate(content);
+}
+
 export function orderStatusTemplate(order: Order, status: string): string {
   const statusLabels: Record<string, { label: string; description: string; color: string }> = {
     CONFIRMED: {

@@ -4,6 +4,8 @@ import {
   renewalReminderTemplate,
   orderConfirmationTemplate,
   orderStatusTemplate,
+  paymentConfirmationTemplate,
+  membershipPaymentConfirmationTemplate,
 } from "./email-templates";
 
 const FROM_EMAIL = "LADTC <noreply@ladtc.be>";
@@ -115,6 +117,37 @@ export async function sendOrderStatusUpdate(order: Order, status: string): Promi
   const html = orderStatusTemplate(order, status);
 
   await sendEmail(order.shippingEmail, subject, html);
+}
+
+/**
+ * Sends a payment confirmation email for an equipment order.
+ *
+ * @param order - The complete order object with items
+ */
+export async function sendPaymentConfirmation(order: Order): Promise<void> {
+  const subject = `Paiement reçu — Commande LADTC #${order.id.slice(-8).toUpperCase()}`;
+  const html = paymentConfirmationTemplate(order);
+  await sendEmail(order.shippingEmail, subject, html);
+}
+
+/**
+ * Sends a membership payment confirmation email.
+ *
+ * @param email - Member's email address
+ * @param name - Member's display name
+ * @param amount - Amount paid in EUR
+ * @param renewalDate - New renewal date
+ */
+export async function sendMembershipPaymentConfirmation(
+  email: string,
+  name: string,
+  amount: number,
+  renewalDate: Date,
+): Promise<void> {
+  const dateStr = renewalDate.toLocaleDateString("fr-BE");
+  const subject = "Cotisation LADTC confirmée";
+  const html = membershipPaymentConfirmationTemplate(name, amount, dateStr);
+  await sendEmail(email, subject, html);
 }
 
 // Export committee contact for convenience

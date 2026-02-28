@@ -16,6 +16,7 @@ const mockUser: User = {
   name: "Jean Dupont",
   image: null,
   role: "MEMBER",
+  committeeRole: null,
   createdAt: new Date("2025-01-01"),
   updatedAt: new Date("2025-01-01"),
 };
@@ -62,6 +63,9 @@ const mockOrder: Order = {
   shippingZip: "1000",
   shippingCountry: "Belgium",
   notes: null,
+  stripeSessionId: null,
+  stripePaymentIntentId: null,
+  paidAt: null,
   trackingNumber: null,
   shippedAt: null,
   deliveredAt: null,

@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 /**
  * Routes that require authentication to access
  */
-const PROTECTED_ROUTES = ["/dashboard", "/profile", "/admin", "/orders"];
+const PROTECTED_ROUTES = ["/dashboard", "/profile", "/admin", "/orders", "/membership"];
 
 /**
  * Proxy (formerly middleware) to protect routes requiring authentication.
