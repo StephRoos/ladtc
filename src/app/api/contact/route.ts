@@ -27,15 +27,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const { name, email, subject, message, newsletter } = parsed.data;
 
-    // Log the contact form data (email sending to be implemented)
-    console.log("Contact form submission:", {
-      name,
-      email,
-      subject,
-      message,
-      newsletter: newsletter ?? false,
-      timestamp: new Date().toISOString(),
-    });
+    // TODO: Send email via Resend (contact form data is not logged for privacy)
+    void name;
+    void email;
+    void subject;
+    void message;
+    void newsletter;
 
     return NextResponse.json({
       success: true,
