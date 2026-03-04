@@ -55,6 +55,9 @@ jobs:
         env:
           NEXT_PUBLIC_WP_API_URL: https://ladtc.be
           NEXT_PUBLIC_APP_URL: https://ladtc.be
+          DATABASE_URL: "postgresql://fake:fake@localhost:5432/fake"
+          BETTER_AUTH_SECRET: "fake-secret-for-ci-build-only"
+          BETTER_AUTH_URL: "http://localhost:3000"
 
       - name: Test
         run: pnpm test --run
