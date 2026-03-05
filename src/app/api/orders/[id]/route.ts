@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAuth, requireCommittee, isAuthError, COMMITTEE_ROLES } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { orderUpdateSchema } from "@/lib/schemas";
-
-const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
 
 /**
  * GET /api/orders/[id]
@@ -13,14 +11,11 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
   const { id } = await params;
-  const userRole = (session.user as { role?: string }).role;
-  const isAdmin = ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number]);
+  const isAdmin = COMMITTEE_ROLES.includes(authResult.user.role);
 
   const order = await prisma.order.findUnique({
     where: { id },
@@ -36,7 +31,7 @@ export async function GET(
     return NextResponse.json({ error: "Commande introuvable" }, { status: 404 });
   }
 
-  if (!isAdmin && order.userId !== session.user.id) {
+  if (!isAdmin && order.userId !== authResult.user.id) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
   }
 
@@ -51,15 +46,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
-  if (!ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number])) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   const { id } = await params;
 

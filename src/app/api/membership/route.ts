@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAuth, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -7,13 +7,11 @@ import { prisma } from "@/lib/prisma";
  * Returns the current user's membership.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
   const membership = await prisma.membership.findUnique({
-    where: { userId: session.user.id },
+    where: { userId: authResult.user.id },
   });
 
   return NextResponse.json({ membership });

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAuth, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -10,10 +10,8 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
   const { id } = await params;
 
@@ -36,7 +34,7 @@ export async function POST(
   }
 
   const existing = await prisma.eventRegistration.findUnique({
-    where: { userId_eventId: { userId: session.user.id, eventId: id } },
+    where: { userId_eventId: { userId: authResult.user.id, eventId: id } },
   });
 
   if (existing && existing.status === "REGISTERED") {
@@ -50,7 +48,7 @@ export async function POST(
       })
     : await prisma.eventRegistration.create({
         data: {
-          userId: session.user.id,
+          userId: authResult.user.id,
           eventId: id,
         },
       });
@@ -66,15 +64,13 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
   const { id } = await params;
 
   const existing = await prisma.eventRegistration.findUnique({
-    where: { userId_eventId: { userId: session.user.id, eventId: id } },
+    where: { userId_eventId: { userId: authResult.user.id, eventId: id } },
   });
 
   if (!existing || existing.status === "CANCELLED") {

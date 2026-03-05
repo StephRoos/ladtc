@@ -1,25 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { eventSchema } from "@/lib/schemas";
-
-const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
-const TRAINING_ROLES = ["COACH", "COMMITTEE", "ADMIN"] as const;
+import { requireCommittee, requireRole, isAuthError, TRAINING_ROLES, COMMITTEE_ROLES } from "@/lib/auth-guard";
 
 /**
  * GET /api/admin/events
  * Returns all events (past and future). Restricted to COMMITTEE and ADMIN.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
-  if (!ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number])) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   const events = await prisma.event.findMany({
     orderBy: { date: "desc" },
@@ -37,12 +27,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * COACH can only create TRAINING events.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
+  const authResult = await requireRole(request, TRAINING_ROLES);
+  if (isAuthError(authResult)) return authResult;
 
   let body: unknown;
   try {
@@ -59,22 +45,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const isTrainingOnly = TRAINING_ROLES.includes(
-    userRole as (typeof TRAINING_ROLES)[number]
-  ) && !ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number]);
+  const isTrainingOnly = !COMMITTEE_ROLES.includes(authResult.user.role);
 
   if (isTrainingOnly && parsed.data.type !== "TRAINING") {
     return NextResponse.json(
       { error: "Les coachs ne peuvent créer que des entraînements" },
       { status: 403 }
     );
-  }
-
-  if (
-    !ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number]) &&
-    !isTrainingOnly
-  ) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
   }
 
   try {

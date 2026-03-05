@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAuth, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
 
@@ -9,10 +9,8 @@ import { getStripe } from "@/lib/stripe";
  * Expects { orderId } in body.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
   let body: { orderId?: string };
   try {
@@ -37,7 +35,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Commande introuvable" }, { status: 404 });
   }
 
-  if (order.userId !== session.user.id) {
+  if (order.userId !== authResult.user.id) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
   }
 

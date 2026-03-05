@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import type { StatisticsData } from "@/types";
-
-const ALLOWED_ROLES = ["COMMITTEE", "ADMIN"] as const;
 
 /**
  * GET /api/admin/statistics
@@ -11,15 +9,8 @@ const ALLOWED_ROLES = ["COMMITTEE", "ADMIN"] as const;
  * Restricted to COMMITTEE and ADMIN roles.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
-  if (!ALLOWED_ROLES.includes(userRole as (typeof ALLOWED_ROLES)[number])) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   const now = new Date();
   const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);

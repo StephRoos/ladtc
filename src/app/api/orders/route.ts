@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAuth, isAuthError, COMMITTEE_ROLES } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { checkoutSchema } from "@/lib/schemas";
 import { z } from "zod";
-
-const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
 
 const createOrderSchema = checkoutSchema.extend({
   items: z.array(
@@ -25,13 +23,10 @@ const createOrderSchema = checkoutSchema.extend({
  *   - page: number (default: 1)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
-  const userRole = (session.user as { role?: string }).role;
-  const isAdmin = ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number]);
+  const isAdmin = COMMITTEE_ROLES.includes(authResult.user.role);
 
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");
@@ -46,7 +41,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       : undefined;
 
   const where = {
-    ...(isAdmin ? {} : { userId: session.user.id }),
+    ...(isAdmin ? {} : { userId: authResult.user.id }),
     ...(statusFilter ? { status: statusFilter } : {}),
   };
 
@@ -78,10 +73,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * Body: { items: CartItem[], shippingName, shippingEmail, ... }
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
   let body: unknown;
   try {
@@ -148,7 +141,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const order = await prisma.order.create({
     data: {
-      userId: session.user.id,
+      userId: authResult.user.id,
       ...shippingData,
       subtotal,
       shippingCost,

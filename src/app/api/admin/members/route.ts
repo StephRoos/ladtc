@@ -3,8 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { memberCreateSchema } from "@/lib/schemas";
 import { sendWelcomeEmail } from "@/lib/email";
-
-const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 
 /**
  * POST /api/admin/members
@@ -12,15 +11,8 @@ const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
  * Restricted to COMMITTEE and ADMIN roles.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
-  if (!ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number])) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   let body: unknown;
   try {

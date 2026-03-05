@@ -1,24 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { blogPostSchema } from "@/lib/schemas";
-
-const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 
 /**
  * GET /api/admin/blog/posts
  * Returns all blog posts (including drafts). Restricted to COMMITTEE and ADMIN.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
-  if (!ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number])) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   const posts = await prisma.blogPost.findMany({
     orderBy: { createdAt: "desc" },
@@ -37,15 +28,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * Body: { title, slug, content, excerpt, featuredImageUrl, category, tags, published }
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
-  if (!ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number])) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   let body: unknown;
   try {
@@ -73,7 +57,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       publishedAt: published ? new Date() : null,
       eventDate: eventDate ? new Date(eventDate) : null,
       eventLocation: eventLocation || null,
-      authorId: session.user.id,
+      authorId: authResult.user.id,
     },
     include: {
       author: { select: { id: true, name: true } },

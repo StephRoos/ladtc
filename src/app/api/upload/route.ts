@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 
@@ -12,15 +11,8 @@ const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
  * Stores in Vercel Blob and returns the public URL.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const role = (session.user as Record<string, unknown>).role as string;
-  if (!["ADMIN", "COMMITTEE"].includes(role)) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   const formData = await request.formData();
   const file = formData.get("file") as File | null;

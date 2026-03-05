@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { galleryPhotoSchema } from "@/lib/schemas";
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 
-const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 
@@ -14,15 +13,8 @@ const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
  * Returns all gallery photos. Restricted to COMMITTEE and ADMIN.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
-  if (!ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number])) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   const photos = await prisma.galleryPhoto.findMany({
     orderBy: { createdAt: "desc" },
@@ -40,15 +32,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * Restricted to COMMITTEE and ADMIN.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
-
-  const userRole = (session.user as { role?: string }).role;
-  if (!ADMIN_ROLES.includes(userRole as (typeof ADMIN_ROLES)[number])) {
-    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-  }
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
 
   const formData = await request.formData();
   const file = formData.get("file") as File | null;
@@ -102,7 +87,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       title: parsed.data.title,
       description: parsed.data.description ?? null,
       category: parsed.data.category ?? null,
-      uploadedById: session.user.id,
+      uploadedById: authResult.user.id,
     },
     include: {
       uploadedBy: { select: { id: true, name: true } },

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireAuth, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { profileUpdateSchema } from "@/lib/schemas";
 
@@ -8,13 +8,11 @@ import { profileUpdateSchema } from "@/lib/schemas";
  * Returns the current authenticated user's profile and membership data.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
   const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
+    where: { id: authResult.user.id },
     include: { membership: true },
   });
 
@@ -31,10 +29,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * Members can update: name, phone, emergencyContact, emergencyContactPhone.
  */
 export async function PATCH(request: NextRequest): Promise<NextResponse> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-  }
+  const authResult = await requireAuth(request);
+  if (isAuthError(authResult)) return authResult;
 
   let body: unknown;
   try {
@@ -55,7 +51,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 
   // Update user name if provided
   const updatedUser = await prisma.user.update({
-    where: { id: session.user.id },
+    where: { id: authResult.user.id },
     data: { ...(name !== undefined && { name }) },
     include: { membership: true },
   });
@@ -63,7 +59,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
   // Update membership contact fields if membership exists
   if (updatedUser.membership && (phone !== undefined || emergencyContact !== undefined || emergencyContactPhone !== undefined)) {
     await prisma.membership.update({
-      where: { userId: session.user.id },
+      where: { userId: authResult.user.id },
       data: {
         ...(phone !== undefined && { phone }),
         ...(emergencyContact !== undefined && { emergencyContact }),
@@ -74,7 +70,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 
   // Re-fetch with updated data
   const finalUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
+    where: { id: authResult.user.id },
     include: { membership: true },
   });
 
