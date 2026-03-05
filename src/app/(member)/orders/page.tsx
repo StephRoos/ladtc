@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getOrderStatusConfig } from "@/components/admin/OrderTable";
+import { getOrderStatusConfig } from "@/components/admin/orders/OrderTable";
 import type { OrderStatus } from "@/types";
 
 /**

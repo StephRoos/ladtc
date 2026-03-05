@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useOrders } from "@/hooks/use-orders";
-import { OrderTable } from "@/components/admin/OrderTable";
+import { OrderTable } from "@/components/admin/orders/OrderTable";
 import { Button } from "@/components/ui/button";
 import {
   Select,

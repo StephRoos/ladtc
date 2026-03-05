@@ -1,6 +1,6 @@
 "use client";
 
-import { GalleryUploadForm } from "@/components/admin/GalleryUploadForm";
+import { GalleryUploadForm } from "@/components/admin/gallery/GalleryUploadForm";
 
 /**
  * Admin gallery upload page.

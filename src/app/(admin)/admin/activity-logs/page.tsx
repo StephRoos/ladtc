@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useActivityLogs } from "@/hooks/use-activity-logs";
-import { ActivityLogTable } from "@/components/admin/ActivityLogTable";
+import { ActivityLogTable } from "@/components/admin/dashboard/ActivityLogTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

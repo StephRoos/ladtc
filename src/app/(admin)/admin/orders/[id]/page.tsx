@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getOrderStatusConfig } from "@/components/admin/OrderTable";
+import { getOrderStatusConfig } from "@/components/admin/orders/OrderTable";
 import type { OrderStatus } from "@/types";
 
 /**

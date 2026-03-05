@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAdminEvents } from "@/hooks/use-events";
-import { EventTable } from "@/components/admin/EventTable";
+import { EventTable } from "@/components/admin/events/EventTable";
 import { Button } from "@/components/ui/button";
 
 /**

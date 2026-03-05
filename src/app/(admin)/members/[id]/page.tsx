@@ -4,7 +4,7 @@ import { use, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth";
-import { MemberForm } from "@/components/admin/MemberForm";
+import { MemberForm } from "@/components/admin/members/MemberForm";
 import { MembershipCard } from "@/components/cards/MembershipCard";
 import { Button } from "@/components/ui/button";
 import {

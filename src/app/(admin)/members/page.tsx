@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth";
 import { useMembers, useMemberStats } from "@/hooks/use-members";
-import { MemberTable } from "@/components/admin/MemberTable";
+import { MemberTable } from "@/components/admin/members/MemberTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

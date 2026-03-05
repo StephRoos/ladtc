@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUsers, useUpdateUserRole } from "@/hooks/use-users";
-import { RoleSelect } from "@/components/admin/RoleSelect";
-import { UserAvatarEditor } from "@/components/admin/UserAvatarEditor";
+import { RoleSelect } from "@/components/admin/users/RoleSelect";
+import { UserAvatarEditor } from "@/components/admin/users/UserAvatarEditor";
 import {
   Table,
   TableBody,

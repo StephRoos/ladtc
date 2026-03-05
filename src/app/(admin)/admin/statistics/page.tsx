@@ -6,7 +6,7 @@ import {
   MemberTrendChart,
   OrderTrendChart,
   TopProductsChart,
-} from "@/components/admin/StatisticsCharts";
+} from "@/components/admin/dashboard/StatisticsCharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 

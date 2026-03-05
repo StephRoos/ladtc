@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAdminGallery } from "@/hooks/use-gallery";
-import { GalleryTable } from "@/components/admin/GalleryTable";
+import { GalleryTable } from "@/components/admin/gallery/GalleryTable";
 import { Button } from "@/components/ui/button";
 
 /**

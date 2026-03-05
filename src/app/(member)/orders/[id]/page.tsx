@@ -7,7 +7,7 @@ import { useOrder } from "@/hooks/use-orders";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getOrderStatusConfig } from "@/components/admin/OrderTable";
+import { getOrderStatusConfig } from "@/components/admin/orders/OrderTable";
 import type { OrderStatus } from "@/types";
 
 /**

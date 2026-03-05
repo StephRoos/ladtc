@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useProducts } from "@/hooks/use-products";
-import { ProductTable } from "@/components/admin/ProductTable";
+import { ProductTable } from "@/components/admin/products/ProductTable";
 import { Button } from "@/components/ui/button";
 
 /**

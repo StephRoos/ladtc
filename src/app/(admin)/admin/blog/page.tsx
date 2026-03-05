@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAdminBlogPosts } from "@/hooks/use-blog-posts";
-import { BlogPostTable } from "@/components/admin/BlogPostTable";
+import { BlogPostTable } from "@/components/admin/blog/BlogPostTable";
 import { Button } from "@/components/ui/button";
 
 /**

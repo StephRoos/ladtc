@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCreateMember } from "@/hooks/use-members";
-import { CreateMemberForm } from "@/components/admin/CreateMemberForm";
+import { CreateMemberForm } from "@/components/admin/members/CreateMemberForm";
 import type { MemberCreateFormData } from "@/lib/schemas";
 
 /**
