@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { galleryPhotoSchema } from "@/lib/schemas";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
-import { put } from "@vercel/blob";
-import { randomUUID } from "crypto";
+import { putLocal } from "@/lib/storage";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -73,17 +72,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const filename = `gallery/${randomUUID()}.${ext}`;
-
-  const blob = await put(filename, file, {
-    access: "public",
-    contentType: file.type,
-  });
+  const result = await putLocal(file, "gallery");
 
   const photo = await prisma.galleryPhoto.create({
     data: {
-      url: blob.url,
+      url: result.url,
       title: parsed.data.title,
       description: parsed.data.description ?? null,
       category: parsed.data.category ?? null,

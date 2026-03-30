@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,19 +37,27 @@ export function MemberForm({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const updateMember = useUpdateMember();
 
-  const defaultRenewalDate = membership?.renewalDate
-    ? new Date(membership.renewalDate).toISOString().split("T")[0]
-    : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+  const defaultRenewalDate = useMemo(
+    () =>
+      membership?.renewalDate
+        ? new Date(membership.renewalDate).toISOString().split("T")[0]
+        : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    [membership?.renewalDate],
+  );
 
-  const defaultPaidAt = membership?.paidAt
-    ? new Date(membership.paidAt).toISOString().split("T")[0]
-    : "";
+  const defaultPaidAt = useMemo(
+    () =>
+      membership?.paidAt
+        ? new Date(membership.paidAt).toISOString().split("T")[0]
+        : "",
+    [membership?.paidAt],
+  );
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<MemberUpdateFormData>({
     resolver: zodResolver(memberUpdateSchema),
@@ -62,7 +70,7 @@ export function MemberForm({
     },
   });
 
-  const currentStatus = watch("status");
+  const currentStatus = useWatch({ control, name: "status" });
 
   async function onSubmit(data: MemberUpdateFormData): Promise<void> {
     setSuccessMessage(null);

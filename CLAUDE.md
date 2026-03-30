@@ -21,7 +21,7 @@ The project is part of an ecosystem with HillsRun and RecettesApp, sharing the s
 | **Forms** | React Hook Form | 7.54+ |
 | **Validation** | Zod | 3.24+ |
 | **Blog** | Integrated (Prisma + Markdown) | — |
-| **Database** | PostgreSQL (Neon) | 15+ |
+| **Database** | PostgreSQL (Docker, self-hosted) | 15+ |
 | **ORM** | Prisma | 7.4+ |
 | **Auth** | BetterAuth | 1.4+ |
 | **Email** | Resend | Latest |
@@ -162,7 +162,7 @@ export function Card({ title, children }: CardProps): React.ReactNode {
 ## Database (PostgreSQL + Prisma)
 
 - Prisma ORM for type-safe queries (output: `src/generated/prisma`)
-- Database: Neon PostgreSQL (cloud)
+- Database: PostgreSQL 15 (Docker container on UM790)
 - Migrations: `npx prisma migrate dev`
 - Schema file: `prisma/schema.prisma`
 - Types auto-generated from schema
@@ -218,11 +218,14 @@ ADMIN_EMAIL=...
 
 ## Deployment
 
-- **Hosting**: Vercel
-- **Database**: Neon PostgreSQL (cloud)
-- **Domain**: ladtc.be
-- **Deploy**: `npx vercel --prod` or `git push` to master
-- **Env vars**: Set in Vercel dashboard
+- **Hosting**: Coolify on UM790 Pro (self-hosted Docker)
+- **Database**: PostgreSQL 15 (Docker container, same host)
+- **Reverse proxy**: Cloudflare Tunnel (zero open ports)
+- **Domain**: ladtc.be (DNS via Cloudflare)
+- **File storage**: Local filesystem (`public/uploads/`, Docker volume)
+- **Deploy**: `git push` to master → Coolify auto-deploys via GitHub webhook
+- **Env vars**: Set in Coolify project settings
+- **Compose file**: `docker-compose.coolify.yml` for production
 
 ## Security
 
@@ -245,7 +248,7 @@ ADMIN_EMAIL=...
 ## Monitoring
 
 - Error tracking: Sentry (not yet configured)
-- Analytics: Vercel Analytics (not yet configured)
+- Analytics: Uptime Kuma for monitoring (via Coolify)
 - Web Vitals: Automatic via Next.js
 
 ## References

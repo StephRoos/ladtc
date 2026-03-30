@@ -24,9 +24,9 @@ const nextConfig: NextConfig = {
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://ladtc.be",
+            "img-src 'self' data: blob: https://ladtc.be",
             "font-src 'self'",
-            "connect-src 'self' https://*.vercel-storage.com https://*.sentry.io",
+            "connect-src 'self' https://*.sentry.io",
             "frame-ancestors 'none'",
           ].join("; "),
         },
@@ -38,17 +38,12 @@ const nextConfig: NextConfig = {
     },
   ],
 
-  // Image optimization
+  // Image optimization — local uploads served from /uploads/, remote from ladtc.be
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "ladtc.be",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "*.public.blob.vercel-storage.com",
         pathname: "/**",
       },
     ],

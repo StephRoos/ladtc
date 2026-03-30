@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 
-/** Revalidate every hour — team composition rarely changes. */
-export const revalidate = 3600;
+/** Server-rendered at request time — requires database access. */
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: `Notre équipe | ${siteConfig.name}`,

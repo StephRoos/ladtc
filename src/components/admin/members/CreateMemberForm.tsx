@@ -1,6 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,15 +30,16 @@ export function CreateMemberForm({
   isSubmitting,
   error,
 }: CreateMemberFormProps): React.ReactNode {
-  const defaultRenewalDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0];
+  const defaultRenewalDate = useMemo(
+    () => new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    [],
+  );
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<MemberCreateFormData>({
     resolver: zodResolver(memberCreateSchema),
@@ -52,7 +54,7 @@ export function CreateMemberForm({
     },
   });
 
-  const currentStatus = watch("status");
+  const currentStatus = useWatch({ control, name: "status" });
 
   /**
    * Marks the member as paid with today's date and sets status to ACTIVE.

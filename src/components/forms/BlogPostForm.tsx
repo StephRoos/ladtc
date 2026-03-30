@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,7 +46,7 @@ export function BlogPostForm({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting: formSubmitting },
   } = useForm<BlogPostFormData>({
@@ -59,9 +59,9 @@ export function BlogPostForm({
   });
 
   const submitting = isSubmitting || formSubmitting;
-  const title = watch("title");
-  const featuredImageUrl = watch("featuredImageUrl");
-  const category = watch("category");
+  const title = useWatch({ control, name: "title" });
+  const featuredImageUrl = useWatch({ control, name: "featuredImageUrl" });
+  const category = useWatch({ control, name: "category" });
   const isEditing = !!defaultValues?.slug;
 
   const isEventCategory =

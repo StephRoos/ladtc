@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
@@ -31,6 +31,14 @@ export default function MembershipPayPage(): React.ReactNode {
     staleTime: 2 * 60 * 1000,
   });
 
+  const daysUntil = useMemo(
+    () =>
+      membership?.renewalDate
+        ? Math.ceil((new Date(membership.renewalDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+        : 0,
+    [membership?.renewalDate],
+  );
+
   if (authLoading || isLoading) {
     return (
       <div className="mx-auto max-w-lg px-4 py-10">
@@ -52,9 +60,6 @@ export default function MembershipPayPage(): React.ReactNode {
   }
 
   const isActive = membership.status === "ACTIVE";
-  const daysUntil = Math.ceil(
-    (new Date(membership.renewalDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
-  );
   const canPay = !isActive || daysUntil <= 30;
 
   async function handlePay(): Promise<void> {

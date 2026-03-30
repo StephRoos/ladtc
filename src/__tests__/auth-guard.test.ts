@@ -22,7 +22,7 @@ import {
 } from "@/lib/auth-guard";
 import type { UserRole } from "@/types";
 
-const mockGetSession = auth.api.getSession as ReturnType<typeof vi.fn>;
+const mockGetSession = auth.api.getSession as unknown as ReturnType<typeof vi.fn>;
 
 function makeRequest(): NextRequest {
   return new NextRequest("http://localhost:3000/api/test");

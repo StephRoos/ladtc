@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { galleryPhotoSchema } from "@/lib/schemas";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
-import { del } from "@vercel/blob";
+import { delLocal } from "@/lib/storage";
 
 /**
  * PATCH /api/admin/gallery/[id]
@@ -70,7 +70,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Photo introuvable" }, { status: 404 });
   }
 
-  await del(existing.url);
+  await delLocal(existing.url);
   await prisma.galleryPhoto.delete({ where: { id } });
 
   return NextResponse.json({ success: true });

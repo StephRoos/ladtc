@@ -64,10 +64,7 @@ function LatestBlogSection(): React.ReactNode {
 }
 
 function HeroSection(): React.ReactNode {
-  const [meaning, setMeaning] = useState("");
-  useEffect(() => {
-    setMeaning(getRandomDtcMeaning());
-  }, []);
+  const [meaning] = useState(() => getRandomDtcMeaning());
 
   return (
     <section className="relative min-h-[70vh] overflow-hidden">

@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
-import { put } from "@vercel/blob";
-import { randomUUID } from "crypto";
+import { putLocal } from "@/lib/storage";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 
 /**
  * Handle image file upload for blog posts.
- * Stores in Vercel Blob and returns the public URL.
+ * Stores locally under public/uploads/blog/.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const authResult = await requireCommittee(request);
@@ -35,13 +34,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const filename = `blog/${randomUUID()}.${ext}`;
+  const result = await putLocal(file, "blog");
 
-  const blob = await put(filename, file, {
-    access: "public",
-    contentType: file.type,
-  });
-
-  return NextResponse.json({ url: blob.url });
+  return NextResponse.json({ url: result.url });
 }

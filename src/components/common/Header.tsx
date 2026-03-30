@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getRandomDtcMeaning } from "@/config/site";
@@ -29,11 +29,7 @@ export function Header(): React.ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isLoading, isAuthenticated } = useAuth();
   const { itemCount } = useCart();
-  const [subtitle, setSubtitle] = useState("");
-
-  useEffect(() => {
-    setSubtitle(getRandomDtcMeaning());
-  }, []);
+  const [subtitle] = useState(() => getRandomDtcMeaning());
 
   async function handleSignOut(): Promise<void> {
     await signOut();

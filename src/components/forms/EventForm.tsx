@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +34,7 @@ export function EventForm({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting: formSubmitting },
   } = useForm<EventFormData>({
@@ -52,7 +52,7 @@ export function EventForm({
   });
 
   const submitting = isSubmitting || formSubmitting;
-  const imageValue = watch("image");
+  const imageValue = useWatch({ control, name: "image" });
 
   function handleFormSubmit(data: EventFormData): Promise<void> {
     return onSubmit({

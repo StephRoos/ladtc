@@ -51,11 +51,13 @@ export function RoleSelect({
   const [confirming, setConfirming] = useState(false);
 
   // Sync local state when props change (e.g. after another admin's mutation)
+  /* eslint-disable react-hooks/set-state-in-effect -- intentional prop sync */
   useEffect(() => {
     setSelectedRole(currentRole);
     setCommitteeRoleInput(currentCommitteeRole ?? "");
     setConfirming(false);
   }, [currentRole, currentCommitteeRole]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const hasChanged =
     selectedRole !== currentRole ||
