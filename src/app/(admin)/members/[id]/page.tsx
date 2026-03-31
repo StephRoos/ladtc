@@ -84,7 +84,7 @@ export default function AdminMemberDetailPage({
     return (
       <div className="mx-auto max-w-3xl px-4 py-10 text-center">
         <p className="text-muted-foreground">Membre introuvable.</p>
-        <Link href="/admin/members" className="mt-4 inline-block text-sm text-primary hover:underline">
+        <Link href="/members" className="mt-4 inline-block text-sm text-primary hover:underline">
           Retour à la liste
         </Link>
       </div>
@@ -97,7 +97,7 @@ export default function AdminMemberDetailPage({
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-10">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/admin/members">← Retour</Link>
+          <Link href="/members">← Retour</Link>
         </Button>
         <Avatar className="h-12 w-12">
           {user.image && (

@@ -56,11 +56,18 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     include: { membership: true },
   });
 
-  // Update membership contact fields if membership exists
-  if (updatedUser.membership && (phone !== undefined || emergencyContact !== undefined || emergencyContactPhone !== undefined)) {
-    await prisma.membership.update({
+  // Upsert membership contact fields when any contact field is provided
+  if (phone !== undefined || emergencyContact !== undefined || emergencyContactPhone !== undefined) {
+    await prisma.membership.upsert({
       where: { userId: authResult.user.id },
-      data: {
+      create: {
+        userId: authResult.user.id,
+        renewalDate: new Date(new Date().getFullYear() + 1, 0, 1), // Jan 1st next year
+        ...(phone !== undefined && { phone }),
+        ...(emergencyContact !== undefined && { emergencyContact }),
+        ...(emergencyContactPhone !== undefined && { emergencyContactPhone }),
+      },
+      update: {
         ...(phone !== undefined && { phone }),
         ...(emergencyContact !== undefined && { emergencyContact }),
         ...(emergencyContactPhone !== undefined && { emergencyContactPhone }),
