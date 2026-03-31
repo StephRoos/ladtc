@@ -50,10 +50,9 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
   const { name, phone, emergencyContact, emergencyContactPhone } = parsed.data;
 
   // Update user name if provided
-  const updatedUser = await prisma.user.update({
+  await prisma.user.update({
     where: { id: authResult.user.id },
     data: { ...(name !== undefined && { name }) },
-    include: { membership: true },
   });
 
   // Upsert membership contact fields when any contact field is provided

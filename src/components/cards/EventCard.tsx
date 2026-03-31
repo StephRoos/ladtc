@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -72,10 +73,11 @@ export function EventCard({ event }: EventCardProps): React.ReactNode {
       <Card className="h-full overflow-hidden border-border bg-card transition-all duration-200 group-hover:border-primary/40">
         {(event.image || event.featuredImageUrl) && (
           <div className="relative aspect-video w-full overflow-hidden">
-            <img
+            <Image
               src={event.image || event.featuredImageUrl || ""}
               alt={event.title}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
             />
           </div>
         )}

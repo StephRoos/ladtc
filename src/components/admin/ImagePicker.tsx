@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGallery } from "@/hooks/use-gallery";
 import { ImageIcon, Upload, X, Images, Loader2 } from "lucide-react";
@@ -76,9 +77,11 @@ export function ImagePicker({
   if (value) {
     return (
       <div className="relative w-full max-w-sm">
-        <img
+        <Image
           src={value}
           alt="Aperçu"
+          width={400}
+          height={225}
           className="rounded-lg border border-border object-cover w-full aspect-video"
         />
         {onClear && (
@@ -163,10 +166,11 @@ export function ImagePicker({
                 onClick={() => onSelect(photo.url)}
                 className="group relative aspect-square overflow-hidden rounded-lg border border-border transition-all hover:border-primary hover:ring-2 hover:ring-primary/20"
               >
-                <img
+                <Image
                   src={photo.url}
                   alt={photo.title}
-                  className="h-full w-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               </button>
             ))}

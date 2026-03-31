@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -37,20 +37,16 @@ export function MemberForm({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const updateMember = useUpdateMember();
 
-  const defaultRenewalDate = useMemo(
-    () =>
-      membership?.renewalDate
-        ? new Date(membership.renewalDate).toISOString().split("T")[0]
-        : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-    [membership?.renewalDate],
+  const [defaultRenewalDate] = useState(() =>
+    membership?.renewalDate
+      ? new Date(membership.renewalDate).toISOString().split("T")[0]
+      : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
   );
 
-  const defaultPaidAt = useMemo(
-    () =>
-      membership?.paidAt
-        ? new Date(membership.paidAt).toISOString().split("T")[0]
-        : "",
-    [membership?.paidAt],
+  const [defaultPaidAt] = useState(() =>
+    membership?.paidAt
+      ? new Date(membership.paidAt).toISOString().split("T")[0]
+      : "",
   );
 
   const {

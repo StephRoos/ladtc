@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -30,9 +30,8 @@ export function CreateMemberForm({
   isSubmitting,
   error,
 }: CreateMemberFormProps): React.ReactNode {
-  const defaultRenewalDate = useMemo(
+  const [defaultRenewalDate] = useState(
     () => new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-    [],
   );
 
   const {

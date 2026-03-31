@@ -6,11 +6,13 @@
 
 const BASE_URL = "http://localhost:3000";
 
+import type { UserRole } from "../src/generated/prisma/client";
+
 interface TestAccount {
   name: string;
   email: string;
   password: string;
-  role: string;
+  role: UserRole;
 }
 
 const accounts: TestAccount[] = [

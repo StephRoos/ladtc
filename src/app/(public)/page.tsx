@@ -2,14 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BlogGrid } from "@/components/cards/BlogGrid";
 import { EventCard } from "@/components/cards/EventCard";
 import { useBlogPosts } from "@/hooks/use-blog-posts";
 import { useEvents } from "@/hooks/use-events";
-import { siteConfig, getRandomDtcMeaning } from "@/config/site";
+import { getRandomDtcMeaning } from "@/config/site";
 
 function LatestBlogSection(): React.ReactNode {
   const { data, isLoading, isError } = useBlogPosts(1, 3);
@@ -64,7 +64,7 @@ function LatestBlogSection(): React.ReactNode {
 }
 
 function HeroSection(): React.ReactNode {
-  const [meaning] = useState(() => getRandomDtcMeaning());
+  useState(() => getRandomDtcMeaning());
 
   return (
     <section className="relative min-h-[70vh] overflow-hidden">
