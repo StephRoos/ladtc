@@ -18,7 +18,14 @@ services:
     restart: unless-stopped
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        # NEXT_PUBLIC_* must be passed as build args so Next.js can inline them
+        # into the client bundle during `pnpm build`. Setting them only under
+        # `environment:` (runtime) leaves the bundle pointing at the default
+        # localhost:3000, which the browser CSP then blocks.
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
     ports:
       - "3000:3000"
     environment:
