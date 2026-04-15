@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { memberCreateSchema } from "@/lib/schemas";
-import { sendWelcomeEmail } from "@/lib/email";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 
 /**
  * POST /api/admin/members
- * Creates a new user via BetterAuth and their membership via Prisma.
- * Restricted to COMMITTEE and ADMIN roles.
+ * Creates a new user directly via Prisma (email pre-verified because admin vouches
+ * for the address), then triggers a password reset so the user can define their
+ * own password. Only one email is sent — the reset link acts as both the welcome
+ * and the verification. Restricted to COMMITTEE and ADMIN roles.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const authResult = await requireCommittee(request);
@@ -31,7 +32,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const { name, email, status, renewalDate, paidAt, amount, notes } = parsed.data;
 
-  // Check if email already exists
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
     return NextResponse.json(
@@ -41,39 +41,32 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // Create user via BetterAuth (handles password hashing + account record)
-    const temporaryPassword = crypto.randomUUID();
-    const signUpResult = await auth.api.signUpEmail({
-      body: { name, email, password: temporaryPassword },
+    // Create user + credential account directly (bypass signUpEmail to avoid the
+    // automatic verification email — admin-created accounts are pre-verified).
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        emailVerified: true,
+        accounts: {
+          create: {
+            accountId: email,
+            providerId: "credential",
+            password: null,
+          },
+        },
+      },
     });
 
-    if (!signUpResult?.user?.id) {
-      return NextResponse.json(
-        { error: "Erreur lors de la création du compte" },
-        { status: 500 }
-      );
-    }
-
-    const userId = signUpResult.user.id;
-
-    // Create the membership
     const membership = await prisma.membership.create({
       data: {
-        userId,
+        userId: user.id,
         status,
         renewalDate: new Date(renewalDate),
         paidAt: paidAt ? new Date(paidAt) : null,
         amount,
         notes: notes ?? null,
       },
-    });
-
-    // Fetch the full user record
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-
-    // Send welcome email (non-blocking)
-    sendWelcomeEmail({ name, email }).catch((err) => {
-      console.error("[CreateMember] Failed to send welcome email:", err);
     });
 
     // Trigger password reset so the new user can define their own password
