@@ -455,3 +455,51 @@ export function orderStatusTemplate(order: Order, status: string): string {
   `;
   return baseTemplate(content);
 }
+
+const ROLE_LABELS: Record<string, string> = {
+  MEMBER: "Membre",
+  COACH: "Coach",
+  COMMITTEE: "Membre du comité",
+  ADMIN: "Administrateur",
+};
+
+/**
+ * Generates the role update notification email.
+ *
+ * @param name - User display name or email
+ * @param newRole - New role assigned
+ * @param committeeRole - Optional committee function (e.g. "Trésorier")
+ * @returns Full HTML email string
+ */
+export function roleUpdateTemplate(
+  name: string,
+  newRole: string,
+  committeeRole: string | null,
+): string {
+  const roleLabel = ROLE_LABELS[newRole] ?? newRole;
+  const functionLine =
+    newRole === "COMMITTEE" && committeeRole
+      ? `<p style="margin:8px 0 0 0;color:#cbd5e1;font-size:14px;">Fonction : <strong style="color:${TEXT_COLOR};">${committeeRole}</strong></p>`
+      : "";
+
+  const content = `
+    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Votre rôle a été mis à jour</h2>
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
+      Bonjour ${name},<br/>
+      Le comité de <strong style="color:${TEXT_COLOR};">${CLUB_NAME}</strong> vient de mettre à jour votre rôle sur le site.
+    </p>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0 0 8px 0;color:#94a3b8;font-size:13px;">Nouveau rôle :</p>
+      <p style="margin:0;color:${PRIMARY_COLOR};font-size:18px;font-weight:600;">${roleLabel}</p>
+      ${functionLine}
+    </div>
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
+      Les permissions correspondantes sont actives à la prochaine connexion sur <a href="${CLUB_WEBSITE}" style="color:${PRIMARY_COLOR};">${CLUB_WEBSITE}</a>.
+    </p>
+    <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
+      En cas de question, contacter le comité.<br/>
+      <strong style="color:${TEXT_COLOR};">L'équipe ${CLUB_NAME}</strong>
+    </p>
+  `;
+  return baseTemplate(content);
+}
