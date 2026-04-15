@@ -76,6 +76,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       console.error("[CreateMember] Failed to send welcome email:", err);
     });
 
+    // Trigger password reset so the new user can define their own password
+    auth.api
+      .requestPasswordReset({
+        body: {
+          email,
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/auth/new-password`,
+        },
+      })
+      .catch((err: unknown) => {
+        console.error("[CreateMember] Failed to send password reset:", err);
+      });
+
     return NextResponse.json({ user, membership }, { status: 201 });
   } catch (err) {
     console.error("Failed to create member:", err);
