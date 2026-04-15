@@ -1,7 +1,7 @@
 import type { Order } from "@/types";
 
 const CLUB_NAME = "la dtc";
-const CLUB_FULL_NAME = "Les Amis Du Trail des Collines";
+const CLUB_FULL_NAME = "LADTC";
 const CLUB_EMAIL = "noreply@ladtc.be";
 const CLUB_WEBSITE = "https://ladtc.be";
 const PRIMARY_COLOR = "#FF8C00";

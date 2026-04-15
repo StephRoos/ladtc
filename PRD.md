@@ -2,7 +2,7 @@
 
 ## Overview
 
-LADTC (Les Amis Du Trail des Collines) is a Belgian trail running club based in Ellezelles, "Pays des Collines" region. The club has ~70 members and currently operates through a WordPress site at ladtc.be. This project creates a modern Next.js frontend that consumes the existing WordPress REST API while adding custom features for member management and equipment orders.
+LADTC is a Belgian trail running club based in Ellezelles, "Pays des Collines" region. The club has ~70 members and currently operates through a WordPress site at ladtc.be. This project creates a modern Next.js frontend that consumes the existing WordPress REST API while adding custom features for member management and equipment orders.
 
 The new website will be part of a larger ecosystem alongside HillsRun (Garmin dashboard) and RecettesApp (recipe management), sharing the same design system, theme, and technical stack.
 

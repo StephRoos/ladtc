@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7+-blue.svg)](https://www.typescriptlang.org/)
 [![License: Private](https://img.shields.io/badge/License-Private-red.svg)]()
 
-Modern Next.js website for **LADTC** (Les Amis Du Trail des Collines), a trail running club in Ellezelles, Belgium.
+Modern Next.js website for **LADTC**, a trail running club in Ellezelles, Belgium.
 
 The website consumes the existing WordPress REST API for editorial content (blog, events, photos) while providing custom features for member management and equipment orders.
 

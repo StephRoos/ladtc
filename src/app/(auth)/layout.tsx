@@ -24,7 +24,7 @@ export default function AuthLayout({
           <span className="text-3xl font-bold text-primary">LADTC</span>
         </Link>
         <p className="mt-1 text-sm text-muted-foreground">
-          Les Amis Du Trail des Collines
+          Club de trail · Ellezelles
         </p>
       </div>
       <div className="w-full max-w-md">{children}</div>

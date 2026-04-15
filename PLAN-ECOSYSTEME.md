@@ -7,7 +7,7 @@ Trois projets interconnectés autour du trail running et du bien-être :
 | Projet | Description | État | URL |
 |--------|-------------|------|-----|
 | **HillsRun** | Dashboard Garmin pour athlètes et coaches | Production | hillsrun.com (Vercel) + api.hillsrun.com (NAS) |
-| **LADTC** | Site du club trail Les Amis Du Trail des Collines | Production (auth cassée) | ladtc.be (Vercel) |
+| **LADTC** | Site du club trail LADTC (Ellezelles) | Production (auth cassée) | ladtc.be (Vercel) |
 | **RecettesApp** | Gestion de recettes, nutrition sportive | Non commencé | — |
 
 **Infrastructure commune** :

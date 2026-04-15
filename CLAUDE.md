@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-LADTC (Les Amis Du Trail des Collines) is a modern Next.js website for a Belgian trail running club. It uses an integrated Prisma/PostgreSQL blog for editorial content and maintains a PostgreSQL database for member management, authentication, equipment orders, and blog posts.
+LADTC is a modern Next.js website for a Belgian trail running club. It uses an integrated Prisma/PostgreSQL blog for editorial content and maintains a PostgreSQL database for member management, authentication, equipment orders, and blog posts.
 
 The project is part of an ecosystem with HillsRun and RecettesApp, sharing the same design system, theme, and technical conventions.
 
