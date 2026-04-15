@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useUsers, useUpdateUserRole } from "@/hooks/use-users";
+import { useUsers, useUpdateUserRole, useDeleteUser } from "@/hooks/use-users";
 import { RoleSelect } from "@/components/admin/users/RoleSelect";
 import { UserAvatarEditor } from "@/components/admin/users/UserAvatarEditor";
 import {
@@ -37,6 +37,7 @@ export default function AdminUsersPage(): React.ReactNode {
 
   const { data, isLoading } = useUsers(page);
   const updateRole = useUpdateUserRole();
+  const deleteUser = useDeleteUser();
 
   const isAdmin = user && "role" in user && user.role === "ADMIN";
 
@@ -67,6 +68,18 @@ export default function AdminUsersPage(): React.ReactNode {
     }
   }
 
+  async function handleDelete(userId: string, label: string): Promise<void> {
+    if (!confirm(`Supprimer définitivement l'utilisateur « ${label} » ? Cette action est irréversible.`)) {
+      return;
+    }
+    try {
+      await deleteUser.mutateAsync(userId);
+      toast.success("Utilisateur supprimé");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erreur lors de la suppression");
+    }
+  }
+
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-10">
       <div>
@@ -93,6 +106,7 @@ export default function AdminUsersPage(): React.ReactNode {
                 <TableHead>Rôle actuel</TableHead>
                 <TableHead>Modifier le rôle</TableHead>
                 <TableHead>Inscrit le</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -132,6 +146,21 @@ export default function AdminUsersPage(): React.ReactNode {
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
                     {new Date(u.createdAt).toLocaleDateString("fr-BE")}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {u.id !== user?.id ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive hover:text-destructive"
+                        onClick={() => handleDelete(u.id, u.name ?? u.email)}
+                        disabled={deleteUser.isPending}
+                      >
+                        Supprimer
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">—</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

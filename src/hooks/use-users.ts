@@ -119,3 +119,30 @@ export function useUpdateUserImage(): ReturnType<
     },
   });
 }
+
+/**
+ * Delete a user via the API.
+ */
+async function deleteUser(id: string): Promise<void> {
+  const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
+  if (!res.ok) {
+    const err = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(err.error ?? "Impossible de supprimer l'utilisateur");
+  }
+}
+
+/**
+ * Hook to delete a user. Invalidates users list on success.
+ */
+export function useDeleteUser(): ReturnType<
+  typeof useMutation<void, Error, string>
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => deleteUser(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+    },
+  });
+}
