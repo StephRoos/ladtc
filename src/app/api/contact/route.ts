@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { sendContactMessage } from "@/lib/email";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
@@ -11,7 +12,7 @@ const contactSchema = z.object({
 
 /**
  * POST /api/contact
- * Handle contact form submission (logs for now, email sending in future)
+ * Forwards the submitted contact form to the committee mailbox.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -25,14 +26,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const { name, email, subject, message, newsletter } = parsed.data;
-
-    // TODO: Send email via Resend (contact form data is not logged for privacy)
-    void name;
-    void email;
-    void subject;
-    void message;
-    void newsletter;
+    await sendContactMessage(parsed.data);
 
     return NextResponse.json({
       success: true,

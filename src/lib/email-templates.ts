@@ -60,6 +60,19 @@ function baseTemplate(content: string): string {
 }
 
 /**
+ * Escapes HTML-unsafe characters in user-provided strings before injecting
+ * them into email HTML. Only essential for untrusted inputs (contact form).
+ */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
  * Returns a styled button HTML element.
  *
  * @param href - URL the button links to
@@ -499,6 +512,50 @@ export function roleUpdateTemplate(
     <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
       En cas de question, contacter le comité.<br/>
       <strong style="color:${TEXT_COLOR};">L'équipe ${CLUB_NAME}</strong>
+    </p>
+  `;
+  return baseTemplate(content);
+}
+
+/**
+ * Generates the email sent to the committee when someone submits the
+ * public contact form. Escapes user-provided values to prevent HTML injection.
+ *
+ * @param data - Values submitted in the contact form
+ * @returns Full HTML email string
+ */
+export function contactFormTemplate(data: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  newsletter?: boolean;
+}): string {
+  const name = escapeHtml(data.name);
+  const email = escapeHtml(data.email);
+  const subject = escapeHtml(data.subject);
+  const message = escapeHtml(data.message).replace(/\n/g, "<br/>");
+  const newsletterLine = data.newsletter
+    ? `<p style="margin:8px 0 0 0;color:#94a3b8;font-size:13px;">Souhaite s'inscrire à la newsletter.</p>`
+    : "";
+
+  const content = `
+    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Nouveau message via le formulaire de contact</h2>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:16px 20px;margin:16px 0;">
+      <p style="margin:0 0 4px 0;color:#94a3b8;font-size:13px;">De</p>
+      <p style="margin:0;color:${TEXT_COLOR};font-size:15px;"><strong>${name}</strong> &lt;<a href="mailto:${email}" style="color:${PRIMARY_COLOR};">${email}</a>&gt;</p>
+      ${newsletterLine}
+    </div>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:16px 20px;margin:16px 0;">
+      <p style="margin:0 0 4px 0;color:#94a3b8;font-size:13px;">Sujet</p>
+      <p style="margin:0;color:${TEXT_COLOR};font-size:15px;">${subject}</p>
+    </div>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:16px 20px;margin:16px 0;">
+      <p style="margin:0 0 8px 0;color:#94a3b8;font-size:13px;">Message</p>
+      <p style="margin:0;color:#cbd5e1;line-height:1.6;font-size:14px;">${message}</p>
+    </div>
+    <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
+      Répondre directement à <a href="mailto:${email}" style="color:${PRIMARY_COLOR};">${email}</a>.
     </p>
   `;
   return baseTemplate(content);

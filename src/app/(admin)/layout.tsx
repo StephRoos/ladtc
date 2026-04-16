@@ -1,11 +1,16 @@
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { TRAINING_ROLES } from "@/lib/auth-guard";
+import type { UserRole } from "@/types";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { Header } from "@/components/common/Header";
 import { Footer } from "@/components/common/Footer";
 
 /**
- * Admin layout — fetches session server-side to pass correct role to AdminNav.
+ * Admin layout — fetches session server-side, enforces role access, and
+ * passes the correct flags to AdminNav. Any user whose role is not in
+ * TRAINING_ROLES (COACH, COMMITTEE, ADMIN) is redirected to the dashboard.
  */
 export default async function AdminLayout({
   children,
@@ -13,7 +18,17 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }): Promise<React.ReactNode> {
   const session = await auth.api.getSession({ headers: await headers() });
-  const isAdmin = session?.user?.role === "ADMIN";
+
+  if (!session?.user) {
+    redirect("/auth/login?callbackUrl=/admin/dashboard");
+  }
+
+  const role = session.user.role as UserRole | undefined;
+  if (!role || !TRAINING_ROLES.includes(role)) {
+    redirect("/dashboard");
+  }
+
+  const isAdmin = role === "ADMIN";
 
   return (
     <div className="flex min-h-screen flex-col">

@@ -6,10 +6,15 @@ import {
   orderStatusTemplate,
   paymentConfirmationTemplate,
   membershipPaymentConfirmationTemplate,
+  contactFormTemplate,
 } from "./email-templates";
 
 const FROM_EMAIL = "LADTC <noreply@ladtc.be>";
 const COMMITTEE_EMAIL = "bureau@ladtc.be";
+
+interface SendEmailOptions {
+  replyTo?: string;
+}
 
 /**
  * Sends an email using Resend. Falls back to console.log if RESEND_API_KEY is not set.
@@ -17,14 +22,21 @@ const COMMITTEE_EMAIL = "bureau@ladtc.be";
  * @param to - Recipient email address
  * @param subject - Email subject line
  * @param html - HTML body content
+ * @param options - Optional extras (e.g. replyTo for contact form forwarding)
  */
-export async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+export async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+  options: SendEmailOptions = {},
+): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
 
   if (!apiKey) {
     console.log("[Email fallback] RESEND_API_KEY not set — logging email instead of sending");
     console.log(`[Email] To: ${to}`);
     console.log(`[Email] Subject: ${subject}`);
+    if (options.replyTo) console.log(`[Email] Reply-To: ${options.replyTo}`);
     console.log(`[Email] HTML length: ${html.length} chars`);
     return;
   }
@@ -37,6 +49,7 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
     to,
     subject,
     html,
+    replyTo: options.replyTo,
   });
 
   if (error) {
@@ -148,6 +161,22 @@ export async function sendMembershipPaymentConfirmation(
   const subject = "Cotisation LADTC confirmée";
   const html = membershipPaymentConfirmationTemplate(name, amount, dateStr);
   await sendEmail(email, subject, html);
+}
+
+/**
+ * Forwards a public contact form submission to the committee mailbox.
+ * Sets `replyTo` so a direct reply lands in the submitter's inbox.
+ */
+export async function sendContactMessage(data: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  newsletter?: boolean;
+}): Promise<void> {
+  const html = contactFormTemplate(data);
+  const subject = `[Contact LADTC] ${data.subject}`;
+  await sendEmail(COMMITTEE_EMAIL, subject, html, { replyTo: data.email });
 }
 
 // Export committee contact for convenience

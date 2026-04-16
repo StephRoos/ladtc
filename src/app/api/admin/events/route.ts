@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { eventSchema } from "@/lib/schemas";
-import { requireCommittee, requireRole, isAuthError, TRAINING_ROLES, COMMITTEE_ROLES } from "@/lib/auth-guard";
+import { requireRole, isAuthError, TRAINING_ROLES, COMMITTEE_ROLES } from "@/lib/auth-guard";
 
 /**
  * GET /api/admin/events
- * Returns all events (past and future). Restricted to COMMITTEE and ADMIN.
+ * Returns all events (past and future). Accessible to COACH, COMMITTEE, and ADMIN
+ * so coaches can list the training sessions they are allowed to create.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const authResult = await requireCommittee(request);
+  const authResult = await requireRole(request, TRAINING_ROLES);
   if (isAuthError(authResult)) return authResult;
 
   const events = await prisma.event.findMany({
