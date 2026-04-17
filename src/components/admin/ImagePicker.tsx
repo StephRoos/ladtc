@@ -2,9 +2,11 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGallery } from "@/hooks/use-gallery";
-import { ImageIcon, Upload, X, Images, Loader2 } from "lucide-react";
+import { ImageIcon, Upload, X, Images, Link, Loader2 } from "lucide-react";
 
 interface ImagePickerProps {
   value?: string;
@@ -24,6 +26,7 @@ export function ImagePicker({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [externalUrl, setExternalUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { data: galleryData, isLoading: galleryLoading } = useGallery(1, 50);
 
@@ -108,6 +111,10 @@ export function ImagePicker({
           <Images className="h-3.5 w-3.5" />
           Galerie
         </TabsTrigger>
+        <TabsTrigger value="url" className="flex items-center gap-1.5">
+          <Link className="h-3.5 w-3.5" />
+          URL
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="upload">
@@ -164,7 +171,7 @@ export function ImagePicker({
                 key={photo.id}
                 type="button"
                 onClick={() => onSelect(photo.url)}
-                className="group relative aspect-square overflow-hidden rounded-lg border border-border transition-all hover:border-primary hover:ring-2 hover:ring-primary/20"
+                className="group relative aspect-[4/3] overflow-hidden rounded-lg border border-border transition-all hover:border-primary hover:ring-2 hover:ring-primary/20"
               >
                 <Image
                   src={photo.url}
@@ -180,6 +187,32 @@ export function ImagePicker({
             Aucune photo dans la galerie.
           </div>
         )}
+      </TabsContent>
+
+      <TabsContent value="url">
+        <div className="flex gap-2">
+          <Input
+            type="url"
+            placeholder="https://exemple.com/image.jpg"
+            value={externalUrl}
+            onChange={(e) => setExternalUrl(e.target.value)}
+          />
+          <Button
+            type="button"
+            onClick={() => {
+              if (externalUrl.trim()) {
+                onSelect(externalUrl.trim());
+                setExternalUrl("");
+              }
+            }}
+            disabled={!externalUrl.trim()}
+          >
+            Valider
+          </Button>
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Coller l&apos;adresse directe d&apos;une image hébergée en ligne.
+        </p>
       </TabsContent>
     </Tabs>
   );

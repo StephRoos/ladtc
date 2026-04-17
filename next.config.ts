@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: blob: https://ladtc.be",
+            "img-src 'self' data: blob: https://ladtc.be https:",
             "font-src 'self'",
             "connect-src 'self' https://*.sentry.io",
             "frame-ancestors 'none'",
@@ -38,13 +38,17 @@ const nextConfig: NextConfig = {
     },
   ],
 
-  // Image optimization — local uploads served from /uploads/, remote from ladtc.be
+  // Image optimization — local uploads + any HTTPS source (blog/gallery external URLs)
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "ladtc.be",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },
