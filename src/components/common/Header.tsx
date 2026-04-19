@@ -130,7 +130,7 @@ export function Header(): React.ReactNode {
                 <Link href="/auth/login">Se connecter</Link>
               </Button>
               <Button size="sm" asChild>
-                <Link href="/auth/register">S&apos;inscrire</Link>
+                <Link href="/auth/register">Devenir membre</Link>
               </Button>
             </>
           )}
@@ -245,7 +245,7 @@ export function Header(): React.ReactNode {
                 </Button>
                 <Button size="sm" asChild>
                   <Link href="/auth/register" onClick={() => setMenuOpen(false)}>
-                    S&apos;inscrire
+                    Devenir membre
                   </Link>
                 </Button>
               </>

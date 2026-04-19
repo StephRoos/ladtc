@@ -59,9 +59,10 @@ export function RegisterForm(): React.ReactNode {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Créer un compte</CardTitle>
+        <CardTitle>Devenir membre</CardTitle>
         <CardDescription>
-          Rejoignez la communauté des membres LADTC
+          Créer un compte pour rejoindre le club et accéder à
+          l&apos;espace membre
         </CardDescription>
       </CardHeader>
 
@@ -156,7 +157,7 @@ export function RegisterForm(): React.ReactNode {
         )}
       </CardContent>
 
-      <CardFooter className="justify-center">
+      <CardFooter className="flex-col gap-2">
         <p className="text-sm text-muted-foreground">
           Déjà un compte ?{" "}
           <Link
@@ -164,6 +165,15 @@ export function RegisterForm(): React.ReactNode {
             className="font-medium text-primary hover:underline"
           >
             Se connecter
+          </Link>
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Une question ?{" "}
+          <Link
+            href="/contact"
+            className="font-medium text-primary hover:underline"
+          >
+            Formulaire de contact
           </Link>
         </p>
       </CardFooter>

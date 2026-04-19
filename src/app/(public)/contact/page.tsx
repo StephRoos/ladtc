@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { siteConfig } from "@/config/site";
 
@@ -32,10 +33,23 @@ export default function ContactPage(): React.ReactNode {
     <div className="mx-auto max-w-7xl px-4 py-12">
       {/* Header */}
       <div className="mb-12 text-center">
-        <h1 className="mb-4 text-4xl font-bold">Nous contacter</h1>
+        <h1 className="mb-4 text-4xl font-bold">Poser une question</h1>
         <p className="mx-auto max-w-xl text-muted-foreground">
-          Une question sur le club, envie de nous rejoindre ou simplement dire
-          bonjour ? N&apos;hésitez pas !
+          Une question sur les entraînements, les événements ou le
+          fonctionnement du club ? Ce formulaire est là pour ça.
+        </p>
+      </div>
+
+      {/* CTA towards registration */}
+      <div className="mb-8 rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+        <p className="text-sm text-muted-foreground">
+          Pour devenir membre du club, ce n&apos;est pas ici.{" "}
+          <Link
+            href="/auth/register"
+            className="font-medium text-primary hover:underline"
+          >
+            Créer un compte membre &rarr;
+          </Link>
         </p>
       </div>
 

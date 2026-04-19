@@ -112,7 +112,7 @@ export function ContactForm(): React.ReactNode {
           id="subject"
           type="text"
           className="w-full rounded-md border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-          placeholder="Je souhaite rejoindre le club"
+          placeholder="Question sur les entraînements, les événements..."
           {...register("subject")}
         />
         {errors.subject && (
