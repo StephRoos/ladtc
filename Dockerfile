@@ -67,4 +67,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget -qO- http://127.0.0.1:3000/api/health || exit 1
 
 # Run pending Prisma migrations then start the server
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+CMD ["sh", "-c", "node ./node_modules/prisma/build/index.js migrate deploy && node server.js"]
