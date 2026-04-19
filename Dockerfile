@@ -47,8 +47,11 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Prisma schema needed at runtime for migrations
+# Prisma schema + migrations needed at runtime for migrate deploy
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
 # Prisma 7 generates the client in src/generated/prisma (see prisma/schema.prisma)
 # .next/standalone already bundles it via tracing, so no extra copy needed
 
@@ -63,4 +66,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget -qO- http://127.0.0.1:3000/api/health || exit 1
 
-CMD ["node", "server.js"]
+# Run pending Prisma migrations then start the server
+CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
