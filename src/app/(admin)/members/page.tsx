@@ -104,7 +104,7 @@ export default function AdminMembersPage(): React.ReactNode {
               <CardContent>
                 <p className="text-3xl font-bold">{stats?.active ?? 0}</p>
                 <p className="text-xs text-muted-foreground">
-                  {stats?.upcomingRenewals ?? 0} renouvellements dans 30j
+                  {stats?.unpaidCurrentSeason ?? 0} non payé(s) cette saison
                 </p>
               </CardContent>
             </Card>
@@ -172,7 +172,7 @@ export default function AdminMembersPage(): React.ReactNode {
           <SelectContent>
             <SelectItem value="name">Nom</SelectItem>
             <SelectItem value="joinedAt">Date d&apos;inscription</SelectItem>
-            <SelectItem value="renewalDate">Date de renouvellement</SelectItem>
+            <SelectItem value="season">Saison payée</SelectItem>
           </SelectContent>
         </Select>
       </div>

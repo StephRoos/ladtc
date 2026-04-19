@@ -41,7 +41,7 @@ export interface Membership {
   userId: string;
   status: MembershipStatus;
   joinedAt: Date;
-  renewalDate: Date;
+  season: string | null;
   paidAt: Date | null;
   amount: number;
   phone: string | null;
@@ -64,7 +64,7 @@ export interface MemberStats {
   inactive: number;
   expired: number;
   revenue: number;
-  upcomingRenewals: number;
+  unpaidCurrentSeason: number;
   newThisWeek: number;
 }
 
@@ -75,7 +75,7 @@ export interface Member {
   user: User;
   status: MembershipStatus;
   joinedAt: Date;
-  renewalDate: Date;
+  season: string | null;
   paidAt: Date | null;
 }
 
@@ -208,7 +208,7 @@ export interface ContactFormData {
 export interface DashboardStats {
   totalMembers: number;
   activeMembers: number;
-  pendingRenewals: number;
+  unpaidCurrentSeason: number;
   pendingOrders: number;
   recentRegistrations: number;
 }

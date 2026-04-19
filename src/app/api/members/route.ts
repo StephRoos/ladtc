@@ -12,7 +12,7 @@ const PAGE_SIZE = 20;
  * Query params:
  *   - status: MembershipStatus filter
  *   - search: name or email substring
- *   - sort: "name" | "joinedAt" | "renewalDate" (default: "name")
+ *   - sort: "name" | "joinedAt" | "season" (default: "name")
  *   - page: page number (default: 1)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -46,8 +46,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const orderBy =
     sort === "joinedAt"
       ? { membership: { joinedAt: "asc" as const } }
-      : sort === "renewalDate"
-        ? { membership: { renewalDate: "asc" as const } }
+      : sort === "season"
+        ? { membership: { season: "asc" as const } }
         : { name: "asc" as const };
 
   const [total, users] = await Promise.all([

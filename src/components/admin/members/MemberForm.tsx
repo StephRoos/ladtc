@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { memberUpdateSchema, type MemberUpdateFormData } from "@/lib/schemas";
 import { useUpdateMember } from "@/hooks/use-members";
+import { getCurrentSeason } from "@/lib/membership";
 import type { Membership } from "@/types";
 
 interface MemberFormProps {
@@ -25,8 +26,7 @@ interface MemberFormProps {
 }
 
 /**
- * Form for committee/admin to edit a member's membership status, renewal date, and payment info.
- * Uses React Hook Form + Zod validation.
+ * Form for committee/admin to edit a member's membership status and season.
  */
 export function MemberForm({
   memberId,
@@ -36,18 +36,7 @@ export function MemberForm({
 }: MemberFormProps): React.ReactNode {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const updateMember = useUpdateMember();
-
-  const [defaultRenewalDate] = useState(() =>
-    membership?.renewalDate
-      ? new Date(membership.renewalDate).toISOString().split("T")[0]
-      : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-  );
-
-  const [defaultPaidAt] = useState(() =>
-    membership?.paidAt
-      ? new Date(membership.paidAt).toISOString().split("T")[0]
-      : "",
-  );
+  const currentSeason = getCurrentSeason();
 
   const {
     register,
@@ -59,8 +48,10 @@ export function MemberForm({
     resolver: zodResolver(memberUpdateSchema),
     defaultValues: {
       status: membership?.status ?? "PENDING",
-      renewalDate: defaultRenewalDate,
-      paidAt: defaultPaidAt || null,
+      season: membership?.season ?? null,
+      paidAt: membership?.paidAt
+        ? new Date(membership.paidAt).toISOString().split("T")[0]
+        : null,
       amount: membership?.amount ?? 50,
       notes: membership?.notes ?? "",
     },
@@ -80,11 +71,12 @@ export function MemberForm({
   }
 
   /**
-   * Marks the member as paid with today's date and sets status to ACTIVE.
+   * Marks the member as paid for the current season with today's date.
    */
   function handleMarkAsPaid(): void {
     const today = new Date().toISOString().split("T")[0];
     setValue("paidAt", today);
+    setValue("season", currentSeason);
     setValue("status", "ACTIVE");
   }
 
@@ -131,35 +123,19 @@ export function MemberForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="renewalDate">Date de renouvellement</Label>
+        <Label htmlFor="season">Saison payée</Label>
         <Input
-          id="renewalDate"
-          type="date"
-          {...register("renewalDate")}
+          id="season"
+          type="text"
+          placeholder={currentSeason}
+          {...register("season")}
         />
-        {errors.renewalDate && (
-          <p className="text-sm text-destructive">{errors.renewalDate.message}</p>
+        <p className="text-xs text-muted-foreground">
+          Format : AAAA-AAAA (ex. {currentSeason}). Saison en cours : {currentSeason}
+        </p>
+        {errors.season && (
+          <p className="text-sm text-destructive">{errors.season.message}</p>
         )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="paidAt">Date de paiement</Label>
-        <Input
-          id="paidAt"
-          type="date"
-          {...register("paidAt")}
-        />
-        {errors.paidAt && (
-          <p className="text-sm text-destructive">{errors.paidAt.message}</p>
-        )}
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={handleMarkAsPaid}
-        >
-          Marquer comme payé aujourd&apos;hui
-        </Button>
       </div>
 
       <div className="space-y-2">
@@ -192,6 +168,13 @@ export function MemberForm({
       <div className="flex gap-3">
         <Button type="submit" disabled={isSubmitting || updateMember.isPending}>
           {isSubmitting || updateMember.isPending ? "Enregistrement..." : "Enregistrer"}
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={handleMarkAsPaid}
+        >
+          Payé pour {currentSeason}
         </Button>
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>

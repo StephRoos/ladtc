@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getCurrentSeason, isSeasonCurrent, formatSeason } from "@/lib/membership";
 import type { Membership, MembershipStatus } from "@/types";
 
 interface StatusConfig {
@@ -21,25 +22,9 @@ const STATUS_CONFIG: Record<MembershipStatus, StatusConfig> = {
 
 /**
  * Returns the status badge config for a given MembershipStatus.
- *
- * @param status - The membership status
- * @returns Label and CSS class name for the badge
  */
 export function getMembershipStatusConfig(status: MembershipStatus): StatusConfig {
   return STATUS_CONFIG[status];
-}
-
-/**
- * Calculates the number of days until a renewal date.
- * Negative values mean the date has passed.
- *
- * @param renewalDate - The renewal date
- * @returns Number of days (positive = future, negative = past)
- */
-export function getDaysUntilRenewal(renewalDate: Date): number {
-  const now = new Date();
-  const diffMs = new Date(renewalDate).getTime() - now.getTime();
-  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 }
 
 interface MembershipCardProps {
@@ -47,7 +32,7 @@ interface MembershipCardProps {
 }
 
 /**
- * Card displaying membership status, renewal info, and payment details.
+ * Card displaying membership status and season payment info.
  */
 export function MembershipCard({ membership }: MembershipCardProps): React.ReactNode {
   if (!membership) {
@@ -66,7 +51,8 @@ export function MembershipCard({ membership }: MembershipCardProps): React.React
   }
 
   const statusConfig = getMembershipStatusConfig(membership.status);
-  const daysUntil = getDaysUntilRenewal(membership.renewalDate);
+  const paidForCurrentSeason = isSeasonCurrent(membership.season);
+  const currentSeason = getCurrentSeason();
 
   return (
     <Card>
@@ -85,47 +71,31 @@ export function MembershipCard({ membership }: MembershipCardProps): React.React
             </p>
           </div>
           <div>
-            <p className="text-muted-foreground">Renouvellement</p>
+            <p className="text-muted-foreground">Saison en cours</p>
+            <p className="font-medium">{currentSeason}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">Saison payée</p>
             <p className="font-medium">
-              {new Date(membership.renewalDate).toLocaleDateString("fr-BE")}
+              {membership.season ? formatSeason(membership.season) : "Aucune"}
             </p>
           </div>
-          {membership.paidAt && (
-            <div>
-              <p className="text-muted-foreground">Dernier paiement</p>
-              <p className="font-medium">
-                {new Date(membership.paidAt).toLocaleDateString("fr-BE")}
-              </p>
-            </div>
-          )}
           <div>
             <p className="text-muted-foreground">Montant annuel</p>
             <p className="font-medium">{membership.amount} EUR</p>
           </div>
         </div>
 
-        {membership.status === "ACTIVE" && daysUntil <= 30 && daysUntil > 0 && (
+        {paidForCurrentSeason && (
+          <div className="rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-400">
+            Cotisation à jour pour la {currentSeason}
+          </div>
+        )}
+        {!paidForCurrentSeason && membership.status !== "INACTIVE" && (
           <div className="space-y-2">
             <div className="rounded-md bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
-              Renouvellement dans {daysUntil} jour{daysUntil > 1 ? "s" : ""}
+              Cotisation non payée pour la saison {currentSeason}
             </div>
-            <Button asChild size="sm" className="w-full">
-              <Link href="/membership/pay">Renouveler en ligne</Link>
-            </Button>
-          </div>
-        )}
-        {membership.status === "EXPIRED" && (
-          <div className="space-y-2">
-            <div className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">
-              Cotisation expirée
-            </div>
-            <Button asChild size="sm" className="w-full">
-              <Link href="/membership/pay">Renouveler en ligne</Link>
-            </Button>
-          </div>
-        )}
-        {membership.status === "PENDING" && (
-          <div className="space-y-2">
             <Button asChild size="sm" className="w-full">
               <Link href="/membership/pay">Payer en ligne</Link>
             </Button>

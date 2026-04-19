@@ -104,7 +104,7 @@ export const profileUpdateSchema = z.object({
  */
 export const memberUpdateSchema = z.object({
   status: z.enum(["PENDING", "ACTIVE", "INACTIVE", "EXPIRED"]),
-  renewalDate: z.string().datetime().or(z.string().date()),
+  season: z.string().regex(/^\d{4}-\d{4}$/, "Format saison invalide (ex. 2025-2026)").nullable().optional(),
   paidAt: z.string().datetime().or(z.string().date()).nullable().optional(),
   amount: z.number().positive("Le montant doit être positif"),
   notes: z.string().optional(),
@@ -117,7 +117,7 @@ export const memberCreateSchema = z.object({
   name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
   email: z.string().email("Email invalide"),
   status: z.enum(["PENDING", "ACTIVE", "INACTIVE", "EXPIRED"]),
-  renewalDate: z.string().datetime().or(z.string().date()),
+  season: z.string().regex(/^\d{4}-\d{4}$/, "Format saison invalide (ex. 2025-2026)").nullable().optional(),
   paidAt: z.string().datetime().or(z.string().date()).nullable().optional(),
   amount: z.number().positive("Le montant doit être positif"),
   notes: z.string().optional(),

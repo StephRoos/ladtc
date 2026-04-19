@@ -8,6 +8,7 @@
 
 import { hashPassword } from "better-auth/crypto";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { getCurrentSeason } from "../src/lib/membership";
 import { PrismaClient } from "../src/generated/prisma/client";
 import type { UserRole } from "../src/generated/prisma/client";
 
@@ -57,7 +58,7 @@ async function main(): Promise<void> {
                 create: {
                   status: "ACTIVE",
                   amount: 50,
-                  renewalDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                  season: getCurrentSeason(),
                   paidAt: new Date(),
                 },
               },
@@ -76,7 +77,7 @@ async function main(): Promise<void> {
         userId: member.id,
         status: "PENDING",
         amount: 50,
-        renewalDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        season: null,
         paidAt: null,
       },
     });

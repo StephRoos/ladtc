@@ -184,21 +184,21 @@ export function emailVerificationTemplate(name: string, url: string): string {
  * Generates the renewal reminder email HTML template.
  *
  * @param name - Member's display name
- * @param date - Renewal date formatted as a string (e.g. "01/03/2025")
+ * @param season - Current season (e.g. "2025-2026")
  * @param amount - Membership fee amount in EUR
  * @returns Full HTML email string
  */
-export function renewalReminderTemplate(name: string, date: string, amount: number): string {
+export function renewalReminderTemplate(name: string, season: string, amount: number): string {
   const content = `
     <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Rappel de renouvellement, ${name}</h2>
     <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
-      Votre cotisation annuelle la dtc arrive à échéance. Voici un rappel des informations importantes.
+      La cotisation pour la saison ${season} n'a pas encore été réglée. Voici un rappel des informations.
     </p>
     <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
       <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
-          <td style="color:#94a3b8;font-size:13px;padding:6px 0;">Date d'échéance</td>
-          <td style="color:${PRIMARY_COLOR};font-weight:bold;text-align:right;padding:6px 0;">${date}</td>
+          <td style="color:#94a3b8;font-size:13px;padding:6px 0;">Saison</td>
+          <td style="color:${PRIMARY_COLOR};font-weight:bold;text-align:right;padding:6px 0;">${season}</td>
         </tr>
         <tr>
           <td colspan="2" style="border-top:1px solid #334155;padding:0;height:1px;"></td>
@@ -366,13 +366,13 @@ export function paymentConfirmationTemplate(order: Order): string {
  *
  * @param name - Member's display name
  * @param amount - Amount paid in EUR
- * @param renewalDate - New renewal date formatted as string
+ * @param season - Season paid for (e.g. "2025-2026")
  * @returns Full HTML email string
  */
 export function membershipPaymentConfirmationTemplate(
   name: string,
   amount: number,
-  renewalDate: string,
+  season: string,
 ): string {
   const content = `
     <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Cotisation confirmée</h2>
@@ -392,8 +392,8 @@ export function membershipPaymentConfirmationTemplate(
           <td colspan="2" style="border-top:1px solid #334155;padding:0;height:1px;"></td>
         </tr>
         <tr>
-          <td style="color:#94a3b8;font-size:13px;padding:6px 0;">Valide jusqu'au</td>
-          <td style="color:${TEXT_COLOR};font-weight:bold;text-align:right;padding:6px 0;">${renewalDate}</td>
+          <td style="color:#94a3b8;font-size:13px;padding:6px 0;">Saison</td>
+          <td style="color:${TEXT_COLOR};font-weight:bold;text-align:right;padding:6px 0;">${season}</td>
         </tr>
       </table>
     </div>

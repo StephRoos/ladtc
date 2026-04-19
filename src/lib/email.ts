@@ -1,4 +1,5 @@
 import type { MemberWithMembership, Order } from "@/types";
+import { getCurrentSeason } from "@/lib/membership";
 import {
   welcomeEmailTemplate,
   renewalReminderTemplate,
@@ -59,8 +60,7 @@ export async function sendEmail(
 }
 
 /**
- * Sends a renewal reminder email to a member.
- * Falls back to console.log if RESEND_API_KEY is not set.
+ * Sends a renewal reminder email to a member whose season is not current.
  *
  * @param member - Member with membership data
  */
@@ -68,18 +68,9 @@ export async function sendRenewalReminder(member: MemberWithMembership): Promise
   const membership = member.membership;
   if (!membership) return;
 
-  const renewalDate = membership.renewalDate.toLocaleDateString("fr-BE");
-  const daysUntil = Math.ceil(
-    (membership.renewalDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-  );
-
-  const subject =
-    daysUntil > 0
-      ? "Rappel de renouvellement LADTC"
-      : "Votre cotisation LADTC est à renouveler";
-
+  const subject = "Votre cotisation LADTC est à renouveler";
   const name = member.name ?? member.email;
-  const html = renewalReminderTemplate(name, renewalDate, membership.amount);
+  const html = renewalReminderTemplate(name, getCurrentSeason(), membership.amount);
 
   await sendEmail(member.email, subject, html);
 }
@@ -149,17 +140,16 @@ export async function sendPaymentConfirmation(order: Order): Promise<void> {
  * @param email - Member's email address
  * @param name - Member's display name
  * @param amount - Amount paid in EUR
- * @param renewalDate - New renewal date
+ * @param season - Season paid for (e.g. "2025-2026")
  */
 export async function sendMembershipPaymentConfirmation(
   email: string,
   name: string,
   amount: number,
-  renewalDate: Date,
+  season: string,
 ): Promise<void> {
-  const dateStr = renewalDate.toLocaleDateString("fr-BE");
   const subject = "Cotisation LADTC confirmée";
-  const html = membershipPaymentConfirmationTemplate(name, amount, dateStr);
+  const html = membershipPaymentConfirmationTemplate(name, amount, season);
   await sendEmail(email, subject, html);
 }
 

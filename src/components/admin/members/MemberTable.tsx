@@ -42,15 +42,14 @@ export function MemberTable({
               <TableHead>Email</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead>Inscription</TableHead>
-              <TableHead>Renouvellement</TableHead>
-              <TableHead>Dernier paiement</TableHead>
+              <TableHead>Saison payée</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {Array.from({ length: 5 }).map((_, i) => (
               <TableRow key={i}>
-                {Array.from({ length: 7 }).map((__, j) => (
+                {Array.from({ length: 6 }).map((__, j) => (
                   <TableCell key={j}>
                     <div className="h-4 w-full animate-pulse rounded bg-muted" />
                   </TableCell>
@@ -80,8 +79,7 @@ export function MemberTable({
             <TableHead>Email</TableHead>
             <TableHead>Statut</TableHead>
             <TableHead>Inscription</TableHead>
-            <TableHead>Renouvellement</TableHead>
-            <TableHead>Dernier paiement</TableHead>
+            <TableHead>Saison payée</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -120,14 +118,7 @@ export function MemberTable({
                     : "—"}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {membership
-                    ? new Date(membership.renewalDate).toLocaleDateString("fr-BE")
-                    : "—"}
-                </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {membership?.paidAt
-                    ? new Date(membership.paidAt).toLocaleDateString("fr-BE")
-                    : "—"}
+                  {membership?.season ?? "—"}
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">

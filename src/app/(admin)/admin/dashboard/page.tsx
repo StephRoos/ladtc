@@ -111,9 +111,9 @@ export default function AdminDashboardPage(): React.ReactNode {
               color="orange"
             />
             <DashboardCard
-              label="Renouvellements (30j)"
-              value={stats?.pendingRenewals ?? 0}
-              subtitle="arrivant à échéance"
+              label="Cotisations impayées"
+              value={stats?.unpaidCurrentSeason ?? 0}
+              subtitle="saison en cours"
               icon={Clock}
               color="red"
             />

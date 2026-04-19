@@ -30,7 +30,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { name, email, status, renewalDate, paidAt, amount, notes } = parsed.data;
+  const { name, email, status, season, paidAt, amount, notes } = parsed.data;
 
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       data: {
         userId: user.id,
         status,
-        renewalDate: new Date(renewalDate),
+        season: season ?? null,
         paidAt: paidAt ? new Date(paidAt) : null,
         amount,
         notes: notes ?? null,

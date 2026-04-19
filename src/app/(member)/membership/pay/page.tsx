@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getCurrentSeason, isSeasonCurrent } from "@/lib/membership";
 import type { Membership } from "@/types";
 
 async function fetchMembership(): Promise<Membership | null> {
@@ -18,7 +19,7 @@ async function fetchMembership(): Promise<Membership | null> {
 }
 
 /**
- * Membership payment page. Shows amount and pay button.
+ * Membership payment page. Shows season info and pay button.
  */
 export default function MembershipPayPage(): React.ReactNode {
   const { isLoading: authLoading } = useRequireAuth();
@@ -31,10 +32,8 @@ export default function MembershipPayPage(): React.ReactNode {
     staleTime: 2 * 60 * 1000,
   });
 
-  const [now] = useState(() => Date.now());
-  const daysUntil = membership?.renewalDate
-    ? Math.ceil((new Date(membership.renewalDate).getTime() - now) / (1000 * 60 * 60 * 24))
-    : 0;
+  const currentSeason = getCurrentSeason();
+  const paidForCurrentSeason = membership ? isSeasonCurrent(membership.season) : false;
 
   if (authLoading || isLoading) {
     return (
@@ -55,9 +54,6 @@ export default function MembershipPayPage(): React.ReactNode {
       </div>
     );
   }
-
-  const isActive = membership.status === "ACTIVE";
-  const canPay = !isActive || daysUntil <= 30;
 
   async function handlePay(): Promise<void> {
     setPayLoading(true);
@@ -96,17 +92,15 @@ export default function MembershipPayPage(): React.ReactNode {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle>Cotisation annuelle</CardTitle>
+          <CardTitle>Cotisation {currentSeason}</CardTitle>
           <Badge
             className={`border text-xs ${
-              isActive
+              paidForCurrentSeason
                 ? "bg-green-500/20 text-green-400 border-green-500/30"
-                : membership.status === "PENDING"
-                  ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
-                  : "bg-red-500/20 text-red-400 border-red-500/30"
+                : "bg-amber-500/20 text-amber-400 border-amber-500/30"
             }`}
           >
-            {isActive ? "Actif" : membership.status === "PENDING" ? "En attente" : "Expiré"}
+            {paidForCurrentSeason ? "Payée" : "Non payée"}
           </Badge>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -116,10 +110,8 @@ export default function MembershipPayPage(): React.ReactNode {
               <p className="text-2xl font-bold text-primary">{membership.amount.toFixed(2)} EUR</p>
             </div>
             <div>
-              <p className="text-muted-foreground">Renouvellement</p>
-              <p className="font-medium">
-                {new Date(membership.renewalDate).toLocaleDateString("fr-BE")}
-              </p>
+              <p className="text-muted-foreground">Saison</p>
+              <p className="font-medium">{currentSeason}</p>
             </div>
           </div>
 
@@ -129,14 +121,14 @@ export default function MembershipPayPage(): React.ReactNode {
             </div>
           )}
 
-          {canPay ? (
+          {!paidForCurrentSeason ? (
             <Button className="w-full" disabled={payLoading} onClick={handlePay}>
               {payLoading ? "Redirection vers Stripe..." : "Payer par carte ou Bancontact"}
             </Button>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              Votre cotisation est active. Le renouvellement sera possible 30 jours avant l&apos;échéance.
-            </p>
+            <div className="rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-400">
+              Cotisation à jour pour la saison {currentSeason}
+            </div>
           )}
 
           <p className="text-xs text-center text-muted-foreground">

@@ -100,19 +100,16 @@ async function handleMembershipDues(session: Stripe.Checkout.Session): Promise<v
     return;
   }
 
-  // Calculate new renewal date: +1 year from now or from current renewal date
-  const baseDate = membership.renewalDate > new Date()
-    ? new Date(membership.renewalDate)
-    : new Date();
-  const newRenewalDate = new Date(baseDate);
-  newRenewalDate.setFullYear(newRenewalDate.getFullYear() + 1);
+  // Set season to current season (Sept 1 to Aug 31)
+  const { getCurrentSeason } = await import("@/lib/membership");
+  const currentSeason = getCurrentSeason();
 
   await prisma.membership.update({
     where: { id: membershipId },
     data: {
       status: "ACTIVE",
       paidAt: new Date(),
-      renewalDate: newRenewalDate,
+      season: currentSeason,
       stripeSessionId: null, // Clear to allow next payment
     },
   });
@@ -123,7 +120,7 @@ async function handleMembershipDues(session: Stripe.Checkout.Session): Promise<v
       membership.user.email,
       name,
       membership.amount,
-      newRenewalDate,
+      currentSeason,
     );
   } catch (err) {
     console.error("[Stripe Webhook] Failed to send membership confirmation email:", err);

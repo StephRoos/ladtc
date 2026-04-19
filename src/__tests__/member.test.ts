@@ -1,9 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { profileUpdateSchema, memberUpdateSchema, memberCreateSchema } from "@/lib/schemas";
-import {
-  getMembershipStatusConfig,
-  getDaysUntilRenewal,
-} from "@/components/cards/MembershipCard";
+import { getMembershipStatusConfig } from "@/components/cards/MembershipCard";
+import { getCurrentSeason, isSeasonCurrent, formatSeason } from "@/lib/membership";
 import type { MembershipStatus } from "@/types";
 
 // ─── profileUpdateSchema ─────────────────────────────────────────────────────
@@ -52,7 +50,7 @@ describe("memberUpdateSchema", () => {
   it("accepts valid member update with ACTIVE status", () => {
     const result = memberUpdateSchema.safeParse({
       status: "ACTIVE",
-      renewalDate: "2026-12-31",
+      season: "2025-2026",
       paidAt: "2026-01-01",
       amount: 50,
       notes: "Paiement reçu par virement",
@@ -63,7 +61,7 @@ describe("memberUpdateSchema", () => {
   it("accepts valid member update without optional fields", () => {
     const result = memberUpdateSchema.safeParse({
       status: "PENDING",
-      renewalDate: "2026-12-31",
+      season: "2025-2026",
       amount: 50,
     });
     expect(result.success).toBe(true);
@@ -72,7 +70,7 @@ describe("memberUpdateSchema", () => {
   it("rejects invalid status value", () => {
     const result = memberUpdateSchema.safeParse({
       status: "INVALID_STATUS",
-      renewalDate: "2026-12-31",
+      season: "2025-2026",
       amount: 50,
     });
     expect(result.success).toBe(false);
@@ -81,7 +79,7 @@ describe("memberUpdateSchema", () => {
   it("rejects negative amount", () => {
     const result = memberUpdateSchema.safeParse({
       status: "ACTIVE",
-      renewalDate: "2026-12-31",
+      season: "2025-2026",
       amount: -10,
     });
     expect(result.success).toBe(false);
@@ -94,7 +92,7 @@ describe("memberUpdateSchema", () => {
   it("rejects zero amount", () => {
     const result = memberUpdateSchema.safeParse({
       status: "ACTIVE",
-      renewalDate: "2026-12-31",
+      season: "2025-2026",
       amount: 0,
     });
     expect(result.success).toBe(false);
@@ -105,7 +103,7 @@ describe("memberUpdateSchema", () => {
     for (const status of statuses) {
       const result = memberUpdateSchema.safeParse({
         status,
-        renewalDate: "2026-12-31",
+        season: "2025-2026",
         amount: 50,
       });
       expect(result.success).toBe(true);
@@ -115,11 +113,29 @@ describe("memberUpdateSchema", () => {
   it("accepts null paidAt", () => {
     const result = memberUpdateSchema.safeParse({
       status: "PENDING",
-      renewalDate: "2026-12-31",
+      season: "2025-2026",
       paidAt: null,
       amount: 50,
     });
     expect(result.success).toBe(true);
+  });
+
+  it("accepts null season", () => {
+    const result = memberUpdateSchema.safeParse({
+      status: "PENDING",
+      season: null,
+      amount: 50,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects invalid season format", () => {
+    const result = memberUpdateSchema.safeParse({
+      status: "ACTIVE",
+      season: "2025",
+      amount: 50,
+    });
+    expect(result.success).toBe(false);
   });
 });
 
@@ -131,7 +147,7 @@ describe("memberCreateSchema", () => {
       name: "Jean Dupont",
       email: "jean@example.com",
       status: "ACTIVE",
-      renewalDate: "2027-01-01",
+      season: "2025-2026",
       paidAt: "2026-02-27",
       amount: 50,
       notes: "Inscription en personne",
@@ -144,7 +160,7 @@ describe("memberCreateSchema", () => {
       name: "Marie Martin",
       email: "marie@example.com",
       status: "PENDING",
-      renewalDate: "2027-01-01",
+      season: null,
       amount: 50,
     });
     expect(result.success).toBe(true);
@@ -155,7 +171,7 @@ describe("memberCreateSchema", () => {
       name: "J",
       email: "j@example.com",
       status: "PENDING",
-      renewalDate: "2027-01-01",
+      season: "2025-2026",
       amount: 50,
     });
     expect(result.success).toBe(false);
@@ -170,7 +186,7 @@ describe("memberCreateSchema", () => {
       name: "Jean Dupont",
       email: "not-an-email",
       status: "PENDING",
-      renewalDate: "2027-01-01",
+      season: "2025-2026",
       amount: 50,
     });
     expect(result.success).toBe(false);
@@ -184,7 +200,7 @@ describe("memberCreateSchema", () => {
     const result = memberCreateSchema.safeParse({
       email: "jean@example.com",
       status: "PENDING",
-      renewalDate: "2027-01-01",
+      season: "2025-2026",
       amount: 50,
     });
     expect(result.success).toBe(false);
@@ -194,7 +210,7 @@ describe("memberCreateSchema", () => {
     const result = memberCreateSchema.safeParse({
       name: "Jean Dupont",
       status: "PENDING",
-      renewalDate: "2027-01-01",
+      season: "2025-2026",
       amount: 50,
     });
     expect(result.success).toBe(false);
@@ -205,7 +221,7 @@ describe("memberCreateSchema", () => {
       name: "Jean Dupont",
       email: "jean@example.com",
       status: "ACTIVE",
-      renewalDate: "2027-01-01",
+      season: "2025-2026",
       amount: -10,
     });
     expect(result.success).toBe(false);
@@ -219,7 +235,7 @@ describe("memberCreateSchema", () => {
     const result = memberCreateSchema.safeParse({
       name: "Jean Dupont",
       email: "jean@example.com",
-      renewalDate: "2027-01-01",
+      season: "2025-2026",
       amount: 50,
       status: "INVALID",
     });
@@ -232,7 +248,7 @@ describe("memberCreateSchema", () => {
       const result = memberCreateSchema.safeParse({
         name: "Jean Dupont",
         email: "jean@example.com",
-        renewalDate: "2027-01-01",
+        season: "2025-2026",
         amount: 50,
         status,
       });
@@ -245,20 +261,9 @@ describe("memberCreateSchema", () => {
       name: "Jean Dupont",
       email: "jean@example.com",
       status: "PENDING",
-      renewalDate: "2027-01-01",
+      season: "2025-2026",
       amount: 50,
       paidAt: null,
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it("accepts datetime format for renewalDate", () => {
-    const result = memberCreateSchema.safeParse({
-      name: "Jean Dupont",
-      email: "jean@example.com",
-      status: "ACTIVE",
-      renewalDate: "2027-01-01T00:00:00.000Z",
-      amount: 50,
     });
     expect(result.success).toBe(true);
   });
@@ -305,33 +310,42 @@ describe("getMembershipStatusConfig", () => {
   });
 });
 
-// ─── getDaysUntilRenewal ──────────────────────────────────────────────────────
+// ─── Season helpers ──────────────────────────────────────────────────────────
 
-describe("getDaysUntilRenewal", () => {
-  it("returns positive days for a future renewal date", () => {
-    const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    const days = getDaysUntilRenewal(futureDate);
-    expect(days).toBeGreaterThan(0);
-    expect(days).toBeLessThanOrEqual(30);
+describe("getCurrentSeason", () => {
+  it("returns a string in YYYY-YYYY format", () => {
+    const season = getCurrentSeason();
+    expect(season).toMatch(/^\d{4}-\d{4}$/);
   });
 
-  it("returns negative days for a past renewal date", () => {
-    const pastDate = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
-    const days = getDaysUntilRenewal(pastDate);
-    expect(days).toBeLessThan(0);
+  it("second year is first year + 1", () => {
+    const season = getCurrentSeason();
+    const [start, end] = season.split("-").map(Number);
+    expect(end).toBe(start + 1);
+  });
+});
+
+describe("isSeasonCurrent", () => {
+  it("returns true for the current season", () => {
+    expect(isSeasonCurrent(getCurrentSeason())).toBe(true);
   });
 
-  it("returns approximately 365 for a date one year away", () => {
-    const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
-    const days = getDaysUntilRenewal(oneYearFromNow);
-    expect(days).toBeGreaterThanOrEqual(364);
-    expect(days).toBeLessThanOrEqual(366);
+  it("returns false for a past season", () => {
+    expect(isSeasonCurrent("2020-2021")).toBe(false);
   });
 
-  it("returns 0 or 1 for today's date", () => {
-    const today = new Date();
-    const days = getDaysUntilRenewal(today);
-    expect(Math.abs(days)).toBeLessThanOrEqual(1);
+  it("returns false for null", () => {
+    expect(isSeasonCurrent(null)).toBe(false);
+  });
+});
+
+describe("formatSeason", () => {
+  it("formats a valid season string", () => {
+    expect(formatSeason("2025-2026")).toBe("Saison 2025-2026");
+  });
+
+  it("returns fallback for null", () => {
+    expect(formatSeason(null)).toBe("Aucune saison");
   });
 });
 

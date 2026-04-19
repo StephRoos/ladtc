@@ -21,17 +21,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Aucune cotisation trouvée" }, { status: 404 });
   }
 
-  // Block if active and renewal is more than 30 days away
-  if (membership.status === "ACTIVE") {
-    const daysUntilRenewal = Math.ceil(
-      (new Date(membership.renewalDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+  // Block if already paid for the current season
+  const { isSeasonCurrent } = await import("@/lib/membership");
+  if (membership.status === "ACTIVE" && isSeasonCurrent(membership.season)) {
+    return NextResponse.json(
+      { error: "La cotisation est déjà payée pour la saison en cours." },
+      { status: 400 },
     );
-    if (daysUntilRenewal > 30) {
-      return NextResponse.json(
-        { error: "Votre cotisation est encore active. Le renouvellement sera possible 30 jours avant l'échéance." },
-        { status: 400 },
-      );
-    }
   }
 
   // Idempotent: reuse existing session if still open

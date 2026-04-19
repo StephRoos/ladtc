@@ -58,7 +58,7 @@ export async function PATCH(
     );
   }
 
-  const { status, renewalDate, paidAt, amount, notes } = parsed.data;
+  const { status, season, paidAt, amount, notes } = parsed.data;
 
   const user = await prisma.user.findUnique({
     where: { id },
@@ -74,14 +74,14 @@ export async function PATCH(
     create: {
       userId: id,
       status,
-      renewalDate: new Date(renewalDate),
+      season: season ?? null,
       paidAt: paidAt ? new Date(paidAt) : null,
       amount,
       notes: notes ?? null,
     },
     update: {
       status,
-      renewalDate: new Date(renewalDate),
+      season: season ?? null,
       paidAt: paidAt ? new Date(paidAt) : null,
       amount,
       notes: notes ?? null,

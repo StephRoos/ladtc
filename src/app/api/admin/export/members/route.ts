@@ -25,7 +25,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     "Contact urgence",
     "Tél urgence",
     "Inscription",
-    "Renouvellement",
+    "Saison payée",
     "Dernier paiement",
     "Montant",
   ];
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       m?.emergencyContact ?? "",
       m?.emergencyContactPhone ?? "",
       m ? new Date(m.joinedAt).toLocaleDateString("fr-BE") : "",
-      m ? new Date(m.renewalDate).toLocaleDateString("fr-BE") : "",
+      m?.season ?? "",
       m?.paidAt ? new Date(m.paidAt).toLocaleDateString("fr-BE") : "",
       m ? m.amount.toFixed(2) : "",
     ];

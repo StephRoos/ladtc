@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { memberCreateSchema, type MemberCreateFormData } from "@/lib/schemas";
+import { getCurrentSeason } from "@/lib/membership";
 
 interface CreateMemberFormProps {
   onSubmit: (data: MemberCreateFormData) => Promise<void>;
@@ -23,16 +23,13 @@ interface CreateMemberFormProps {
 
 /**
  * Form for committee/admin to create a new member (user + membership).
- * Uses React Hook Form + Zod validation.
  */
 export function CreateMemberForm({
   onSubmit,
   isSubmitting,
   error,
 }: CreateMemberFormProps): React.ReactNode {
-  const [defaultRenewalDate] = useState(
-    () => new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-  );
+  const currentSeason = getCurrentSeason();
 
   const {
     register,
@@ -46,7 +43,7 @@ export function CreateMemberForm({
       name: "",
       email: "",
       status: "PENDING",
-      renewalDate: defaultRenewalDate,
+      season: null,
       paidAt: null,
       amount: 50,
       notes: "",
@@ -56,11 +53,12 @@ export function CreateMemberForm({
   const currentStatus = useWatch({ control, name: "status" });
 
   /**
-   * Marks the member as paid with today's date and sets status to ACTIVE.
+   * Marks the member as paid for the current season.
    */
   function handleMarkAsPaid(): void {
     const today = new Date().toISOString().split("T")[0];
     setValue("paidAt", today);
+    setValue("season", currentSeason);
     setValue("status", "ACTIVE");
   }
 
@@ -125,35 +123,19 @@ export function CreateMemberForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="renewalDate">Date de renouvellement</Label>
+        <Label htmlFor="season">Saison payée</Label>
         <Input
-          id="renewalDate"
-          type="date"
-          {...register("renewalDate")}
+          id="season"
+          type="text"
+          placeholder={currentSeason}
+          {...register("season")}
         />
-        {errors.renewalDate && (
-          <p className="text-sm text-destructive">{errors.renewalDate.message}</p>
+        <p className="text-xs text-muted-foreground">
+          Format : AAAA-AAAA (ex. {currentSeason}). Laisser vide si pas encore payé.
+        </p>
+        {errors.season && (
+          <p className="text-sm text-destructive">{errors.season.message}</p>
         )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="paidAt">Date de paiement</Label>
-        <Input
-          id="paidAt"
-          type="date"
-          {...register("paidAt")}
-        />
-        {errors.paidAt && (
-          <p className="text-sm text-destructive">{errors.paidAt.message}</p>
-        )}
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={handleMarkAsPaid}
-        >
-          Marquer comme payé aujourd&apos;hui
-        </Button>
       </div>
 
       <div className="space-y-2">
@@ -183,9 +165,18 @@ export function CreateMemberForm({
         )}
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Création en cours..." : "Créer le membre"}
-      </Button>
+      <div className="flex gap-3">
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Création en cours..." : "Créer le membre"}
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={handleMarkAsPaid}
+        >
+          Payé pour {currentSeason}
+        </Button>
+      </div>
     </form>
   );
 }

@@ -61,7 +61,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
       where: { userId: authResult.user.id },
       create: {
         userId: authResult.user.id,
-        renewalDate: new Date(new Date().getFullYear() + 1, 0, 1), // Jan 1st next year
+        season: null, // Season set when membership is paid
         ...(phone !== undefined && { phone }),
         ...(emergencyContact !== undefined && { emergencyContact }),
         ...(emergencyContactPhone !== undefined && { emergencyContactPhone }),

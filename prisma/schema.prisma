@@ -58,7 +58,7 @@ model Membership {
   user                  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   status                MembershipStatus @default(PENDING)
   joinedAt              DateTime         @default(now())
-  renewalDate           DateTime
+  season                String?          // Season paid for, e.g. "2025-2026" (Sept 1 to Aug 31)
   paidAt                DateTime?
   amount                Float            @default(50.0)
   phone                 String?
@@ -70,7 +70,7 @@ model Membership {
   updatedAt             DateTime         @updatedAt
 
   @@index([status])
-  @@index([renewalDate])
+  @@index([season])
 }
 
 enum MembershipStatus {

@@ -106,14 +106,14 @@ describe("DashboardStats shape", () => {
     const stats: DashboardStats = {
       totalMembers: 120,
       activeMembers: 95,
-      pendingRenewals: 8,
+      unpaidCurrentSeason: 8,
       pendingOrders: 3,
       recentRegistrations: 4,
     };
 
     expect(stats.totalMembers).toBe(120);
     expect(stats.activeMembers).toBe(95);
-    expect(stats.pendingRenewals).toBe(8);
+    expect(stats.unpaidCurrentSeason).toBe(8);
     expect(stats.pendingOrders).toBe(3);
     expect(stats.recentRegistrations).toBe(4);
   });
@@ -122,7 +122,7 @@ describe("DashboardStats shape", () => {
     const stats: DashboardStats = {
       totalMembers: 50,
       activeMembers: 40,
-      pendingRenewals: 5,
+      unpaidCurrentSeason: 5,
       pendingOrders: 2,
       recentRegistrations: 1,
     };
@@ -239,40 +239,6 @@ describe("role hierarchy", () => {
     expect(canAccess("ADMIN", ["ADMIN"])).toBe(true);
     expect(canAccess("COMMITTEE", ["ADMIN"])).toBe(false);
     expect(canAccess("MEMBER", ["ADMIN"])).toBe(false);
-  });
-});
-
-// ─── Date range calculation helpers ──────────────────────────────────────────
-
-describe("date range calculations", () => {
-  function getDaysFromNow(days: number): Date {
-    return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-  }
-
-  function isDueWithinDays(renewalDate: Date, days: number): boolean {
-    const now = new Date();
-    const cutoff = getDaysFromNow(days);
-    return renewalDate >= now && renewalDate <= cutoff;
-  }
-
-  it("identifies renewal due within 30 days", () => {
-    const renewalDate = getDaysFromNow(15);
-    expect(isDueWithinDays(renewalDate, 30)).toBe(true);
-  });
-
-  it("does not flag renewal due after 30 days", () => {
-    const renewalDate = getDaysFromNow(45);
-    expect(isDueWithinDays(renewalDate, 30)).toBe(false);
-  });
-
-  it("does not flag renewal that already passed", () => {
-    const renewalDate = getDaysFromNow(-5);
-    expect(isDueWithinDays(renewalDate, 30)).toBe(false);
-  });
-
-  it("flags renewal due exactly today", () => {
-    const renewalDate = new Date(Date.now() + 60 * 1000); // 1 minute from now
-    expect(isDueWithinDays(renewalDate, 30)).toBe(true);
   });
 });
 
