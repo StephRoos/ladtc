@@ -38,6 +38,24 @@ services:
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+    labels:
+      # Traefik labels — Cloudflare Tunnel delivers HTTP, so no redirect-to-https
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.gzip.compress=true"
+      # HTTP routers (Cloudflare Tunnel → port 80 → Traefik)
+      - "traefik.http.routers.ladtc-http.entryPoints=http"
+      - "traefik.http.routers.ladtc-http.rule=Host(`ladtc.be`) || Host(`www.ladtc.be`)"
+      - "traefik.http.routers.ladtc-http.middlewares=gzip"
+      - "traefik.http.routers.ladtc-http.service=ladtc"
+      # HTTPS routers (direct access / Let's Encrypt)
+      - "traefik.http.routers.ladtc-https.entryPoints=https"
+      - "traefik.http.routers.ladtc-https.rule=Host(`ladtc.be`) || Host(`www.ladtc.be`)"
+      - "traefik.http.routers.ladtc-https.middlewares=gzip"
+      - "traefik.http.routers.ladtc-https.tls=true"
+      - "traefik.http.routers.ladtc-https.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.ladtc-https.service=ladtc"
+      # Service
+      - "traefik.http.services.ladtc.loadbalancer.server.port=3000"
     volumes:
       - uploads:/app/public/uploads
     depends_on:
