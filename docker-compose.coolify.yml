@@ -26,9 +26,9 @@ services:
         # `environment:` (runtime) leaves the bundle pointing at the default
         # localhost:3000, which the browser CSP then blocks.
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
-    ports:
-      - "3000:3000"
     environment:
+      # Next.js standalone binds to HOSTNAME — must be 0.0.0.0 for Docker healthcheck
+      HOSTNAME: "0.0.0.0"
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-ladtc}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
