@@ -1,8 +1,11 @@
 #!/bin/sh
-set -e
 
 echo "Running Prisma migrations..."
-./node_modules/.bin/prisma migrate deploy
+if [ -f ./node_modules/prisma/build/index.js ]; then
+  node ./node_modules/prisma/build/index.js migrate deploy || echo "Warning: migration failed, continuing startup"
+else
+  echo "Prisma CLI not found, skipping migrations"
+fi
 
 echo "Starting Next.js server..."
 exec node server.js
