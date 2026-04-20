@@ -31,6 +31,11 @@ RUN pnpm exec prisma generate
 # Build Next.js application (standalone output)
 RUN pnpm build
 
+# Prepare a flat Prisma CLI bundle for the runner (avoids .pnpm symlink issues)
+RUN mkdir -p /prisma-cli && \
+    cp -rL node_modules/prisma /prisma-cli/prisma && \
+    cp -rL node_modules/.pnpm/@prisma+engines@*/node_modules/@prisma/engines /prisma-cli/engines
+
 # ─── Stage 3: Production runtime ─────────────────────────────────────────────────
 FROM node:20-alpine AS runner
 WORKDIR /app
@@ -47,10 +52,10 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Prisma: schema + migrations needed for `prisma migrate deploy` at startup
+# Prisma: schema + migrations + CLI for `prisma migrate deploy` at startup
 COPY --from=builder /app/prisma ./prisma
-# Install Prisma CLI (needed for migrations at container start)
-RUN npm install --no-save prisma@7
+COPY --from=builder /prisma-cli/prisma ./node_modules/prisma
+COPY --from=builder /prisma-cli/engines ./node_modules/@prisma/engines
 
 # Entrypoint: runs migrations then starts the server
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
