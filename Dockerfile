@@ -47,10 +47,14 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Prisma schema needed at runtime for reference
+# Prisma: schema + migrations needed for `prisma migrate deploy` at startup
 COPY --from=builder /app/prisma ./prisma
-# Prisma 7 generates the client in src/generated/prisma (see prisma/schema.prisma)
-# .next/standalone already bundles it via tracing, so no extra copy needed
+# Install Prisma CLI (needed for migrations at container start)
+RUN npm install --no-save prisma@7
+
+# Entrypoint: runs migrations then starts the server
+COPY docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 # Create uploads directory writable by nextjs user (mounted as Docker volume)
 RUN mkdir -p /app/public/uploads && chown -R nextjs:nodejs /app/public/uploads
@@ -63,4 +67,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget -qO- http://127.0.0.1:3000/api/health || exit 1
 
-CMD ["node", "server.js"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
