@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth, isAuthError, COMMITTEE_ROLES } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { checkoutSchema } from "@/lib/schemas";
+import { getCurrentSeason } from "@/lib/membership";
 import { z } from "zod";
 
 const createOrderSchema = checkoutSchema.extend({
@@ -75,6 +76,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const authResult = await requireAuth(request);
   if (isAuthError(authResult)) return authResult;
+
+  // Membership check: only members with active subscription for current season can order
+  const membership = await prisma.membership.findUnique({
+    where: { userId: authResult.user.id },
+  });
+
+  if (!membership || membership.status !== "ACTIVE" || membership.season !== getCurrentSeason()) {
+    return NextResponse.json(
+      { error: "Commandes réservées aux membres à jour de cotisation" },
+      { status: 403 }
+    );
+  }
 
   let body: unknown;
   try {

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useProduct } from "@/hooks/use-products";
 import { useCart } from "@/hooks/use-cart";
+import { useMembershipStatus } from "@/hooks/use-membership-status";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,6 +20,7 @@ interface ProductDetailProps {
 export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
   const { data, isLoading, isError } = useProduct(id);
   const { addItem } = useCart();
+  const { eligibility, isLoading: membershipLoading } = useMembershipStatus();
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -181,26 +183,62 @@ export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
             </div>
           </div>
 
-          {/* Add to cart button */}
-          <Button
-            size="lg"
-            className="w-full"
-            disabled={!inStock || needsSizeSelection}
-            onClick={handleAddToCart}
-          >
-            {added
-              ? "Ajouté au panier !"
-              : !inStock
-                ? "Rupture de stock"
-                : needsSizeSelection
-                  ? "Sélectionnez une taille"
-                  : "Ajouter au panier"}
-          </Button>
+          {/* Add to cart — restricted to members with active subscription */}
+          {membershipLoading ? (
+            <Skeleton className="h-11 w-full" />
+          ) : !eligibility.canOrder ? (
+            <div className="space-y-3">
+              <Button size="lg" className="w-full" disabled>
+                {!inStock ? "Rupture de stock" : "Ajouter au panier"}
+              </Button>
+              <p className="rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+                {eligibility.reason === "not_authenticated" && (
+                  <>
+                    Commandes réservées aux membres.{" "}
+                    <Link href="/auth/login" className="font-medium text-primary hover:underline">
+                      Se connecter
+                    </Link>{" "}
+                    ou{" "}
+                    <Link href="/auth/register" className="font-medium text-primary hover:underline">
+                      créer un compte
+                    </Link>
+                  </>
+                )}
+                {(eligibility.reason === "no_membership" ||
+                  eligibility.reason === "membership_not_active" ||
+                  eligibility.reason === "season_expired") && (
+                  <>
+                    Commandes réservées aux membres à jour de cotisation.{" "}
+                    <Link href="/member/membership" className="font-medium text-primary hover:underline">
+                      Régler ma cotisation
+                    </Link>
+                  </>
+                )}
+              </p>
+            </div>
+          ) : (
+            <>
+              <Button
+                size="lg"
+                className="w-full"
+                disabled={!inStock || needsSizeSelection}
+                onClick={handleAddToCart}
+              >
+                {added
+                  ? "Ajouté au panier !"
+                  : !inStock
+                    ? "Rupture de stock"
+                    : needsSizeSelection
+                      ? "Sélectionnez une taille"
+                      : "Ajouter au panier"}
+              </Button>
 
-          {inStock && (
-            <Button variant="outline" className="w-full" asChild>
-              <Link href="/equipment/cart">Voir le panier</Link>
-            </Button>
+              {inStock && (
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/equipment/cart">Voir le panier</Link>
+                </Button>
+              )}
+            </>
           )}
         </div>
       </div>
