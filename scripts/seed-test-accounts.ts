@@ -22,7 +22,6 @@ interface TestAccount {
 const accounts: TestAccount[] = [
   { name: "Admin LADTC", email: "admin@ladtc.be", password: "Admin2026!", role: "ADMIN" },
   { name: "Marie Comité", email: "comite@test.com", password: "Comite2026!", role: "COMMITTEE" },
-  { name: "Pierre Coach", email: "coach@test.com", password: "Coach2026!", role: "COACH" },
   { name: "Jean Membre", email: "membre@test.com", password: "Membre2026!", role: "MEMBER" },
 ];
 

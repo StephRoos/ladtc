@@ -22,9 +22,6 @@ export interface AuthSession {
 /** Roles allowed to access admin features (events, members, blog, etc.) */
 export const COMMITTEE_ROLES: UserRole[] = ["COMMITTEE", "ADMIN"];
 
-/** Roles allowed to manage training events */
-export const TRAINING_ROLES: UserRole[] = ["COACH", "COMMITTEE", "ADMIN"];
-
 /**
  * Require an authenticated session. Returns AuthSession or a 401 NextResponse.
  * @param request - The incoming request

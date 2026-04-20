@@ -10,11 +10,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `Notre équipe | ${siteConfig.name}`,
   description:
-    "Découvrez le comité et les coachs de la dtc — club de trail running à Ellezelles.",
+    "Découvrez le comité de la dtc — club de trail running à Ellezelles.",
   openGraph: {
     title: `Notre équipe | ${siteConfig.name}`,
     description:
-      "Découvrez le comité et les coachs de la dtc — club de trail running à Ellezelles.",
+      "Découvrez le comité de la dtc — club de trail running à Ellezelles.",
     url: `${siteConfig.url}/team`,
     siteName: siteConfig.fullName,
     type: "website",
@@ -47,12 +47,7 @@ interface TeamMemberData {
 }
 
 function TeamMemberCard({ member }: { member: TeamMemberData }): React.ReactNode {
-  const displayRole =
-    member.committeeRole
-      ? member.committeeRole
-      : member.role === "COACH"
-        ? "Coach"
-        : "Comité";
+  const displayRole = member.committeeRole ?? "Comité";
 
   return (
     <Card className="border-border bg-card">
@@ -78,11 +73,11 @@ function TeamMemberCard({ member }: { member: TeamMemberData }): React.ReactNode
 }
 
 /**
- * Team page — displays committee members and coaches from the database.
+ * Team page — displays committee members from the database.
  */
 export default async function TeamPage(): Promise<React.ReactNode> {
   const members = await prisma.user.findMany({
-    where: { role: { in: ["COMMITTEE", "COACH"] } },
+    where: { role: "COMMITTEE" },
     select: {
       id: true,
       name: true,
@@ -92,9 +87,6 @@ export default async function TeamPage(): Promise<React.ReactNode> {
     },
     orderBy: { name: "asc" },
   });
-
-  const committeeMembers = members.filter((m) => m.role === "COMMITTEE");
-  const coaches = members.filter((m) => m.role === "COACH");
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
@@ -108,14 +100,14 @@ export default async function TeamPage(): Promise<React.ReactNode> {
       </div>
 
       {/* Committee section */}
-      <section className="mb-14">
+      <section>
         <h2 className="mb-2 text-2xl font-bold">Le Comité</h2>
         <p className="mb-6 text-muted-foreground">
           Ils gèrent et représentent le club tout au long de l&apos;année.
         </p>
-        {committeeMembers.length > 0 ? (
+        {members.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {committeeMembers.map((member) => (
+            {members.map((member) => (
               <TeamMemberCard key={member.id} member={member} />
             ))}
           </div>
@@ -123,22 +115,6 @@ export default async function TeamPage(): Promise<React.ReactNode> {
           <p className="text-sm text-muted-foreground">Aucun membre du comité pour le moment.</p>
         )}
       </section>
-
-      {/* Coaches section — only shown if there are coaches */}
-      {coaches.length > 0 && (
-        <section>
-          <h2 className="mb-2 text-2xl font-bold">Les Coachs</h2>
-          <p className="mb-6 text-muted-foreground">
-            Ils vous accompagnent dans votre progression et animent les
-            entraînements.
-          </p>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {coaches.map((member) => (
-              <TeamMemberCard key={member.id} member={member} />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

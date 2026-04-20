@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 /**
  * GET /api/team
- * Public route — returns committee members and coaches.
+ * Public route — returns committee members.
  */
 export async function GET(): Promise<NextResponse> {
   const members = await prisma.user.findMany({
-    where: { role: { in: ["COMMITTEE", "COACH"] } },
+    where: { role: "COMMITTEE" },
     select: {
       id: true,
       name: true,

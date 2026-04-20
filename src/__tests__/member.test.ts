@@ -369,8 +369,8 @@ describe("role authorization", () => {
     expect(COMMITTEE_ROLES.includes(userRole as (typeof COMMITTEE_ROLES)[number])).toBe(false);
   });
 
-  it("denies COACH role from managing members", () => {
-    const userRole = "COACH";
+  it("denies unknown role from managing members", () => {
+    const userRole = "UNKNOWN";
     expect(COMMITTEE_ROLES.includes(userRole as (typeof COMMITTEE_ROLES)[number])).toBe(false);
   });
 });

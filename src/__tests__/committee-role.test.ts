@@ -34,7 +34,7 @@ describe("roleUpdateSchema — committeeRole", () => {
 
   it("rejects non-COMMITTEE role with a committeeRole", () => {
     const result = roleUpdateSchema.safeParse({
-      role: "COACH",
+      role: "MEMBER",
       committeeRole: "Président",
     });
     expect(result.success).toBe(false);

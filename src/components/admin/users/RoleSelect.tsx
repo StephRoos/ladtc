@@ -15,7 +15,6 @@ import type { UserRole } from "@/types";
 
 const ROLE_LABELS: Record<UserRole, string> = {
   MEMBER: "Membre",
-  COACH: "Coach",
   COMMITTEE: "Comité",
   ADMIN: "Admin",
 };

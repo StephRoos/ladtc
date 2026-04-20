@@ -23,7 +23,6 @@ import Link from "next/link";
 const ROLE_BADGE_VARIANTS: Record<UserRole, "default" | "secondary" | "destructive" | "outline"> = {
   ADMIN: "destructive",
   COMMITTEE: "default",
-  COACH: "secondary",
   MEMBER: "outline",
 };
 

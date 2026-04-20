@@ -172,7 +172,7 @@ export type OrderUpdateFormData = z.infer<typeof orderUpdateSchema>;
  */
 export const roleUpdateSchema = z
   .object({
-    role: z.enum(["MEMBER", "COACH", "COMMITTEE", "ADMIN"]),
+    role: z.enum(["MEMBER", "COMMITTEE", "ADMIN"]),
     committeeRole: z
       .string()
       .trim()

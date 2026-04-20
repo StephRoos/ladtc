@@ -15,9 +15,9 @@ describe("roleUpdateSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("accepts COACH role", () => {
+  it("rejects COACH role (removed)", () => {
     const result = roleUpdateSchema.safeParse({ role: "COACH" });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 
   it("accepts COMMITTEE role", () => {
@@ -193,22 +193,16 @@ describe("StatisticsData shape", () => {
 describe("role hierarchy", () => {
   const ROLE_WEIGHTS: Record<UserRole, number> = {
     MEMBER: 1,
-    COACH: 2,
-    COMMITTEE: 3,
-    ADMIN: 4,
+    COMMITTEE: 2,
+    ADMIN: 3,
   };
 
   it("ADMIN has highest privilege", () => {
     expect(ROLE_WEIGHTS["ADMIN"]).toBeGreaterThan(ROLE_WEIGHTS["COMMITTEE"]);
   });
 
-  it("COMMITTEE outranks COACH and MEMBER", () => {
-    expect(ROLE_WEIGHTS["COMMITTEE"]).toBeGreaterThan(ROLE_WEIGHTS["COACH"]);
+  it("COMMITTEE outranks MEMBER", () => {
     expect(ROLE_WEIGHTS["COMMITTEE"]).toBeGreaterThan(ROLE_WEIGHTS["MEMBER"]);
-  });
-
-  it("COACH outranks MEMBER", () => {
-    expect(ROLE_WEIGHTS["COACH"]).toBeGreaterThan(ROLE_WEIGHTS["MEMBER"]);
   });
 
   it("MEMBER has the lowest privilege", () => {
@@ -229,10 +223,6 @@ describe("role hierarchy", () => {
 
   it("MEMBER cannot access committee-only routes", () => {
     expect(canAccess("MEMBER", ["COMMITTEE", "ADMIN"])).toBe(false);
-  });
-
-  it("COACH cannot access admin-only routes", () => {
-    expect(canAccess("COACH", ["ADMIN"])).toBe(false);
   });
 
   it("only ADMIN can access admin-only routes", () => {

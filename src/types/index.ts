@@ -2,7 +2,7 @@
  * Type definitions for LADTC application
  */
 
-export type UserRole = "MEMBER" | "COACH" | "COMMITTEE" | "ADMIN";
+export type UserRole = "MEMBER" | "COMMITTEE" | "ADMIN";
 
 
 export type MembershipStatus = "PENDING" | "ACTIVE" | "INACTIVE" | "EXPIRED";

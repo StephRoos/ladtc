@@ -471,7 +471,6 @@ export function orderStatusTemplate(order: Order, status: string): string {
 
 const ROLE_LABELS: Record<string, string> = {
   MEMBER: "Membre",
-  COACH: "Coach",
   COMMITTEE: "Membre du comité",
   ADMIN: "Administrateur",
 };

@@ -18,7 +18,6 @@ import {
   requireCommittee,
   isAuthError,
   COMMITTEE_ROLES,
-  TRAINING_ROLES,
 } from "@/lib/auth-guard";
 import type { UserRole } from "@/types";
 
@@ -119,18 +118,8 @@ describe("requireRole", () => {
     }
   });
 
-  it("accepts COACH role when included in allowed roles", async () => {
-    mockGetSession.mockResolvedValue(mockSession("COACH"));
-    const result = await requireRole(makeRequest(), TRAINING_ROLES);
-
-    expect(result).not.toBeInstanceOf(NextResponse);
-    if (!(result instanceof NextResponse)) {
-      expect(result.user.role).toBe("COACH");
-    }
-  });
-
-  it("rejects COACH when only COMMITTEE+ADMIN allowed", async () => {
-    mockGetSession.mockResolvedValue(mockSession("COACH"));
+  it("rejects MEMBER when only COMMITTEE+ADMIN allowed", async () => {
+    mockGetSession.mockResolvedValue(mockSession("MEMBER"));
     const result = await requireRole(makeRequest(), COMMITTEE_ROLES);
 
     expect(result).toBeInstanceOf(NextResponse);
@@ -216,15 +205,6 @@ describe("requireCommittee", () => {
     }
   });
 
-  it("returns 403 for COACH role", async () => {
-    mockGetSession.mockResolvedValue(mockSession("COACH"));
-    const result = await requireCommittee(makeRequest());
-
-    expect(result).toBeInstanceOf(NextResponse);
-    if (result instanceof NextResponse) {
-      expect(result.status).toBe(403);
-    }
-  });
 });
 
 // ─── isAuthError ───────────────────────────────────────────────────
@@ -258,13 +238,5 @@ describe("role constants", () => {
     expect(COMMITTEE_ROLES).toContain("COMMITTEE");
     expect(COMMITTEE_ROLES).toContain("ADMIN");
     expect(COMMITTEE_ROLES).not.toContain("MEMBER");
-    expect(COMMITTEE_ROLES).not.toContain("COACH");
-  });
-
-  it("TRAINING_ROLES includes COACH, COMMITTEE, and ADMIN", () => {
-    expect(TRAINING_ROLES).toContain("COACH");
-    expect(TRAINING_ROLES).toContain("COMMITTEE");
-    expect(TRAINING_ROLES).toContain("ADMIN");
-    expect(TRAINING_ROLES).not.toContain("MEMBER");
   });
 });

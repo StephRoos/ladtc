@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { TRAINING_ROLES } from "@/lib/auth-guard";
+import { COMMITTEE_ROLES } from "@/lib/auth-guard";
 import type { UserRole } from "@/types";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { Header } from "@/components/common/Header";
@@ -10,7 +10,7 @@ import { Footer } from "@/components/common/Footer";
 /**
  * Admin layout — fetches session server-side, enforces role access, and
  * passes the correct flags to AdminNav. Any user whose role is not in
- * TRAINING_ROLES (COACH, COMMITTEE, ADMIN) is redirected to the dashboard.
+ * COMMITTEE_ROLES (COMMITTEE, ADMIN) is redirected to the dashboard.
  */
 export default async function AdminLayout({
   children,
@@ -24,7 +24,7 @@ export default async function AdminLayout({
   }
 
   const role = session.user.role as UserRole | undefined;
-  if (!role || !TRAINING_ROLES.includes(role)) {
+  if (!role || !COMMITTEE_ROLES.includes(role)) {
     redirect("/dashboard");
   }
 

@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { eventSchema } from "@/lib/schemas";
-import { requireRole, isAuthError, TRAINING_ROLES, COMMITTEE_ROLES } from "@/lib/auth-guard";
+import { requireCommittee, isAuthError, COMMITTEE_ROLES } from "@/lib/auth-guard";
 
 /**
  * GET /api/admin/events
- * Returns all events (past and future). Accessible to COACH, COMMITTEE, and ADMIN
- * so coaches can list the training sessions they are allowed to create.
+ * Returns all events (past and future). Restricted to COMMITTEE and ADMIN.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const authResult = await requireRole(request, TRAINING_ROLES);
+  const authResult = await requireCommittee(request);
   if (isAuthError(authResult)) return authResult;
 
   const events = await prisma.event.findMany({
@@ -25,10 +24,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 /**
  * POST /api/admin/events
  * Creates a new event. Restricted to COMMITTEE and ADMIN.
- * COACH can only create TRAINING events.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const authResult = await requireRole(request, TRAINING_ROLES);
+  const authResult = await requireCommittee(request);
   if (isAuthError(authResult)) return authResult;
 
   let body: unknown;
@@ -43,15 +41,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       { error: "Données invalides", details: parsed.error.flatten() },
       { status: 422 }
-    );
-  }
-
-  const isTrainingOnly = !COMMITTEE_ROLES.includes(authResult.user.role);
-
-  if (isTrainingOnly && parsed.data.type !== "TRAINING") {
-    return NextResponse.json(
-      { error: "Les coachs ne peuvent créer que des entraînements" },
-      { status: 403 }
     );
   }
 
