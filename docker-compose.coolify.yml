@@ -1,5 +1,5 @@
 # Coolify production compose — UM790 Pro with NAS storage
-# Deploy via Coolify: Projects → Add Resource → Docker Compose → paste this file
+# Managed by Coolify — auto-deployed on push to master
 # Set environment variables in Coolify's UI (not in this file)
 services:
   db:
