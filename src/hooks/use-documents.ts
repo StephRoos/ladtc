@@ -46,11 +46,10 @@ export function useUploadDocument() {
         method: "POST",
         body: formData,
       });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error ?? "Erreur lors de l'upload");
-      }
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error ?? "Erreur lors de l'upload");
+      }
       return data.document;
     },
     onSuccess: () => {
