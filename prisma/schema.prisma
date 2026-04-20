@@ -35,6 +35,7 @@ model User {
   blogPosts     BlogPost[]
   eventRegistrations EventRegistration[]
   galleryPhotos GalleryPhoto[]
+  documents    Document[]
 }
 
 model ActivityLog {
@@ -263,6 +264,31 @@ model BlogPost {
 
   @@index([published, publishedAt(sort: Desc)])
   @@index([eventDate])
+}
+
+enum DocumentCategory {
+  PV
+  NOTES
+  ADMIN
+  FINANCES
+  OTHER
+}
+
+model Document {
+  id           String           @id @default(cuid())
+  title        String
+  category     DocumentCategory @default(OTHER)
+  filePath     String
+  fileName     String
+  fileSize     Int
+  mimeType     String
+  uploadedById String
+  uploadedBy   User             @relation(fields: [uploadedById], references: [id])
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([category])
+  @@index([createdAt])
 }
 
 model GalleryPhoto {

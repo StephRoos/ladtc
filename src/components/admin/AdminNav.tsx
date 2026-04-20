@@ -18,6 +18,7 @@ const adminNavLinks: NavLink[] = [
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/events", label: "Événements" },
   { href: "/admin/gallery", label: "Galerie" },
+  { href: "/admin/documents", label: "Documents" },
   { href: "/admin/statistics", label: "Statistiques", adminOnly: true },
   { href: "/admin/activity-logs", label: "Logs d'activité" },
   { href: "/admin/users", label: "Utilisateurs", adminOnly: true },
