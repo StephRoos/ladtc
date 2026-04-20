@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Document" ADD COLUMN     "content" TEXT,
+ALTER COLUMN "filePath" DROP NOT NULL,
+ALTER COLUMN "fileName" DROP NOT NULL,
+ALTER COLUMN "fileSize" DROP NOT NULL,
+ALTER COLUMN "mimeType" DROP NOT NULL;

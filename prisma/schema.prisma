@@ -277,10 +277,11 @@ model Document {
   id           String           @id @default(cuid())
   title        String
   category     DocumentCategory @default(OTHER)
-  filePath     String
-  fileName     String
-  fileSize     Int
-  mimeType     String
+  content      String?          // Markdown content for inline notes (null = file-based document)
+  filePath     String?          // Null for inline notes
+  fileName     String?          // Null for inline notes
+  fileSize     Int?             // Null for inline notes
+  mimeType     String?          // Null for inline notes
   uploadedById String
   uploadedBy   User             @relation(fields: [uploadedById], references: [id])
   createdAt    DateTime         @default(now())

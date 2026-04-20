@@ -4,6 +4,7 @@ import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { putLocal } from "@/lib/storage";
 import { DocumentCategory } from "@/generated/prisma/client";
 
+
 const ALLOWED_TYPES = [
   "application/pdf",
   "application/msword",
