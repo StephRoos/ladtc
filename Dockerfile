@@ -31,10 +31,10 @@ RUN pnpm exec prisma generate
 # Build Next.js application (standalone output)
 RUN pnpm build
 
-# Prepare a flat Prisma CLI bundle for the runner (avoids .pnpm symlink issues)
-RUN mkdir -p /prisma-cli && \
-    cp -rL node_modules/prisma /prisma-cli/prisma && \
-    cp -rL node_modules/.pnpm/@prisma+engines@*/node_modules/@prisma/engines /prisma-cli/engines
+# Install Prisma CLI with all deps into a self-contained directory for the runner
+RUN mkdir -p /prisma-cli && cd /prisma-cli && \
+    npm init -y > /dev/null 2>&1 && \
+    npm install prisma@$(node -e "console.log(require('/app/node_modules/prisma/package.json').version)") > /dev/null 2>&1
 
 # ─── Stage 3: Production runtime ─────────────────────────────────────────────────
 FROM node:20-alpine AS runner
@@ -52,10 +52,9 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Prisma: schema + migrations + CLI for `prisma migrate deploy` at startup
+# Prisma: schema + migrations + self-contained CLI for `prisma migrate deploy`
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /prisma-cli/prisma ./node_modules/prisma
-COPY --from=builder /prisma-cli/engines ./node_modules/@prisma/engines
+COPY --from=builder /prisma-cli ./prisma-cli
 
 # Entrypoint: runs migrations then starts the server
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
