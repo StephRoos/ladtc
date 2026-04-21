@@ -2,7 +2,7 @@
 
 ## High-Level Overview
 
-The LADTC website is a modern Next.js fullstack application with an integrated Prisma/PostgreSQL blog, member management, authentication, and equipment orders. All data lives in a single Neon PostgreSQL database.
+The LADTC website is a modern Next.js fullstack application with an integrated Prisma/PostgreSQL blog, member management, authentication, and equipment orders. All data lives in a single PostgreSQL database, self-hosted on a UM790 Pro homelab via Coolify.
 
 The architecture follows the design patterns and conventions established in HillsRun and RecettesApp, ensuring consistency across the ecosystem.
 
@@ -18,9 +18,9 @@ The architecture follows the design patterns and conventions established in Hill
 └─────────────────────────────────────────────────────────────────┘
                               ↓
               ┌──────────────────────────────┐
-              │   Neon PostgreSQL (cloud)     │
+              │   PostgreSQL 15 (Docker)     │
               │   Blog, Members, Orders,     │
-              │   Auth, Products             │
+              │   Auth, Products, Documents  │
               └──────────────────────────────┘
                               ↓
               ┌──────────────────────────────┐
@@ -59,8 +59,13 @@ The architecture follows the design patterns and conventions established in Hill
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Hosting** | Vercel | Edge deployment, serverless functions |
-| **Database Hosting** | Neon PostgreSQL | Managed serverless PostgreSQL |
+| **Hosting** | Coolify on UM790 Pro | Self-hosted Docker deployment |
+| **Database** | PostgreSQL 15 (Docker) | Dedicated container, same host |
+| **Reverse Proxy** | Cloudflare Tunnel + Traefik | Zero open ports, TLS termination |
+| **DNS** | Cloudflare (Free) | ladtc.be zone, registrar OVH |
+| **CI/CD** | Coolify auto-deploy | GitHub webhook on push to master |
+| **Monitoring** | Sentry + Uptime Kuma | Error tracking + uptime |
+| **Email** | Resend (transactional) + OVH (MX) | SPF/DKIM/DMARC configured |
 | **Environment** | Node.js 20+ | Runtime environment |
 | **Package Manager** | pnpm | Fast, efficient dependency management |
 | **Version Control** | Git + GitHub | Code repository |
@@ -547,38 +552,57 @@ const mutation = useMutation({
 7. **CORS**: Restricted to trusted domains
 8. **Logging**: Server-side logging for security events
 
-## Deployment (Vercel)
+## Deployment (Coolify / Docker)
 
-### Environment Setup
+### Infrastructure
+
+```
+Internet → Cloudflare (DNS + Tunnel) → Traefik (Coolify proxy) → app:3000
+                                                                → db:5432
+```
+
+- **Host**: UM790 Pro homelab (192.168.129.10)
+- **Compose**: `docker-compose.coolify.yml` (managed by Coolify)
+- **Image**: Multi-stage Dockerfile (deps → builder → runner)
+- **Migrations**: Auto-applied via `docker-entrypoint.sh` (Prisma CLI in `/prisma-cli/`)
+- **Uploads**: Docker volume mounted at `/app/public/uploads`
+
+### Environment Variables
+
+Set in Coolify project settings (not in compose file):
 
 ```
 NEXT_PUBLIC_APP_URL=https://ladtc.be
-DATABASE_URL=postgresql://...
+DATABASE_URL=postgresql://...@db:5432/ladtc
 BETTER_AUTH_SECRET=...
 BETTER_AUTH_URL=https://ladtc.be
 RESEND_API_KEY=re_xxx
 ADMIN_EMAIL=admin@ladtc.be
 ```
 
+`NEXT_PUBLIC_APP_URL` is passed as a Docker build arg (must be available at build time for Next.js client bundle).
+
 ### CI/CD Pipeline
 
-1. **Push to main**: Automated tests, build, deploy to preview
-2. **Merge to main**: Automated tests, build, deploy to production
-3. **Monitoring**: Sentry for error tracking, Vercel Analytics
+1. **Push to master**: Coolify webhook triggers auto-build
+2. **Build**: Multi-stage Docker build (deps → builder with `pnpm build` → slim runner)
+3. **Deploy**: Entrypoint runs `prisma migrate deploy`, then starts `node server.js`
+4. **Health check**: `GET /api/health` every 30s (wget from inside container)
 
 ### Database Migrations
 
-- Prisma CLI for migrations
-- Managed through version control
-- Automatic on deployment (CI/CD step)
+- Prisma CLI installed in isolated `/prisma-cli/` directory (avoids node_modules conflicts)
+- `docker-entrypoint.sh` runs `prisma migrate deploy` on every container start
+- `prisma.config.ts` must be in CWD of CLI (`/prisma-cli/`)
 
 ## Monitoring & Observability
 
-- **Error Tracking**: Sentry
-- **Analytics**: Vercel Analytics, Vercel Web Vitals
-- **Logs**: Vercel logs, structured server-side logging
-- **Uptime**: Vercel uptime monitoring
-- **Database**: Neon PostgreSQL dashboard monitoring
+- **Error Tracking**: Sentry (`@sentry/nextjs` v10, org: anthemion, project: ladtc)
+  - Server + Edge: `instrumentation.ts` loads `sentry.server.config.ts` / `sentry.edge.config.ts`
+  - Client: `src/instrumentation-client.ts` (Turbopack-compatible, replaces webpack-only `sentry.client.config.ts`)
+- **Uptime**: Uptime Kuma (HTTPS healthcheck every 60s)
+- **Logs**: Docker container logs via Coolify UI
+- **DNS/Email**: Cloudflare dashboard, DMARC reports to `dmarc@ladtc.be`
 
 ## Future Considerations
 

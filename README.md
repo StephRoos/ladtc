@@ -1,25 +1,23 @@
 # LADTC Website
 
-[![CI](https://github.com/stpmusic/ladtc/actions/workflows/ci.yml/badge.svg)](https://github.com/stpmusic/ladtc/actions/workflows/ci.yml)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-black.svg)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7+-blue.svg)](https://www.typescriptlang.org/)
 [![License: Private](https://img.shields.io/badge/License-Private-red.svg)]()
 
 Modern Next.js website for **LADTC**, a trail running club in Ellezelles, Belgium.
 
-The website consumes the existing WordPress REST API for editorial content (blog, events, photos) while providing custom features for member management and equipment orders.
-
-![Homepage Screenshot](docs/screenshots/homepage.png)
-<!-- TODO: Add actual screenshots -->
+Full-stack application with integrated blog (Prisma + Markdown), member management, authentication, equipment orders, and event management. Self-hosted on a UM790 Pro homelab via Coolify.
 
 ## Tech Stack
 
 - **Frontend**: Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + shadcn/ui
-- **CMS**: WordPress REST API (existing site at ladtc.be)
-- **Database**: PostgreSQL + Prisma ORM (not yet configured)
-- **Auth**: BetterAuth (email-based, not yet installed)
-- **Data Fetching**: TanStack Query (client) + Server Components (WordPress)
-- **Deployment**: Vercel
+- **Database**: PostgreSQL 15 + Prisma 7 ORM
+- **Auth**: BetterAuth (email-based, role-based access control)
+- **Blog**: Integrated (Prisma + Markdown, no external CMS)
+- **Data Fetching**: TanStack Query (client) + Server Components
+- **Email**: Resend (transactional) + OVH (MX)
+- **Monitoring**: Sentry (errors) + Uptime Kuma (uptime)
+- **Deployment**: Coolify (self-hosted Docker on UM790 Pro)
 - **Package Manager**: pnpm (NEVER npm)
 
 ## Project Structure
@@ -51,26 +49,27 @@ docs/                      # Documentation (future)
 └── API.md                # API documentation
 ```
 
-## Features (MVP Phase)
+## Features
 
-### Must-Have (Weeks 1–4)
+### Implemented
 
-- [x] **Documentation**: PRD, Architecture, Project conventions
-- [ ] **WordPress Integration**: Fetch blog posts and events from WP API
-- [ ] **Static Pages**: Homepage, team, contact
-- [ ] **Authentication**: BetterAuth email registration and login
-- [ ] **Member Management**: Profiles, membership status, annual dues
-- [ ] **Equipment Orders**: Product catalog, shopping cart, checkout
-- [ ] **Admin Dashboard**: Committee tools for managing members, orders, content
+- [x] **Blog**: Integrated Prisma/Markdown blog with admin CRUD
+- [x] **Authentication**: BetterAuth email registration/login, role-based access (MEMBER, COACH, COMMITTEE, ADMIN)
+- [x] **Member Management**: Profiles, membership status, annual dues
+- [x] **Equipment Orders**: Product catalog, shopping cart, checkout
+- [x] **Events**: Event management with registrations
+- [x] **Admin Dashboard**: Members, orders, events, blog, products, documents
+- [x] **Photo Gallery**: Gallery with photo management
+- [x] **Documents**: Internal document management (upload, notes, categories)
+- [x] **Static Pages**: Homepage, team, contact
+- [x] **Email**: Transactional emails via Resend (SPF/DKIM/DMARC configured)
+- [x] **Monitoring**: Sentry error tracking (client + server)
 
-### Should-Have (Post-MVP)
+### Planned
 
-- Photo gallery (from WordPress media)
-- HillsRun integration (club leaderboards, stats)
-- Sponsors section
-- Race results archive
-- Newsletter integration
-- Advanced admin features (reports, bulk actions)
+- [ ] Stripe integration for payments (issue #4)
+- [ ] Video embeds in blog posts (issue #1)
+- [ ] HillsRun integration (club leaderboards, stats)
 
 ## Getting Started
 
@@ -99,11 +98,12 @@ Development server runs at [http://localhost:3000](http://localhost:3000).
 
 See `.env.example` for required variables. Key vars:
 
-- `NEXT_PUBLIC_APP_URL`: Base URL of the application
-- `NEXT_PUBLIC_WP_API_URL`: WordPress API URL (default: https://ladtc.be)
-- `DATABASE_URL`: PostgreSQL connection string (future)
-- `BETTER_AUTH_SECRET`: BetterAuth session encryption key (future)
-- `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`: Email service (future)
+- `NEXT_PUBLIC_APP_URL`: Base URL (https://ladtc.be in prod)
+- `DATABASE_URL`: PostgreSQL connection string
+- `BETTER_AUTH_SECRET`: Session encryption key
+- `BETTER_AUTH_URL`: Auth callback URL
+- `RESEND_API_KEY`: Transactional email service
+- `ADMIN_EMAIL`: Admin notification recipient
 
 ## Development Workflow
 
@@ -154,14 +154,21 @@ Shared theme with HillsRun and RecettesApp:
 
 ## Deployment
 
-The website is deployed on **Vercel**:
+Self-hosted on **Coolify** (UM790 Pro homelab). Auto-deploys on push to master:
 
 ```bash
-# Vercel auto-deploys on git push to main
-git push origin main
+git push origin master  # Coolify webhook triggers build + deploy
 ```
 
-Environment variables are set in the Vercel dashboard (see `.env.example`).
+Infrastructure:
+- **Docker**: Multi-stage build (`docker-compose.coolify.yml`)
+- **Reverse proxy**: Cloudflare Tunnel → Traefik → app container (zero open ports)
+- **Database**: PostgreSQL 15 container (same host)
+- **Migrations**: Auto-applied via `docker-entrypoint.sh` on container start
+- **Uploads**: Docker volume at `/app/public/uploads`
+- **DNS**: Cloudflare (ladtc.be zone), registrar OVH
+
+Environment variables are set in Coolify project settings.
 
 ## Project Team
 
@@ -178,15 +185,6 @@ Environment variables are set in the Vercel dashboard (see `.env.example`).
 
 Private project for LADTC. All rights reserved.
 
-## Next Steps
-
-1. Set up PostgreSQL database (future spec)
-2. Install Prisma ORM (future spec)
-3. Install BetterAuth (future spec)
-4. Implement Spec 01: WordPress Integration
-5. Implement Spec 02: Static Pages
-6. Continue with remaining MVP specs
-
 ---
 
-**Last Updated**: 2026-03-04
+**Last Updated**: 2026-04-21

@@ -247,8 +247,12 @@ ADMIN_EMAIL=...
 
 ## Monitoring
 
-- Error tracking: Sentry (not yet configured)
-- Analytics: Uptime Kuma for monitoring (via Coolify)
+- Error tracking: Sentry (`@sentry/nextjs` v10, org: anthemion, project: ladtc)
+  - Server: `sentry.server.config.ts` + `sentry.edge.config.ts` via `instrumentation.ts`
+  - Client: `src/instrumentation-client.ts` (Turbopack-compatible)
+  - DSN: hardcoded in Dockerfile ARG (public by design)
+  - Sample rates: traces 20%, replays 10% (100% on error)
+- Uptime: Uptime Kuma (via Coolify)
 - Web Vitals: Automatic via Next.js
 
 ## References
