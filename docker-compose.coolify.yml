@@ -26,6 +26,7 @@ services:
         # `environment:` (runtime) leaves the bundle pointing at the default
         # localhost:3000, which the browser CSP then blocks.
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN}
     environment:
       # Next.js standalone binds to HOSTNAME — must be 0.0.0.0 for Docker healthcheck
       HOSTNAME: "0.0.0.0"

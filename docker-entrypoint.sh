@@ -2,7 +2,9 @@
 
 echo "Running Prisma migrations..."
 if [ -f ./prisma-cli/node_modules/.bin/prisma ]; then
-  ./prisma-cli/node_modules/.bin/prisma migrate deploy --schema ./prisma/schema.prisma || echo "Warning: migration failed, continuing startup"
+  cd prisma-cli
+  ./node_modules/.bin/prisma migrate deploy --schema ../prisma/schema.prisma 2>&1 || echo "Warning: migration failed, continuing startup"
+  cd ..
 else
   echo "Prisma CLI not found, skipping migrations"
 fi

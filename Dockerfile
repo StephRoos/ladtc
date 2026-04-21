@@ -25,6 +25,9 @@ COPY . .
 ARG NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 
+ARG NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
+
 # Generate Prisma client
 RUN pnpm exec prisma generate
 
@@ -52,10 +55,11 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Prisma: schema + migrations + config + self-contained CLI for `prisma migrate deploy`
+# Prisma: schema + migrations + self-contained CLI for `prisma migrate deploy`
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /prisma-cli ./prisma-cli
+# prisma.config.ts must be in the CWD when running prisma CLI
+COPY --from=builder /app/prisma.config.ts ./prisma-cli/prisma.config.ts
 
 # Entrypoint: runs migrations then starts the server
 COPY docker-entrypoint.sh ./docker-entrypoint.sh

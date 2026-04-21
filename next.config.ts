@@ -63,6 +63,6 @@ const nextConfig: NextConfig = {
 
 export default withSentryConfig(nextConfig, {
   silent: true,
-  org: "",
-  project: "",
+  org: "anthemion",
+  project: "ladtc",
 });
