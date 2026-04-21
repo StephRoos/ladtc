@@ -52,8 +52,9 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Prisma: schema + migrations + self-contained CLI for `prisma migrate deploy`
+# Prisma: schema + migrations + config + self-contained CLI for `prisma migrate deploy`
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /prisma-cli ./prisma-cli
 
 # Entrypoint: runs migrations then starts the server
