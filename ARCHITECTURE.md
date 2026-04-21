@@ -2,7 +2,7 @@
 
 ## High-Level Overview
 
-The LADTC website is a modern Next.js fullstack application with an integrated Prisma/PostgreSQL blog, member management, authentication, and equipment orders. All data lives in a single PostgreSQL database, self-hosted on a UM790 Pro homelab via Coolify.
+The LADTC website is a modern Next.js fullstack application with an integrated Prisma/PostgreSQL blog, member management, authentication, and equipment orders. All data lives in a single PostgreSQL database, self-hosted on a UM880 Pro homelab via Coolify.
 
 The architecture follows the design patterns and conventions established in HillsRun and RecettesApp, ensuring consistency across the ecosystem.
 
@@ -59,7 +59,7 @@ The architecture follows the design patterns and conventions established in Hill
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Hosting** | Coolify on UM790 Pro | Self-hosted Docker deployment |
+| **Hosting** | Coolify on UM880 Pro | Self-hosted Docker deployment |
 | **Database** | PostgreSQL 15 (Docker) | Dedicated container, same host |
 | **Reverse Proxy** | Cloudflare Tunnel + Traefik | Zero open ports, TLS termination |
 | **DNS** | Cloudflare (Free) | ladtc.be zone, registrar OVH |
@@ -561,7 +561,7 @@ Internet → Cloudflare (DNS + Tunnel) → Traefik (Coolify proxy) → app:3000
                                                                 → db:5432
 ```
 
-- **Host**: UM790 Pro homelab (192.168.129.10)
+- **Host**: UM880 Pro homelab (192.168.129.10)
 - **Compose**: `docker-compose.coolify.yml` (managed by Coolify)
 - **Image**: Multi-stage Dockerfile (deps → builder → runner)
 - **Migrations**: Auto-applied via `docker-entrypoint.sh` (Prisma CLI in `/prisma-cli/`)

@@ -162,7 +162,7 @@ export function Card({ title, children }: CardProps): React.ReactNode {
 ## Database (PostgreSQL + Prisma)
 
 - Prisma ORM for type-safe queries (output: `src/generated/prisma`)
-- Database: PostgreSQL 15 (Docker container on UM790)
+- Database: PostgreSQL 15 (Docker container on UM880)
 - Migrations: `npx prisma migrate dev`
 - Schema file: `prisma/schema.prisma`
 - Types auto-generated from schema
@@ -218,7 +218,7 @@ ADMIN_EMAIL=...
 
 ## Deployment
 
-- **Hosting**: Coolify on UM790 Pro (self-hosted Docker)
+- **Hosting**: Coolify on UM880 Pro (self-hosted Docker)
 - **Database**: PostgreSQL 15 (Docker container, same host)
 - **Reverse proxy**: Cloudflare Tunnel (zero open ports)
 - **Domain**: ladtc.be (DNS via Cloudflare)

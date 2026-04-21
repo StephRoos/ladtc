@@ -1,4 +1,4 @@
-# Coolify production compose — UM790 Pro with NAS storage
+# Coolify production compose — UM880 Pro with NAS storage
 # Managed by Coolify — auto-deployed on push to master
 # Set environment variables in Coolify's UI (not in this file)
 services:

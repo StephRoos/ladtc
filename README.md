@@ -6,7 +6,7 @@
 
 Modern Next.js website for **LADTC**, a trail running club in Ellezelles, Belgium.
 
-Full-stack application with integrated blog (Prisma + Markdown), member management, authentication, equipment orders, and event management. Self-hosted on a UM790 Pro homelab via Coolify.
+Full-stack application with integrated blog (Prisma + Markdown), member management, authentication, equipment orders, and event management. Self-hosted on a UM880 Pro homelab via Coolify.
 
 ## Tech Stack
 
@@ -17,7 +17,7 @@ Full-stack application with integrated blog (Prisma + Markdown), member manageme
 - **Data Fetching**: TanStack Query (client) + Server Components
 - **Email**: Resend (transactional) + OVH (MX)
 - **Monitoring**: Sentry (errors) + Uptime Kuma (uptime)
-- **Deployment**: Coolify (self-hosted Docker on UM790 Pro)
+- **Deployment**: Coolify (self-hosted Docker on UM880 Pro)
 - **Package Manager**: pnpm (NEVER npm)
 
 ## Project Structure
@@ -154,7 +154,7 @@ Shared theme with HillsRun and RecettesApp:
 
 ## Deployment
 
-Self-hosted on **Coolify** (UM790 Pro homelab). Auto-deploys on push to master:
+Self-hosted on **Coolify** (UM880 Pro homelab). Auto-deploys on push to master:
 
 ```bash
 git push origin master  # Coolify webhook triggers build + deploy
