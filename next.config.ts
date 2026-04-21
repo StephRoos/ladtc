@@ -27,6 +27,7 @@ const nextConfig: NextConfig = {
             "img-src 'self' data: blob: https://ladtc.be https:",
             "font-src 'self'",
             "connect-src 'self' https://*.sentry.io",
+            "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
             "frame-ancestors 'none'",
           ].join("; "),
         },

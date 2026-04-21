@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
+import { renderBlogContent } from "@/lib/sanitize";
 
 // ─── DOMPurify XSS sanitization ─────────────────────────────────────────────
 
@@ -31,15 +32,7 @@ describe("DOMPurify sanitization for blog content", () => {
     expect(clean).toContain("<strong>bold</strong>");
   });
 
-  it("strips iframe elements", () => {
-    const malicious = '<p>Text</p><iframe src="https://evil.com"></iframe>';
-    const clean = DOMPurify.sanitize(malicious);
-    expect(clean).not.toContain("<iframe");
-    expect(clean).toContain("<p>Text</p>");
-  });
-
   it("sanitizes markdown-rendered content end-to-end", () => {
-    // Simulates the blog rendering pipeline: markdown → HTML → sanitize
     const maliciousMarkdown = '# Title\n\n<script>alert("xss")</script>\n\nSafe paragraph.';
     const html = marked.parse(maliciousMarkdown) as string;
     const clean = DOMPurify.sanitize(html);
@@ -57,17 +50,76 @@ describe("DOMPurify sanitization for blog content", () => {
   });
 });
 
+// ─── Video embed sanitization ───────────────────────────────────────────────
+
+describe("Video embed support in blog content", () => {
+  it("auto-embeds bare YouTube URLs", () => {
+    const md = "# Video\n\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ\n\nText after.";
+    const html = renderBlogContent(md);
+    expect(html).toContain("youtube-nocookie.com/embed/dQw4w9WgXcQ");
+    expect(html).toContain('class="video-embed"');
+    expect(html).toContain("Text after.");
+  });
+
+  it("auto-embeds youtu.be short URLs", () => {
+    const md = "https://youtu.be/dQw4w9WgXcQ";
+    const html = renderBlogContent(md);
+    expect(html).toContain("youtube-nocookie.com/embed/dQw4w9WgXcQ");
+  });
+
+  it("auto-embeds Vimeo URLs", () => {
+    const md = "https://vimeo.com/123456789";
+    const html = renderBlogContent(md);
+    expect(html).toContain("player.vimeo.com/video/123456789");
+    expect(html).toContain('class="video-embed"');
+  });
+
+  it("preserves trusted iframes in raw HTML", () => {
+    const md = '<iframe src="https://www.youtube.com/embed/abc123"></iframe>';
+    const html = renderBlogContent(md);
+    expect(html).toContain("<iframe");
+    expect(html).toContain("youtube.com/embed/abc123");
+  });
+
+  it("strips iframes from untrusted domains", () => {
+    const md = '<iframe src="https://evil.com/hack"></iframe><p>Safe</p>';
+    const html = renderBlogContent(md);
+    expect(html).not.toContain("evil.com");
+    expect(html).toContain("Safe");
+  });
+
+  it("strips iframes with invalid URLs", () => {
+    const md = '<iframe src="javascript:alert(1)"></iframe>';
+    const html = renderBlogContent(md);
+    expect(html).not.toContain("<iframe");
+  });
+
+  it("does not embed video URLs inside inline text", () => {
+    const md = "Check this out: https://www.youtube.com/watch?v=abc123 in this sentence.";
+    const html = renderBlogContent(md);
+    // Should be a regular link, not an embed (URL is not on its own line)
+    expect(html).not.toContain('class="video-embed"');
+  });
+
+  it("strips script tags even with video embeds present", () => {
+    const md = 'https://youtu.be/abc123\n\n<script>alert("xss")</script>';
+    const html = renderBlogContent(md);
+    expect(html).toContain("youtube-nocookie.com/embed/abc123");
+    expect(html).not.toContain("<script>");
+  });
+});
+
 // ─── CSP headers configuration ──────────────────────────────────────────────
 
 describe("CSP headers in next.config", () => {
-  // We test the config values directly to ensure they are correct
   const cspDirectives = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://ladtc.be",
+    "img-src 'self' data: blob: https://ladtc.be https:",
     "font-src 'self'",
-    "connect-src 'self' https://*.vercel-storage.com https://*.sentry.io",
+    "connect-src 'self' https://*.sentry.io",
+    "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
     "frame-ancestors 'none'",
   ];
   const cspValue = cspDirectives.join("; ");
@@ -80,8 +132,10 @@ describe("CSP headers in next.config", () => {
     expect(cspValue).toContain("frame-ancestors 'none'");
   });
 
-  it("allows images from Vercel Blob storage", () => {
-    expect(cspValue).toContain("https://*.public.blob.vercel-storage.com");
+  it("allows frames from YouTube and Vimeo only", () => {
+    expect(cspValue).toContain("frame-src https://www.youtube.com");
+    expect(cspValue).toContain("https://www.youtube-nocookie.com");
+    expect(cspValue).toContain("https://player.vimeo.com");
   });
 
   it("allows connections to Sentry for error tracking", () => {

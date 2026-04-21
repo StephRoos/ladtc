@@ -3,12 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { use } from "react";
-import { marked } from "marked";
-import DOMPurify from "dompurify";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBlogPost } from "@/hooks/use-blog-posts";
+import { renderBlogContent } from "@/lib/sanitize";
 import { formatDate } from "@/lib/utils";
 
 interface BlogPostPageProps {
@@ -41,10 +40,8 @@ export default function BlogPostPage({ params }: BlogPostPageProps): React.React
   const { slug } = use(params);
   const { data: post, isLoading, isError } = useBlogPost(slug);
 
-  // Sanitize HTML to prevent XSS — DOMPurify strips any injected scripts
-  const htmlContent = post?.content
-    ? DOMPurify.sanitize(marked.parse(post.content) as string)
-    : "";
+  // Render Markdown → HTML with video embed support + XSS sanitization
+  const htmlContent = post?.content ? renderBlogContent(post.content) : "";
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
