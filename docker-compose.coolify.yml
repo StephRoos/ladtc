@@ -21,12 +21,12 @@ services:
     build:
       context: .
       args:
-        # NEXT_PUBLIC_* must be passed as build args so Next.js can inline them
-        # into the client bundle during `pnpm build`. Setting them only under
+        # NEXT_PUBLIC_APP_URL must be passed as build arg so Next.js can inline it
+        # into the client bundle during `pnpm build`. Setting it only under
         # `environment:` (runtime) leaves the bundle pointing at the default
         # localhost:3000, which the browser CSP then blocks.
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
-        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN}
+        # NEXT_PUBLIC_SENTRY_DSN: default set in Dockerfile ARG (DSN is public by design)
     environment:
       # Next.js standalone binds to HOSTNAME — must be 0.0.0.0 for Docker healthcheck
       HOSTNAME: "0.0.0.0"
