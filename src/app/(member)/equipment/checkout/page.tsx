@@ -70,23 +70,29 @@ export default function CheckoutPage(): React.ReactNode {
     const result = await createOrder.mutateAsync({ ...data, items: orderItems });
     clear();
 
-    // Redirect to Stripe Checkout
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: result.orderId }),
-      });
+    // Payment timing depends on the order status:
+    //   - RECEIVED (in-stock direct sale) → charge immediately via Stripe Checkout
+    //   - PENDING (grouped order) → no payment now; the member will receive a Stripe
+    //     payment link by email when the batch is received at the club
+    const chargesNow = result.order.status === "RECEIVED";
+    if (chargesNow) {
+      try {
+        const res = await fetch("/api/stripe/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: result.orderId }),
+        });
 
-      if (res.ok) {
-        const { url } = (await res.json()) as { url: string };
-        if (url) {
-          window.location.href = url;
-          return;
+        if (res.ok) {
+          const { url } = (await res.json()) as { url: string };
+          if (url) {
+            window.location.href = url;
+            return;
+          }
         }
+      } catch {
+        // Stripe unavailable — fallback to classic confirmation
       }
-    } catch {
-      // Stripe unavailable — fallback to classic confirmation
     }
 
     router.push(`/equipment/order/${result.orderId}`);

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth, requireCommittee, isAuthError, COMMITTEE_ROLES } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { orderUpdateSchema } from "@/lib/schemas";
+import { sendOrderReadyForPayment } from "@/lib/email";
 
 /**
  * GET /api/orders/[id]
@@ -92,6 +93,26 @@ export async function PATCH(
       },
     },
   });
+
+  // Grouped-orders payment trigger: when an order transitions INTO `RECEIVED`
+  // from a different status and is not yet paid, the member receives an email
+  // with a Stripe Checkout link (the order page already exposes a Payer button).
+  // Direct-stock orders (created RECEIVED at checkout time) are excluded — they
+  // have already been paid via Stripe at order creation, so existing.status was
+  // already RECEIVED and we don't re-notify.
+  if (
+    parsed.data.status === "RECEIVED" &&
+    existing.status !== "RECEIVED" &&
+    !existing.paidAt
+  ) {
+    try {
+      await sendOrderReadyForPayment(order);
+    } catch (err) {
+      // Soft failure: the status update is the source of truth, the email is
+      // an outbound side effect that the admin can re-send manually if needed.
+      console.error("[orders] Failed to send 'ready for payment' email", err);
+    }
+  }
 
   return NextResponse.json({ order });
 }

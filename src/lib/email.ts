@@ -5,6 +5,7 @@ import {
   renewalReminderTemplate,
   orderConfirmationTemplate,
   orderStatusTemplate,
+  orderReadyForPaymentTemplate,
   paymentConfirmationTemplate,
   membershipPaymentConfirmationTemplate,
   contactFormTemplate,
@@ -125,6 +126,28 @@ export async function sendOrderStatusUpdate(order: Order, status: string): Promi
 
   // For CLUB_PICKUP orders shippingEmail is null; the buyer's own email is the
   // canonical recipient (it was the source of shippingEmail for HOME_DELIVERY too).
+  const recipient = order.shippingEmail ?? order.user.email;
+  await sendEmail(recipient, subject, html);
+}
+
+/**
+ * Sends an email notifying the member that their grouped equipment order has
+ * been received at the club and is now ready for payment + pickup/delivery.
+ * Includes a link to the order page where they can trigger Stripe Checkout.
+ *
+ * Accepts a relaxed order shape so it can be called from PATCH handlers that
+ * only select id/name/email on the user relation (the template only reads
+ * email and the buyer's name).
+ *
+ * @param order - The order with items + at least { user: { email } }
+ */
+export async function sendOrderReadyForPayment(
+  order: Omit<Order, "user"> & { user: { email: string; name?: string | null } }
+): Promise<void> {
+  const baseUrl = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://ladtc.be";
+  const payUrl = `${baseUrl}/equipment/order/${order.id}`;
+  const subject = `Votre commande LADTC est arrivée — #${order.id.slice(-8).toUpperCase()}`;
+  const html = orderReadyForPaymentTemplate(order as Order, payUrl);
   const recipient = order.shippingEmail ?? order.user.email;
   await sendEmail(recipient, subject, html);
 }

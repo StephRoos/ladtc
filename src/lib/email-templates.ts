@@ -305,6 +305,52 @@ export function orderConfirmationTemplate(order: Order): string {
  * @returns Full HTML email string
  */
 /**
+ * Email sent when a grouped order is received at the club and the member can
+ * now pay and pick up. Contains a link to the order page where the member
+ * triggers Stripe Checkout.
+ *
+ * @param order - The full order object with items
+ * @param payUrl - Absolute URL of the member order page (where the "Payer" button lives)
+ * @returns Full HTML email string
+ */
+export function orderReadyForPaymentTemplate(order: Order, payUrl: string): string {
+  const itemList = order.items
+    .map(
+      (item) =>
+        `<li style="margin:4px 0;color:#cbd5e1;">${escapeHtml(item.product.name)}${item.size ? ` (${escapeHtml(item.size)})` : ""} × ${item.quantity}</li>`
+    )
+    .join("");
+
+  const isPickup = order.deliveryMethod === "CLUB_PICKUP";
+  const fulfillmentLine = isPickup
+    ? "Votre commande sera à retirer au club lors d'une prochaine séance."
+    : "Votre commande sera expédiée à l'adresse fournie après réception du paiement.";
+
+  const content = `
+    <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Votre commande est arrivée</h2>
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
+      Bonne nouvelle : le lot d'équipement contenant votre commande est arrivé au club.
+      Le paiement peut maintenant être finalisé.
+    </p>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
+      <p style="margin:0 0 8px 0;color:#94a3b8;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;">
+        Commande #${order.id.slice(-8).toUpperCase()}
+      </p>
+      <ul style="margin:8px 0 0 0;padding-left:18px;">${itemList}</ul>
+      <p style="margin:16px 0 0 0;color:${TEXT_COLOR};font-weight:bold;font-size:16px;">
+        Total à régler : ${order.total.toFixed(2)} EUR
+      </p>
+    </div>
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">${fulfillmentLine}</p>
+    ${buttonHtml(payUrl, "Payer ma commande")}
+    <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
+      Question ? <a href="mailto:${CLUB_EMAIL}" style="color:${PRIMARY_COLOR};">${CLUB_EMAIL}</a>
+    </p>
+  `;
+  return baseTemplate(content);
+}
+
+/**
  * Generates the payment confirmation email HTML template.
  *
  * @param order - The full order object with items
