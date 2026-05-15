@@ -39,10 +39,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
   }
 
-  if (order.status !== "PENDING") {
-    return NextResponse.json({ error: "Cette commande n'est plus en attente" }, { status: 400 });
+  // Any non-cancelled, non-delivered, unpaid order can trigger a Stripe Checkout.
+  // - PENDING: grouped order, member chooses to pay early (or wait for the lot).
+  // - BATCHED / ORDERED: lot in progress, member can pay anytime once decided.
+  // - RECEIVED: direct-stock sale at order creation, OR a batched order whose lot
+  //   has arrived at the club and is now collectable.
+  if (order.status === "CANCELLED") {
+    return NextResponse.json({ error: "Cette commande a été annulée" }, { status: 400 });
   }
-
+  if (order.status === "DELIVERED") {
+    return NextResponse.json({ error: "Cette commande a déjà été livrée" }, { status: 400 });
+  }
   if (order.paidAt) {
     return NextResponse.json({ error: "Cette commande a déjà été payée" }, { status: 400 });
   }
