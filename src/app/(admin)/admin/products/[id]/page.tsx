@@ -50,7 +50,6 @@ export default function EditProductPage(): React.ReactNode {
     description: product.description ?? undefined,
     price: product.price,
     sizes: product.sizes,
-    stock: product.stock,
     image: product.image ?? "",
     sku: product.sku ?? undefined,
     active: product.active,

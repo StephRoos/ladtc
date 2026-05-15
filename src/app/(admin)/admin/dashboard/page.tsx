@@ -183,10 +183,13 @@ export default function AdminDashboardPage(): React.ReactNode {
                     className="flex items-center justify-between rounded-lg border p-3"
                   >
                     <div>
-                      <p className="text-sm font-medium">{order.shippingName}</p>
+                      <p className="text-sm font-medium">
+                        {order.shippingName ?? order.user?.name ?? order.user?.email ?? "—"}
+                      </p>
                       <p className="text-xs text-muted-foreground">
                         {order.total.toFixed(2)} EUR —{" "}
                         {order.items.length} article{order.items.length > 1 ? "s" : ""}
+                        {order.deliveryMethod === "CLUB_PICKUP" && " — retrait club"}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">

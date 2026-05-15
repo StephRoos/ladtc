@@ -15,7 +15,10 @@ export async function GET(
 ): Promise<NextResponse> {
   const { id } = await params;
 
-  const product = await prisma.product.findUnique({ where: { id } });
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: { productStock: true },
+  });
   if (!product) {
     return NextResponse.json({ error: "Produit introuvable" }, { status: 404 });
   }
@@ -63,15 +66,42 @@ export async function PATCH(
     );
   }
 
-  const { image, ...rest } = parsed.data;
+  const { image, sizes, ...rest } = parsed.data;
   const updateData = {
     ...rest,
+    ...(sizes !== undefined ? { sizes } : {}),
     ...(image !== undefined ? { image: image && image.length > 0 ? image : null } : {}),
   };
 
-  const product = await prisma.product.update({
-    where: { id },
-    data: updateData,
+  // When the sizes list changes, sync ProductStock rows: create entries for new sizes
+  // (quantity 0, admin sets the real value later) and delete entries for removed sizes.
+  // Stock for sizes that are still present is preserved.
+  const product = await prisma.$transaction(async (tx) => {
+    if (sizes !== undefined) {
+      const existingStock = await tx.productStock.findMany({ where: { productId: id } });
+      const existingSizes = new Set(existingStock.map((s) => s.size));
+      const newSizes = new Set(sizes);
+
+      const sizesToAdd = sizes.filter((s) => !existingSizes.has(s));
+      const sizesToRemove = [...existingSizes].filter((s) => !newSizes.has(s));
+
+      if (sizesToAdd.length > 0) {
+        await tx.productStock.createMany({
+          data: sizesToAdd.map((size) => ({ productId: id, size, quantity: 0 })),
+        });
+      }
+      if (sizesToRemove.length > 0) {
+        await tx.productStock.deleteMany({
+          where: { productId: id, size: { in: sizesToRemove } },
+        });
+      }
+    }
+
+    return tx.product.update({
+      where: { id },
+      data: updateData,
+      include: { productStock: true },
+    });
   });
 
   return NextResponse.json({ product });

@@ -14,8 +14,17 @@ interface ProductDetailProps {
   id: string;
 }
 
+const MAX_QUANTITY_PER_ITEM = 10;
+
 /**
  * Client component for product detail with size selector, quantity, and add-to-cart.
+ *
+ * Stock workflow (Issue #16 sprint 2):
+ * - Each size has its own stock count (ProductStock table).
+ * - Sizes with stock > 0 can be purchased directly (order → RECEIVED).
+ * - Sizes with stock = 0 can still be ordered (order → PENDING, joins next batch).
+ * - The UI surfaces stock per size but never blocks ordering — the decision is made
+ *   server-side at /api/orders.
  */
 export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
   const { data, isLoading, isError } = useProduct(id);
@@ -52,8 +61,12 @@ export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
 
   const { product } = data;
   const hasSizes = product.sizes.length > 0;
-  const inStock = product.stock > 0;
+  const stockBySize = new Map(
+    (product.productStock ?? []).map((s) => [s.size, s.quantity])
+  );
+  const selectedStock = selectedSize ? stockBySize.get(selectedSize) ?? 0 : 0;
   const needsSizeSelection = hasSizes && !selectedSize;
+  const sizeFromStock = selectedSize !== undefined && selectedStock >= quantity;
 
   function handleAddToCart(): void {
     if (needsSizeSelection) return;
@@ -121,20 +134,7 @@ export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
             <p className="text-muted-foreground">{product.description}</p>
           )}
 
-          {/* Stock status */}
-          <div>
-            {inStock ? (
-              <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                {product.stock} en stock
-              </Badge>
-            ) : (
-              <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
-                Rupture de stock
-              </Badge>
-            )}
-          </div>
-
-          {/* Size selector */}
+          {/* Size selector with per-size stock indicator */}
           {hasSizes && (
             <div className="space-y-2">
               <p className="text-sm font-medium text-foreground">
@@ -144,20 +144,50 @@ export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
                 )}
               </p>
               <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`rounded-md border px-3 py-1 text-sm font-medium transition-colors ${
-                      selectedSize === size
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-background text-foreground hover:border-primary"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+                {product.sizes.map((size) => {
+                  const qty = stockBySize.get(size) ?? 0;
+                  const isSelected = selectedSize === size;
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`flex flex-col items-center rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
+                        isSelected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background text-foreground hover:border-primary"
+                      }`}
+                    >
+                      <span>{size}</span>
+                      <span
+                        className={`text-xs ${
+                          isSelected
+                            ? "opacity-90"
+                            : qty > 0
+                              ? "text-green-500"
+                              : "text-muted-foreground"
+                        }`}
+                      >
+                        {qty > 0 ? `${qty} en stock` : "Sur commande"}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
+            </div>
+          )}
+
+          {/* Stock / availability info for the selected size */}
+          {selectedSize && (
+            <div>
+              {sizeFromStock ? (
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                  Disponible immédiatement ({selectedStock} en stock)
+                </Badge>
+              ) : (
+                <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                  Commande groupée — livré au prochain lot
+                </Badge>
+              )}
             </div>
           )}
 
@@ -174,9 +204,11 @@ export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
               </button>
               <span className="w-8 text-center font-medium">{quantity}</span>
               <button
-                onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
+                onClick={() =>
+                  setQuantity((q) => Math.min(MAX_QUANTITY_PER_ITEM, q + 1))
+                }
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background text-foreground hover:border-primary disabled:opacity-50"
-                disabled={quantity >= product.stock}
+                disabled={quantity >= MAX_QUANTITY_PER_ITEM}
               >
                 +
               </button>
@@ -189,7 +221,7 @@ export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
           ) : !eligibility.canOrder ? (
             <div className="space-y-3">
               <Button size="lg" className="w-full" disabled>
-                {!inStock ? "Rupture de stock" : "Ajouter au panier"}
+                Ajouter au panier
               </Button>
               <p className="rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
                 {eligibility.reason === "not_authenticated" && (
@@ -221,23 +253,19 @@ export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
               <Button
                 size="lg"
                 className="w-full"
-                disabled={!inStock || needsSizeSelection}
+                disabled={needsSizeSelection}
                 onClick={handleAddToCart}
               >
                 {added
                   ? "Ajouté au panier !"
-                  : !inStock
-                    ? "Rupture de stock"
-                    : needsSizeSelection
-                      ? "Sélectionnez une taille"
-                      : "Ajouter au panier"}
+                  : needsSizeSelection
+                    ? "Sélectionnez une taille"
+                    : "Ajouter au panier"}
               </Button>
 
-              {inStock && (
-                <Button variant="outline" className="w-full" asChild>
-                  <Link href="/equipment/cart">Voir le panier</Link>
-                </Button>
-              )}
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/equipment/cart">Voir le panier</Link>
+              </Button>
             </>
           )}
         </div>

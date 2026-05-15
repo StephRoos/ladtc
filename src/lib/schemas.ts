@@ -128,31 +128,82 @@ export type MemberUpdateFormData = z.infer<typeof memberUpdateSchema>;
 export type MemberCreateFormData = z.infer<typeof memberCreateSchema>;
 
 /**
- * Zod validation schema for product creation/update (admin)
+ * Zod validation schema for product creation/update (admin).
+ * Stock is no longer global — managed per size via productStockUpdateSchema.
  */
 export const productSchema = z.object({
   name: z.string().min(3, "Le nom du produit doit contenir au moins 3 caractères"),
   description: z.string().optional(),
   price: z.number().positive("Le prix doit être positif"),
   sizes: z.array(z.string()),
-  stock: z.number().int().nonnegative("Le stock ne peut pas être négatif"),
   image: z.union([z.string().url("URL d'image invalide"), z.literal(""), z.undefined()]),
   sku: z.string().optional(),
   active: z.boolean().optional(),
 });
 
 /**
- * Zod validation schema for the checkout shipping form
+ * Zod validation schema for per-size stock updates (admin).
+ * Body: { stock: [{ size: "M", quantity: 3 }, ...] }
  */
-export const checkoutSchema = z.object({
-  shippingName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  shippingEmail: z.string().email("Email invalide"),
-  shippingPhone: z.string().min(5, "Le numéro de téléphone est requis"),
-  shippingAddress: z.string().min(5, "L'adresse doit contenir au moins 5 caractères"),
-  shippingCity: z.string().min(2, "La ville doit contenir au moins 2 caractères"),
-  shippingZip: z.string().min(2, "Le code postal est requis"),
-  shippingCountry: z.string().optional(),
+export const productStockUpdateSchema = z.object({
+  stock: z
+    .array(
+      z.object({
+        size: z.string().min(1, "Taille requise"),
+        quantity: z.number().int().nonnegative("Le stock ne peut pas être négatif"),
+      })
+    )
+    .min(1, "Au moins une entrée de stock requise"),
 });
+
+/**
+ * Zod validation schema for the checkout form.
+ * Delivery method gates whether shipping fields are required:
+ * - HOME_DELIVERY: shipping fields validated (member must provide an address)
+ * - CLUB_PICKUP: shipping fields ignored (member picks up the order at the club)
+ */
+export const checkoutSchema = z
+  .object({
+    deliveryMethod: z.enum(["HOME_DELIVERY", "CLUB_PICKUP"]),
+    shippingName: z.string().optional(),
+    shippingEmail: z.string().optional(),
+    shippingPhone: z.string().optional(),
+    shippingAddress: z.string().optional(),
+    shippingCity: z.string().optional(),
+    shippingZip: z.string().optional(),
+    shippingCountry: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.deliveryMethod !== "HOME_DELIVERY") return;
+
+    const requiredFields: Array<{ key: keyof typeof data; label: string; min: number }> = [
+      { key: "shippingName", label: "Le nom doit contenir au moins 2 caractères", min: 2 },
+      { key: "shippingPhone", label: "Le numéro de téléphone est requis", min: 5 },
+      { key: "shippingAddress", label: "L'adresse doit contenir au moins 5 caractères", min: 5 },
+      { key: "shippingCity", label: "La ville doit contenir au moins 2 caractères", min: 2 },
+      { key: "shippingZip", label: "Le code postal est requis", min: 2 },
+    ];
+
+    for (const { key, label, min } of requiredFields) {
+      const value = data[key];
+      if (typeof value !== "string" || value.length < min) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [key],
+          message: label,
+        });
+      }
+    }
+
+    const email = data.shippingEmail;
+    if (typeof email !== "string" || !email.includes("@")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["shippingEmail"],
+        message: "Email invalide",
+      });
+    }
+  });
 
 /**
  * Zod validation schema for order status updates (admin)
@@ -164,6 +215,7 @@ export const orderUpdateSchema = z.object({
 });
 
 export type ProductFormData = z.infer<typeof productSchema>;
+export type ProductStockUpdateFormData = z.infer<typeof productStockUpdateSchema>;
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
 export type OrderUpdateFormData = z.infer<typeof orderUpdateSchema>;
 

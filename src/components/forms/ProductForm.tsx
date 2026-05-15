@@ -41,7 +41,6 @@ export function ProductForm({
     defaultValues: {
       active: true,
       sizes: [],
-      stock: 0,
       price: 0,
       ...defaultValues,
     },
@@ -92,35 +91,22 @@ export function ProductForm({
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="price">Prix (€)</Label>
-          <Input
-            id="price"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="25.00"
-            {...register("price", { valueAsNumber: true })}
-          />
-          {errors.price && (
-            <p className="text-sm text-destructive">{errors.price.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="stock">Stock</Label>
-          <Input
-            id="stock"
-            type="number"
-            min="0"
-            placeholder="0"
-            {...register("stock", { valueAsNumber: true })}
-          />
-          {errors.stock && (
-            <p className="text-sm text-destructive">{errors.stock.message}</p>
-          )}
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="price">Prix (€)</Label>
+        <Input
+          id="price"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder="25.00"
+          {...register("price", { valueAsNumber: true })}
+        />
+        {errors.price && (
+          <p className="text-sm text-destructive">{errors.price.message}</p>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Le stock se gère par taille — voir la section dédiée après création du produit.
+        </p>
       </div>
 
       <div className="space-y-2">

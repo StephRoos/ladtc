@@ -38,6 +38,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       orderBy,
       skip: Math.max(0, skip),
       take,
+      include: { productStock: true },
     }),
     prisma.product.count({ where: { active: activeFilter } }),
   ]);
@@ -48,8 +49,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 /**
  * POST /api/products
  * Creates a new product. Restricted to COMMITTEE and ADMIN roles.
+ * Per-size stock entries are created with quantity = 0; admin sets the real
+ * quantities later via PATCH /api/products/[id]/stock.
  *
- * Body: { name, description, price, sizes, stock, image, sku }
+ * Body: { name, description, price, sizes, image, sku }
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const session = await auth.api.getSession({ headers: request.headers });
@@ -77,13 +80,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { image, ...rest } = parsed.data;
+  const { image, sizes, ...rest } = parsed.data;
 
+  // Create the product along with one zero-quantity ProductStock row per size.
+  // Admin then sets the real per-size quantities via PATCH /api/products/[id]/stock.
   const product = await prisma.product.create({
     data: {
       ...rest,
+      sizes,
       image: image && image.length > 0 ? image : null,
+      productStock: {
+        create: sizes.map((size) => ({ size, quantity: 0 })),
+      },
     },
+    include: { productStock: true },
   });
 
   return NextResponse.json({ product }, { status: 201 });
