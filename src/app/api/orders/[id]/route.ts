@@ -90,15 +90,39 @@ export async function PATCH(
     updateData.deliveredAt = now;
   }
 
-  const order = await prisma.order.update({
-    where: { id },
-    data: updateData,
-    include: {
-      user: { select: { id: true, name: true, email: true } },
-      items: {
-        include: { product: true },
+  // Direct-stock cancel: if a member's order was fulfilled from existing stock
+  // (created with status RECEIVED, no batch) and the admin now cancels it,
+  // restore the items to ProductStock so they can be sold again. Batched
+  // orders never decremented stock at creation, so no restoration is needed
+  // for them.
+  const restoreStock =
+    parsed.data.status === "CANCELLED" &&
+    existing.status === "RECEIVED" &&
+    existing.batchId === null;
+
+  const order = await prisma.$transaction(async (tx) => {
+    if (restoreStock) {
+      const itemsToRestore = await tx.orderItem.findMany({
+        where: { orderId: id },
+        select: { productId: true, size: true, quantity: true },
+      });
+      for (const item of itemsToRestore) {
+        if (!item.size) continue;
+        await tx.productStock.upsert({
+          where: { productId_size: { productId: item.productId, size: item.size } },
+          update: { quantity: { increment: item.quantity } },
+          create: { productId: item.productId, size: item.size, quantity: item.quantity },
+        });
+      }
+    }
+    return tx.order.update({
+      where: { id },
+      data: updateData,
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        items: { include: { product: true } },
       },
-    },
+    });
   });
 
   // Grouped-orders payment trigger: when an order transitions INTO `RECEIVED`
@@ -122,4 +146,62 @@ export async function PATCH(
   }
 
   return NextResponse.json({ order });
+}
+
+/**
+ * DELETE /api/orders/[id]
+ * Hard-deletes an order. Restricted to COMMITTEE / ADMIN.
+ *
+ * Refused when the order has been paid (paidAt is set) — paid orders must be
+ * kept for financial traceability. The admin can soft-cancel them instead via
+ * PATCH with status: CANCELLED.
+ *
+ * Direct-stock orders (status RECEIVED, no batchId) have their items restored
+ * to ProductStock before deletion. OrderItem rows cascade thanks to onDelete.
+ */
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
+  const authResult = await requireCommittee(request);
+  if (isAuthError(authResult)) return authResult;
+
+  const { id } = await params;
+
+  const existing = await prisma.order.findUnique({
+    where: { id },
+    include: { items: { select: { productId: true, size: true, quantity: true } } },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: "Commande introuvable" }, { status: 404 });
+  }
+
+  if (existing.paidAt) {
+    return NextResponse.json(
+      {
+        error:
+          "Impossible de supprimer une commande payée — utiliser l'annulation pour préserver la traçabilité financière",
+      },
+      { status: 409 }
+    );
+  }
+
+  const restoreStock =
+    existing.status === "RECEIVED" && existing.batchId === null;
+
+  await prisma.$transaction(async (tx) => {
+    if (restoreStock) {
+      for (const item of existing.items) {
+        if (!item.size) continue;
+        await tx.productStock.upsert({
+          where: { productId_size: { productId: item.productId, size: item.size } },
+          update: { quantity: { increment: item.quantity } },
+          create: { productId: item.productId, size: item.size, quantity: item.quantity },
+        });
+      }
+    }
+    await tx.order.delete({ where: { id } });
+  });
+
+  return NextResponse.json({ success: true, stockRestored: restoreStock });
 }
