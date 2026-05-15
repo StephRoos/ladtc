@@ -51,7 +51,12 @@ export function MembershipCard({ membership }: MembershipCardProps): React.React
   }
 
   const statusConfig = getMembershipStatusConfig(membership.status);
-  const paidForCurrentSeason = isSeasonCurrent(membership.season);
+  // A membership counts as "paid for the current season" only when its season
+  // matches AND its status is ACTIVE. A PENDING membership for the current
+  // season is awaiting payment, not paid (same policy as the orders API,
+  // which only accepts active members for cotisation-current-season).
+  const paidForCurrentSeason =
+    isSeasonCurrent(membership.season) && membership.status === "ACTIVE";
   const currentSeason = getCurrentSeason();
 
   return (
