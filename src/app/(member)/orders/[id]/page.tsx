@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useRequireAuth } from "@/hooks/use-auth";
@@ -18,6 +19,28 @@ export default function MemberOrderDetailPage(): React.ReactNode {
   const { id } = useParams<{ id: string }>();
   const { isLoading: authLoading } = useRequireAuth();
   const { data, isLoading, isError } = useOrder(id);
+  const [payLoading, setPayLoading] = useState(false);
+
+  async function handlePay(orderId: string): Promise<void> {
+    setPayLoading(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      });
+      if (res.ok) {
+        const { url } = (await res.json()) as { url: string };
+        if (url) {
+          window.location.href = url;
+          return;
+        }
+      }
+    } catch {
+      // Stripe unavailable
+    }
+    setPayLoading(false);
+  }
 
   if (authLoading || isLoading) {
     return (
@@ -140,6 +163,38 @@ export default function MemberOrderDetailPage(): React.ReactNode {
           </div>
         )}
       </div>
+
+      {/* Payment trigger for unpaid orders not yet delivered/cancelled */}
+      {!order.paidAt &&
+        order.status !== "CANCELLED" &&
+        order.status !== "DELIVERED" && (
+          <div className="mt-6 space-y-2">
+            {order.status === "PENDING" && (
+              <p className="text-sm text-muted-foreground">
+                Cette commande sera regroupée avec d&apos;autres lors du prochain lot.
+                Le paiement peut être réglé maintenant ou à la réception du lot.
+              </p>
+            )}
+            {order.status === "RECEIVED" && (
+              <p className="text-sm text-foreground">
+                Le lot est arrivé au club. Merci de régler votre commande.
+              </p>
+            )}
+            <Button
+              className="w-full sm:w-auto"
+              disabled={payLoading}
+              onClick={() => handlePay(order.id)}
+            >
+              {payLoading ? "Redirection..." : "Payer maintenant"}
+            </Button>
+          </div>
+        )}
+
+      {order.paidAt && (
+        <div className="mt-6 rounded-md border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-500">
+          Commande déjà payée.
+        </div>
+      )}
 
       <div className="mt-6">
         <Button variant="outline" asChild>

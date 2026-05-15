@@ -138,35 +138,56 @@ function OrderConfirmationContent(): React.ReactNode {
         </div>
       </div>
 
-      {/* Pay now button for unpaid pending orders */}
-      {order.status === "PENDING" && !order.paidAt && (
-        <div className="mt-6">
-          <Button
-            className="w-full sm:w-auto"
-            disabled={payLoading}
-            onClick={async () => {
-              setPayLoading(true);
-              try {
-                const res = await fetch("/api/stripe/checkout", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ orderId: order.id }),
-                });
-                if (res.ok) {
-                  const { url } = (await res.json()) as { url: string };
-                  if (url) {
-                    window.location.href = url;
-                    return;
+      {/* Payment trigger — any non-cancelled, non-delivered, unpaid order can be paid.
+          Direct-stock orders (RECEIVED at creation) are paid immediately at checkout,
+          so by the time the member visits this page they will see "déjà payée" instead. */}
+      {!order.paidAt &&
+        order.status !== "CANCELLED" &&
+        order.status !== "DELIVERED" && (
+          <div className="mt-6 space-y-2">
+            {order.status === "PENDING" && (
+              <p className="text-sm text-muted-foreground">
+                Cette commande sera regroupée avec d&apos;autres lors du prochain lot.
+                Vous pourrez la payer maintenant ou attendre la réception du lot.
+              </p>
+            )}
+            {order.status === "RECEIVED" && (
+              <p className="text-sm text-foreground">
+                Le lot est arrivé au club. Merci de régler votre commande.
+              </p>
+            )}
+            <Button
+              className="w-full sm:w-auto"
+              disabled={payLoading}
+              onClick={async () => {
+                setPayLoading(true);
+                try {
+                  const res = await fetch("/api/stripe/checkout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ orderId: order.id }),
+                  });
+                  if (res.ok) {
+                    const { url } = (await res.json()) as { url: string };
+                    if (url) {
+                      window.location.href = url;
+                      return;
+                    }
                   }
+                } catch {
+                  // Stripe unavailable
                 }
-              } catch {
-                // Stripe unavailable
-              }
-              setPayLoading(false);
-            }}
-          >
-            {payLoading ? "Redirection..." : "Payer maintenant"}
-          </Button>
+                setPayLoading(false);
+              }}
+            >
+              {payLoading ? "Redirection..." : "Payer maintenant"}
+            </Button>
+          </div>
+        )}
+
+      {order.paidAt && order.status !== "DELIVERED" && (
+        <div className="mt-6 rounded-md border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-500">
+          Commande déjà payée.
         </div>
       )}
 
