@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useOrder, useUpdateOrder } from "@/hooks/use-orders";
@@ -26,8 +27,45 @@ import type { OrderStatus } from "@/types";
  */
 export default function AdminOrderDetailPage(): React.ReactNode {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { data, isLoading, isError } = useOrder(id);
   const updateOrder = useUpdateOrder();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  async function handleCancel(): Promise<void> {
+    if (!window.confirm("Annuler cette commande ? Le statut passera à CANCELLED.")) return;
+    setActionError(null);
+    try {
+      await updateOrder.mutateAsync({ id, data: { status: "CANCELLED" } });
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : "Échec de l'annulation");
+    }
+  }
+
+  async function handleHardDelete(): Promise<void> {
+    if (
+      !window.confirm(
+        "Supprimer définitivement la commande ? Cette action est irréversible. Le stock direct sera restauré automatiquement."
+      )
+    )
+      return;
+    setActionError(null);
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/orders/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        setActionError(body.error ?? "Échec de la suppression");
+        setIsDeleting(false);
+        return;
+      }
+      router.push("/admin/orders");
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : "Échec de la suppression");
+      setIsDeleting(false);
+    }
+  }
 
   const {
     register,
@@ -224,6 +262,45 @@ export default function AdminOrderDetailPage(): React.ReactNode {
             <p>{order.shippingEmail}</p>
           </address>
         )}
+      </div>
+
+      {/* Danger zone */}
+      <div className="mt-8 rounded-md border border-destructive/30 bg-destructive/5 p-5">
+        <h2 className="mb-3 font-semibold text-foreground">Actions sur la commande</h2>
+        {actionError && (
+          <p role="alert" className="mb-3 text-sm text-destructive">
+            {actionError}
+          </p>
+        )}
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant="outline"
+            onClick={handleCancel}
+            disabled={
+              order.status === "CANCELLED" || updateOrder.isPending || isDeleting
+            }
+          >
+            Annuler la commande
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleHardDelete}
+            disabled={order.paidAt !== null || isDeleting}
+            title={
+              order.paidAt
+                ? "Impossible de supprimer une commande payée (préserver la traçabilité)"
+                : undefined
+            }
+          >
+            {isDeleting ? "Suppression..." : "Supprimer définitivement"}
+          </Button>
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          L&apos;annulation préserve l&apos;historique (statut CANCELLED). La suppression
+          efface définitivement la commande et restaure le stock pour les ventes directes
+          non payées. Une commande payée ne peut pas être supprimée — l&apos;annuler à la
+          place.
+        </p>
       </div>
     </div>
   );

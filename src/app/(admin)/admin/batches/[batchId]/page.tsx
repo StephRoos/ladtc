@@ -130,6 +130,34 @@ export default function BatchDetailPage(): React.ReactNode {
     }
   }
 
+  async function callAction(
+    path: "ungroup" | "cancel",
+    confirmMsg: string,
+    redirectAfter: boolean
+  ): Promise<void> {
+    if (!window.confirm(confirmMsg)) return;
+    setIsActing(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/batches/${batchId}/${path}`, { method: "POST" });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(body.error ?? "Échec de l'action");
+        setIsActing(false);
+        return;
+      }
+      if (redirectAfter) {
+        router.push("/admin/batches");
+      } else {
+        await load();
+        setIsActing(false);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Échec de l'action");
+      setIsActing(false);
+    }
+  }
+
   function handleReceiveClick(): void {
     setShowSurplus(true);
     const initial: Record<string, string> = {};
@@ -291,6 +319,52 @@ export default function BatchDetailPage(): React.ReactNode {
             Les commandes de ce lot ont des statuts différents — vérifier individuellement.
           </p>
         )}
+      </section>
+
+      {/* Danger zone — ungroup / cancel the whole batch */}
+      <section className="rounded-md border border-destructive/30 bg-destructive/5 p-5 space-y-3">
+        <h2 className="font-semibold text-foreground">Actions destructives</h2>
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant="outline"
+            disabled={batchStatus !== "BATCHED" || isActing}
+            onClick={() =>
+              callAction(
+                "ungroup",
+                `Dégrouper le lot ? Toutes les commandes (${data.orders.length}) repassent en PENDING.`,
+                true
+              )
+            }
+            title={
+              batchStatus !== "BATCHED"
+                ? "Dégroupage uniquement disponible tant que le lot n'a pas été commandé"
+                : undefined
+            }
+          >
+            Dégrouper le lot
+          </Button>
+          <Button
+            variant="destructive"
+            disabled={
+              isActing || batchStatus === "CANCELLED" || batchStatus === "DELIVERED"
+            }
+            onClick={() =>
+              callAction(
+                "cancel",
+                `Annuler l'intégralité du lot ? Toutes les commandes (${data.orders.length}) passent en CANCELLED. Les remboursements éventuels sont à gérer manuellement via Stripe.`,
+                false
+              )
+            }
+          >
+            Annuler le lot entier
+          </Button>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Le dégroupage est possible uniquement tant que le lot n&apos;a pas été commandé
+          chez le fournisseur. L&apos;annulation du lot bascule chaque commande en CANCELLED
+          sans toucher au stock — les commandes payées resteront marquées comme telles, les
+          remboursements éventuels sont à effectuer manuellement via Stripe.
+        </p>
       </section>
 
       {/* Orders in the batch */}
