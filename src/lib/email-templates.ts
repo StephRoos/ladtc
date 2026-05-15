@@ -301,7 +301,7 @@ export function orderConfirmationTemplate(order: Order): string {
  * Generates the order status update email HTML template.
  *
  * @param order - The full order object
- * @param status - New order status (e.g. "SHIPPED", "DELIVERED")
+ * @param status - New order status (e.g. "ORDERED", "DELIVERED")
  * @returns Full HTML email string
  */
 /**
@@ -411,14 +411,19 @@ export function membershipPaymentConfirmationTemplate(
 
 export function orderStatusTemplate(order: Order, status: string): string {
   const statusLabels: Record<string, { label: string; description: string; color: string }> = {
-    CONFIRMED: {
-      label: "Commande confirmée",
-      description: "Votre commande a été confirmée et est en cours de préparation.",
+    BATCHED: {
+      label: "Commande groupée",
+      description: "Votre commande a été regroupée avec d'autres et sera passée chez le fournisseur prochainement.",
       color: "#22c55e",
     },
-    SHIPPED: {
-      label: "Commande expédiée",
-      description: "Votre commande est en route ! Vous la recevrez prochainement.",
+    ORDERED: {
+      label: "Commande passée au fournisseur",
+      description: "Le lot a été commandé chez le fournisseur. Vous serez informé(e) à sa réception.",
+      color: PRIMARY_COLOR,
+    },
+    RECEIVED: {
+      label: "Commande reçue",
+      description: "Le lot a été reçu par le club. Distribution à venir.",
       color: PRIMARY_COLOR,
     },
     DELIVERED: {

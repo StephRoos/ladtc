@@ -66,7 +66,7 @@ export default function AdminDashboardPage(): React.ReactNode {
   async function handleMarkShipped(order: Order): Promise<void> {
     await updateOrder.mutateAsync({
       id: order.id,
-      data: { status: "SHIPPED" },
+      data: { status: "ORDERED" },
     });
   }
 

@@ -131,8 +131,9 @@ export default function AdminOrderDetailPage(): React.ReactNode {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="PENDING">En attente</SelectItem>
-                  <SelectItem value="CONFIRMED">Confirmée</SelectItem>
-                  <SelectItem value="SHIPPED">Expédiée</SelectItem>
+                  <SelectItem value="BATCHED">Groupée</SelectItem>
+                  <SelectItem value="ORDERED">Commandée</SelectItem>
+                  <SelectItem value="RECEIVED">Reçue</SelectItem>
                   <SelectItem value="DELIVERED">Livrée</SelectItem>
                   <SelectItem value="CANCELLED">Annulée</SelectItem>
                 </SelectContent>

@@ -74,7 +74,8 @@ export async function PATCH(
   const updateData: Record<string, unknown> = { ...parsed.data };
 
   // Set timestamp fields based on status transitions
-  if (parsed.data.status === "SHIPPED" && !existing.shippedAt) {
+  // Note: granular batchedAt / orderedAt / receivedAt columns will be added in sprint 2.
+  if (parsed.data.status === "ORDERED" && !existing.shippedAt) {
     updateData.shippedAt = new Date();
   }
   if (parsed.data.status === "DELIVERED" && !existing.deliveredAt) {

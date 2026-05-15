@@ -120,8 +120,9 @@ model Verification {
 
 enum OrderStatus {
   PENDING
-  CONFIRMED
-  SHIPPED
+  BATCHED
+  ORDERED
+  RECEIVED
   DELIVERED
   CANCELLED
 }
@@ -166,6 +167,8 @@ model Order {
   status          OrderStatus @default(PENDING)
   notes           String?
 
+  batchId         String?
+
   stripeSessionId       String?   @unique
   stripePaymentIntentId String?
   paidAt                DateTime?
@@ -178,6 +181,7 @@ model Order {
   updatedAt       DateTime    @updatedAt
 
   @@index([userId])
+  @@index([batchId])
   @@index([status])
   @@index([createdAt])
 }

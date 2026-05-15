@@ -35,7 +35,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const take = 20;
   const skip = (page - 1) * take;
 
-  const validStatuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"] as const;
+  const validStatuses = ["PENDING", "BATCHED", "ORDERED", "RECEIVED", "DELIVERED", "CANCELLED"] as const;
   const statusFilter =
     status && validStatuses.includes(status as (typeof validStatuses)[number])
       ? (status as (typeof validStatuses)[number])
