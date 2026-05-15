@@ -55,11 +55,13 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Prisma: schema + migrations + self-contained CLI for `prisma migrate deploy`
+# Prisma: schema + migrations + self-contained CLI for `prisma migrate deploy`.
+# The config is required by Prisma 7 (datasource.url comes from env via the config).
+# It sits at /app/prisma.config.ts; the entrypoint exposes prisma-cli/node_modules via
+# NODE_PATH so the config's `import { defineConfig } from "prisma/config"` resolves.
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /prisma-cli ./prisma-cli
-# prisma.config.ts must be in the CWD when running prisma CLI
-COPY --from=builder /app/prisma.config.ts ./prisma-cli/prisma.config.ts
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 # Entrypoint: runs migrations then starts the server
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
