@@ -15,6 +15,7 @@ const adminNavLinks: NavLink[] = [
   { href: "/members", label: "Membres" },
   { href: "/admin/products", label: "Produits" },
   { href: "/admin/orders", label: "Commandes" },
+  { href: "/admin/batches", label: "Lots" },
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/events", label: "Événements" },
   { href: "/admin/gallery", label: "Galerie" },
