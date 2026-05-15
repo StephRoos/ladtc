@@ -7,7 +7,7 @@ export type UserRole = "MEMBER" | "COMMITTEE" | "ADMIN";
 
 export type MembershipStatus = "PENDING" | "ACTIVE" | "INACTIVE" | "EXPIRED";
 
-export type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+export type OrderStatus = "PENDING" | "BATCHED" | "ORDERED" | "RECEIVED" | "DELIVERED" | "CANCELLED";
 
 export type EventType = "TRAINING" | "RACE" | "CAMP" | "SOCIAL";
 

@@ -89,7 +89,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   // Total revenue
   const revenueResult = await prisma.order.aggregate({
     where: {
-      status: { in: ["CONFIRMED", "SHIPPED", "DELIVERED"] },
+      status: { in: ["BATCHED", "ORDERED", "RECEIVED", "DELIVERED"] },
     },
     _sum: { total: true },
   });

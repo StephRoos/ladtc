@@ -321,8 +321,9 @@ describe("checkoutSchema", () => {
 describe("order status transitions", () => {
   const VALID_STATUSES = [
     "PENDING",
-    "CONFIRMED",
-    "SHIPPED",
+    "BATCHED",
+    "ORDERED",
+    "RECEIVED",
     "DELIVERED",
     "CANCELLED",
   ] as const;
@@ -340,15 +341,29 @@ describe("order status transitions", () => {
     ).toBe(false);
   });
 
-  it("allows PENDING -> CONFIRMED transition", () => {
+  it("rejects the old CONFIRMED status (replaced by BATCHED in Issue #16)", () => {
+    expect(
+      VALID_STATUSES.includes("CONFIRMED" as (typeof VALID_STATUSES)[number])
+    ).toBe(false);
+  });
+
+  it("rejects the old SHIPPED status (replaced by ORDERED in Issue #16)", () => {
+    expect(
+      VALID_STATUSES.includes("SHIPPED" as (typeof VALID_STATUSES)[number])
+    ).toBe(false);
+  });
+
+  it("allows PENDING -> BATCHED transition", () => {
     const current = "PENDING";
-    const next = "CONFIRMED";
+    const next = "BATCHED";
     expect(VALID_STATUSES.includes(next)).toBe(true);
     expect(VALID_STATUSES.includes(current)).toBe(true);
   });
 
-  it("allows CONFIRMED -> SHIPPED transition", () => {
-    const next = "SHIPPED";
-    expect(VALID_STATUSES.includes(next)).toBe(true);
+  it("allows BATCHED -> ORDERED -> RECEIVED -> DELIVERED chain", () => {
+    const chain = ["BATCHED", "ORDERED", "RECEIVED", "DELIVERED"] as const;
+    for (const status of chain) {
+      expect(VALID_STATUSES.includes(status)).toBe(true);
+    }
   });
 });

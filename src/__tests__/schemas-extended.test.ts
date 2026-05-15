@@ -14,15 +14,15 @@ import {
 describe("orderUpdateSchema", () => {
   it("accepts valid order status update", () => {
     const result = orderUpdateSchema.safeParse({
-      status: "SHIPPED",
+      status: "ORDERED",
       trackingNumber: "TRK123456",
-      notes: "Expédié via Bpost",
+      notes: "Commandé chez Decathlon",
     });
     expect(result.success).toBe(true);
   });
 
   it("accepts minimal update with only status", () => {
-    const result = orderUpdateSchema.safeParse({ status: "CONFIRMED" });
+    const result = orderUpdateSchema.safeParse({ status: "BATCHED" });
     expect(result.success).toBe(true);
   });
 
@@ -31,8 +31,18 @@ describe("orderUpdateSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rejects the old CONFIRMED status (replaced by BATCHED in Issue #16)", () => {
+    const result = orderUpdateSchema.safeParse({ status: "CONFIRMED" });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects the old SHIPPED status (replaced by ORDERED in Issue #16)", () => {
+    const result = orderUpdateSchema.safeParse({ status: "SHIPPED" });
+    expect(result.success).toBe(false);
+  });
+
   it("validates all valid order statuses", () => {
-    const statuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"];
+    const statuses = ["PENDING", "BATCHED", "ORDERED", "RECEIVED", "DELIVERED", "CANCELLED"];
     for (const status of statuses) {
       const result = orderUpdateSchema.safeParse({ status });
       expect(result.success).toBe(true);
@@ -41,7 +51,7 @@ describe("orderUpdateSchema", () => {
 
   it("accepts empty tracking number string", () => {
     const result = orderUpdateSchema.safeParse({
-      status: "SHIPPED",
+      status: "ORDERED",
       trackingNumber: "",
     });
     expect(result.success).toBe(true);

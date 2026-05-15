@@ -50,7 +50,7 @@ const mockOrder: Order = {
   userId: "user-1",
   user: mockUser,
   items: [mockOrderItem],
-  status: "CONFIRMED",
+  status: "BATCHED",
   subtotal: 50.0,
   shippingCost: 0.0,
   tax: 0.0,
@@ -155,9 +155,9 @@ describe("orderConfirmationTemplate", () => {
 // ─── orderStatusTemplate ──────────────────────────────────────────────────────
 
 describe("orderStatusTemplate", () => {
-  it("contains the shipped status label", () => {
-    const html = orderStatusTemplate(mockOrder, "SHIPPED");
-    expect(html).toContain("expédiée");
+  it("contains the ordered status label", () => {
+    const html = orderStatusTemplate(mockOrder, "ORDERED");
+    expect(html).toContain("fournisseur");
   });
 
   it("contains the delivered status label", () => {
@@ -166,13 +166,13 @@ describe("orderStatusTemplate", () => {
   });
 
   it("contains the order id reference", () => {
-    const html = orderStatusTemplate(mockOrder, "SHIPPED");
+    const html = orderStatusTemplate(mockOrder, "ORDERED");
     expect(html).toContain("ABCDEF01");
   });
 
   it("shows tracking number when available", () => {
     const orderWithTracking = { ...mockOrder, trackingNumber: "TRK123456789" };
-    const html = orderStatusTemplate(orderWithTracking, "SHIPPED");
+    const html = orderStatusTemplate(orderWithTracking, "ORDERED");
     expect(html).toContain("TRK123456789");
   });
 });

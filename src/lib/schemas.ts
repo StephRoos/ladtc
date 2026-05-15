@@ -158,7 +158,7 @@ export const checkoutSchema = z.object({
  * Zod validation schema for order status updates (admin)
  */
 export const orderUpdateSchema = z.object({
-  status: z.enum(["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"]),
+  status: z.enum(["PENDING", "BATCHED", "ORDERED", "RECEIVED", "DELIVERED", "CANCELLED"]),
   trackingNumber: z.string().optional(),
   notes: z.string().optional(),
 });

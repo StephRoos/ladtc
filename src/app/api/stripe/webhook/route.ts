@@ -66,17 +66,19 @@ async function handleEquipmentOrder(session: Stripe.Checkout.Session): Promise<v
     return;
   }
 
+  // New grouped-orders workflow (Issue #16): the order stays PENDING after payment;
+  // the admin moves it to BATCHED -> ORDERED -> RECEIVED -> DELIVERED. Status is no longer
+  // advanced by the payment event itself, only paidAt is recorded.
   await prisma.order.update({
     where: { id: orderId },
     data: {
-      status: "CONFIRMED",
       paidAt: new Date(),
       stripePaymentIntentId: session.payment_intent as string | null,
     },
   });
 
   try {
-    const fullOrder = { ...order, status: "CONFIRMED" as const, paidAt: new Date() };
+    const fullOrder = { ...order, paidAt: new Date() };
     await sendPaymentConfirmation(fullOrder);
   } catch (err) {
     console.error("[Stripe Webhook] Failed to send payment confirmation email:", err);
