@@ -201,6 +201,9 @@ model Order {
 
   trackingNumber  String?
   shippedAt       DateTime?
+  batchedAt       DateTime?
+  orderedAt       DateTime?
+  receivedAt      DateTime?
   deliveredAt     DateTime?
 
   createdAt       DateTime       @default(now())

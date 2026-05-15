@@ -136,6 +136,9 @@ export interface Order {
   paidAt: Date | null;
   trackingNumber: string | null;
   shippedAt: Date | null;
+  batchedAt: Date | null;
+  orderedAt: Date | null;
+  receivedAt: Date | null;
   deliveredAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
