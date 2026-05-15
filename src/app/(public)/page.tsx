@@ -100,7 +100,7 @@ function HeroSection(): React.ReactNode {
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            <Link href="/contact">Nous rejoindre</Link>
+            <Link href="/contact">Nous contacter</Link>
           </Button>
           <Button asChild size="lg" variant="outline">
             <Link href="/blog">Nos actualités</Link>
