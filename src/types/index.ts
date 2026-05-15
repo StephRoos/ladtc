@@ -9,6 +9,8 @@ export type MembershipStatus = "PENDING" | "ACTIVE" | "INACTIVE" | "EXPIRED";
 
 export type OrderStatus = "PENDING" | "BATCHED" | "ORDERED" | "RECEIVED" | "DELIVERED" | "CANCELLED";
 
+export type DeliveryMethod = "HOME_DELIVERY" | "CLUB_PICKUP";
+
 export type EventType = "TRAINING" | "RACE" | "CAMP" | "SOCIAL";
 
 export type RegistrationStatus = "REGISTERED" | "ATTENDED" | "CANCELLED";
@@ -86,11 +88,18 @@ export interface Product {
   price: number;
   image: string | null;
   sizes: string[];
-  stock: number;
   sku: string | null;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
+  productStock?: ProductStock[];
+}
+
+export interface ProductStock {
+  id: string;
+  productId: string;
+  size: string;
+  quantity: number;
 }
 
 export interface OrderItem {
@@ -109,17 +118,18 @@ export interface Order {
   user: User;
   items: OrderItem[];
   status: OrderStatus;
+  deliveryMethod: DeliveryMethod;
   subtotal: number;
   shippingCost: number;
   tax: number;
   total: number;
-  shippingName: string;
-  shippingEmail: string;
-  shippingPhone: string;
-  shippingAddress: string;
-  shippingCity: string;
-  shippingZip: string;
-  shippingCountry: string;
+  shippingName: string | null;
+  shippingEmail: string | null;
+  shippingPhone: string | null;
+  shippingAddress: string | null;
+  shippingCity: string | null;
+  shippingZip: string | null;
+  shippingCountry: string | null;
   notes: string | null;
   stripeSessionId: string | null;
   stripePaymentIntentId: string | null;

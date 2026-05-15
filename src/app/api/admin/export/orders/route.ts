@@ -5,10 +5,16 @@ import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING: "En attente",
-  CONFIRMED: "Confirmée",
-  SHIPPED: "Expédiée",
+  BATCHED: "Groupée",
+  ORDERED: "Commandée",
+  RECEIVED: "Reçue",
   DELIVERED: "Livrée",
   CANCELLED: "Annulée",
+};
+
+const DELIVERY_LABELS: Record<string, string> = {
+  HOME_DELIVERY: "Livraison",
+  CLUB_PICKUP: "Retrait au club",
 };
 
 /**
@@ -36,6 +42,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     "Sous-total",
     "Total",
     "Statut",
+    "Mode de livraison",
     "Payé le",
     "Adresse",
     "Ville",
@@ -60,10 +67,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       order.subtotal.toFixed(2),
       order.total.toFixed(2),
       STATUS_LABELS[order.status] ?? order.status,
+      DELIVERY_LABELS[order.deliveryMethod] ?? order.deliveryMethod,
       order.paidAt ? new Date(order.paidAt).toLocaleDateString("fr-BE") : "",
-      order.shippingAddress,
-      order.shippingCity,
-      order.shippingZip,
+      order.shippingAddress ?? "",
+      order.shippingCity ?? "",
+      order.shippingZip ?? "",
       order.trackingNumber ?? "",
     ];
   });

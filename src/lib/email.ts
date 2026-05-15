@@ -99,7 +99,10 @@ export async function sendOrderConfirmation(order: Order): Promise<void> {
   const subject = `Confirmation de commande LADTC #${order.id.slice(-8).toUpperCase()}`;
   const html = orderConfirmationTemplate(order);
 
-  await sendEmail(order.shippingEmail, subject, html);
+  // For CLUB_PICKUP orders shippingEmail is null; the buyer's own email is the
+  // canonical recipient (it was the source of shippingEmail for HOME_DELIVERY too).
+  const recipient = order.shippingEmail ?? order.user.email;
+  await sendEmail(recipient, subject, html);
 }
 
 /**
@@ -120,7 +123,10 @@ export async function sendOrderStatusUpdate(order: Order, status: string): Promi
   const subject = `Votre commande LADTC a été ${label} — #${order.id.slice(-8).toUpperCase()}`;
   const html = orderStatusTemplate(order, status);
 
-  await sendEmail(order.shippingEmail, subject, html);
+  // For CLUB_PICKUP orders shippingEmail is null; the buyer's own email is the
+  // canonical recipient (it was the source of shippingEmail for HOME_DELIVERY too).
+  const recipient = order.shippingEmail ?? order.user.email;
+  await sendEmail(recipient, subject, html);
 }
 
 /**
@@ -131,7 +137,10 @@ export async function sendOrderStatusUpdate(order: Order, status: string): Promi
 export async function sendPaymentConfirmation(order: Order): Promise<void> {
   const subject = `Paiement reçu — Commande LADTC #${order.id.slice(-8).toUpperCase()}`;
   const html = paymentConfirmationTemplate(order);
-  await sendEmail(order.shippingEmail, subject, html);
+  // For CLUB_PICKUP orders shippingEmail is null; the buyer's own email is the
+  // canonical recipient (it was the source of shippingEmail for HOME_DELIVERY too).
+  const recipient = order.shippingEmail ?? order.user.email;
+  await sendEmail(recipient, subject, html);
 }
 
 /**

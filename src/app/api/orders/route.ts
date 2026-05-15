@@ -5,15 +5,19 @@ import { checkoutSchema } from "@/lib/schemas";
 import { getCurrentSeason } from "@/lib/membership";
 import { z } from "zod";
 
-const createOrderSchema = checkoutSchema.extend({
-  items: z.array(
-    z.object({
-      productId: z.string(),
-      quantity: z.number().int().positive(),
-      size: z.string().optional(),
-    })
-  ).min(1, "Le panier est vide"),
-});
+const createOrderSchema = checkoutSchema.and(
+  z.object({
+    items: z
+      .array(
+        z.object({
+          productId: z.string(),
+          quantity: z.number().int().positive(),
+          size: z.string().min(1, "Taille requise"),
+        })
+      )
+      .min(1, "Le panier est vide"),
+  })
+);
 
 /**
  * GET /api/orders
@@ -71,7 +75,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * POST /api/orders
  * Creates a new order from cart items. Requires authentication.
  *
- * Body: { items: CartItem[], shippingName, shippingEmail, ... }
+ * Workflow (Issue #16 sprint 2):
+ *  - If ALL items are available in ProductStock (matching size + sufficient quantity),
+ *    the order is created with status RECEIVED and the stock is decremented atomically.
+ *  - Otherwise, the order is created with status PENDING and joins the next batch
+ *    (admin groups + orders from supplier later).
+ *
+ * Delivery method gates the shipping fields:
+ *  - HOME_DELIVERY: shipping fields validated by checkoutSchema
+ *  - CLUB_PICKUP: shipping fields ignored (member picks up at the club)
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const authResult = await requireAuth(request);
@@ -104,12 +116,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { items, ...shippingData } = parsed.data;
+  const { items, deliveryMethod, ...shippingData } = parsed.data;
 
-  // Fetch all products to validate prices and stock
+  // Validate products exist and are active
   const productIds = [...new Set(items.map((i) => i.productId))];
   const products = await prisma.product.findMany({
     where: { id: { in: productIds }, active: true },
+    include: { productStock: true },
   });
 
   if (products.length !== productIds.length) {
@@ -121,55 +134,94 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const productMap = new Map(products.map((p) => [p.id, p]));
 
-  // Validate stock
+  // Validate each item's size against the product's catalog of available sizes
   for (const item of items) {
     const product = productMap.get(item.productId);
     if (!product) continue;
-    if (product.stock < item.quantity) {
+    if (!product.sizes.includes(item.size)) {
       return NextResponse.json(
-        { error: `Stock insuffisant pour ${product.name}` },
+        { error: `Taille ${item.size} non disponible pour ${product.name}` },
         { status: 422 }
       );
     }
   }
 
-  // Calculate totals using actual prices
+  // Determine if every item can be fulfilled directly from existing per-size stock.
+  // If yes, status = RECEIVED and stock is decremented in a transaction.
+  // If no (any item missing or insufficient stock), status = PENDING (grouped order workflow).
+  let allInStock = true;
+  for (const item of items) {
+    const product = productMap.get(item.productId)!;
+    const stockRow = product.productStock.find((s) => s.size === item.size);
+    if (!stockRow || stockRow.quantity < item.quantity) {
+      allInStock = false;
+      break;
+    }
+  }
+
   const orderItems = items.map((item) => {
     const product = productMap.get(item.productId)!;
     return {
       productId: item.productId,
       quantity: item.quantity,
-      size: item.size ?? null,
+      size: item.size,
       price: product.price,
     };
   });
 
-  const subtotal = orderItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingCost = 0;
   const tax = 0;
   const total = subtotal + shippingCost + tax;
 
-  const order = await prisma.order.create({
-    data: {
-      userId: authResult.user.id,
-      ...shippingData,
-      subtotal,
-      shippingCost,
-      tax,
-      total,
-      items: {
-        create: orderItems,
+  // CLUB_PICKUP clears any address fields that may have been sent — they're not used
+  // for this delivery method and storing them would muddle the order display.
+  const orderShipping =
+    deliveryMethod === "CLUB_PICKUP"
+      ? {
+          shippingName: null,
+          shippingEmail: null,
+          shippingPhone: null,
+          shippingAddress: null,
+          shippingCity: null,
+          shippingZip: null,
+          shippingCountry: null,
+        }
+      : shippingData;
+
+  const order = await prisma.$transaction(async (tx) => {
+    // Decrement stock atomically only if everything is in stock; otherwise the order
+    // joins the grouped workflow with status PENDING and stock is untouched.
+    if (allInStock) {
+      for (const item of items) {
+        await tx.productStock.update({
+          where: { productId_size: { productId: item.productId, size: item.size } },
+          data: { quantity: { decrement: item.quantity } },
+        });
+      }
+    }
+
+    return tx.order.create({
+      data: {
+        userId: authResult.user.id,
+        deliveryMethod,
+        ...orderShipping,
+        subtotal,
+        shippingCost,
+        tax,
+        total,
+        status: allInStock ? "RECEIVED" : "PENDING",
+        items: {
+          create: orderItems,
+        },
       },
-    },
-    include: {
-      items: {
-        include: { product: true },
+      include: {
+        items: {
+          include: { product: true },
+        },
+        user: { select: { id: true, name: true, email: true } },
       },
-      user: { select: { id: true, name: true, email: true } },
-    },
+    });
   });
 
   return NextResponse.json({ order, orderId: order.id }, { status: 201 });

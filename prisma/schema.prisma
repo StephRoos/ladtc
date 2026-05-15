@@ -127,44 +127,62 @@ enum OrderStatus {
   CANCELLED
 }
 
-model Product {
-  id          String      @id @default(cuid())
-  name        String
-  description String?
-  price       Float
-  image       String?
-  sizes       String[]
-  stock       Int
-  sku         String?     @unique
-  active      Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+enum DeliveryMethod {
+  HOME_DELIVERY
+  CLUB_PICKUP
+}
 
-  orderItems  OrderItem[]
+model Product {
+  id           String         @id @default(cuid())
+  name         String
+  description  String?
+  price        Float
+  image        String?
+  sizes        String[]
+  sku          String?        @unique
+  active       Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  orderItems   OrderItem[]
+  productStock ProductStock[]
 
   @@index([active])
 }
 
-model Order {
-  id              String      @id @default(cuid())
-  userId          String
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+model ProductStock {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      String
+  quantity  Int     @default(0)
 
-  shippingName    String
-  shippingEmail   String
-  shippingPhone   String
-  shippingAddress String
-  shippingCity    String
-  shippingZip     String
-  shippingCountry String      @default("Belgium")
+  @@unique([productId, size])
+  @@index([productId])
+}
+
+model Order {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deliveryMethod  DeliveryMethod @default(HOME_DELIVERY)
+
+  shippingName    String?
+  shippingEmail   String?
+  shippingPhone   String?
+  shippingAddress String?
+  shippingCity    String?
+  shippingZip     String?
+  shippingCountry String?        @default("Belgium")
 
   items           OrderItem[]
   subtotal        Float
-  shippingCost    Float       @default(0.0)
-  tax             Float       @default(0.0)
+  shippingCost    Float          @default(0.0)
+  tax             Float          @default(0.0)
   total           Float
 
-  status          OrderStatus @default(PENDING)
+  status          OrderStatus    @default(PENDING)
   notes           String?
 
   batchId         String?
@@ -177,8 +195,8 @@ model Order {
   shippedAt       DateTime?
   deliveredAt     DateTime?
 
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   @@index([userId])
   @@index([batchId])

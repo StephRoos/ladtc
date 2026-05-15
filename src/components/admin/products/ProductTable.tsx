@@ -107,7 +107,11 @@ export function ProductTable({
               </TableCell>
               <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>{product.price.toFixed(2)} €</TableCell>
-              <TableCell>{product.stock}</TableCell>
+              <TableCell>
+                {product.productStock
+                  ? product.productStock.reduce((sum, s) => sum + s.quantity, 0)
+                  : 0}
+              </TableCell>
               <TableCell>
                 {product.active ? (
                   <Badge className="bg-green-500/20 text-green-400 border-green-500/30 border text-xs">

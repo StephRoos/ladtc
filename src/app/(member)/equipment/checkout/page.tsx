@@ -73,6 +73,7 @@ export default function CheckoutPage(): React.ReactNode {
 
   const defaultValues = user
     ? {
+        deliveryMethod: "HOME_DELIVERY" as const,
         shippingName: (user.name as string | undefined) ?? "",
         shippingEmail: user.email,
       }

@@ -115,19 +115,26 @@ function OrderConfirmationContent(): React.ReactNode {
           </div>
         </div>
 
-        {/* Shipping address */}
+        {/* Delivery method + address */}
         <div>
-          <h2 className="mb-2 font-semibold text-foreground">Adresse de livraison</h2>
-          <address className="not-italic text-sm text-muted-foreground space-y-1">
-            <p>{order.shippingName}</p>
-            <p>{order.shippingAddress}</p>
-            <p>
-              {order.shippingZip} {order.shippingCity}
+          <h2 className="mb-2 font-semibold text-foreground">Mode de livraison</h2>
+          {order.deliveryMethod === "CLUB_PICKUP" ? (
+            <p className="text-sm text-muted-foreground">
+              Retrait au club. Récupérer lors d&apos;une séance.
             </p>
-            <p>{order.shippingCountry}</p>
-            <p>{order.shippingPhone}</p>
-            <p>{order.shippingEmail}</p>
-          </address>
+          ) : (
+            <address className="not-italic text-sm text-muted-foreground space-y-1">
+              <p className="font-medium text-foreground">Livraison à domicile</p>
+              <p>{order.shippingName}</p>
+              <p>{order.shippingAddress}</p>
+              <p>
+                {order.shippingZip} {order.shippingCity}
+              </p>
+              <p>{order.shippingCountry}</p>
+              <p>{order.shippingPhone}</p>
+              <p>{order.shippingEmail}</p>
+            </address>
+          )}
         </div>
       </div>
 

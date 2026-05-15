@@ -204,12 +204,11 @@ describe("getCartTotal", () => {
 // ─── productSchema validation ─────────────────────────────────────────────────
 
 describe("productSchema", () => {
-  it("accepts a valid product", () => {
+  it("accepts a valid product (stock managed per size, see productStockUpdateSchema)", () => {
     const result = productSchema.safeParse({
       name: "Maillot LADTC",
       price: 25.0,
       sizes: ["S", "M", "L"],
-      stock: 10,
     });
     expect(result.success).toBe(true);
   });
@@ -219,7 +218,6 @@ describe("productSchema", () => {
       name: "AB",
       price: 25.0,
       sizes: [],
-      stock: 10,
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -233,17 +231,6 @@ describe("productSchema", () => {
       name: "Produit Test",
       price: -5,
       sizes: [],
-      stock: 10,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects negative stock", () => {
-    const result = productSchema.safeParse({
-      name: "Produit Test",
-      price: 10,
-      sizes: [],
-      stock: -1,
     });
     expect(result.success).toBe(false);
   });
@@ -253,7 +240,6 @@ describe("productSchema", () => {
       name: "Produit Test",
       price: 10,
       sizes: [],
-      stock: 0,
     });
     expect(result.success).toBe(true);
   });
@@ -263,6 +249,7 @@ describe("productSchema", () => {
 
 describe("checkoutSchema", () => {
   const validCheckout = {
+    deliveryMethod: "HOME_DELIVERY" as const,
     shippingName: "Jean Dupont",
     shippingEmail: "jean@exemple.be",
     shippingPhone: "+32 499 000 000",
@@ -272,12 +259,12 @@ describe("checkoutSchema", () => {
     shippingCountry: "Belgium",
   };
 
-  it("accepts a valid checkout form", () => {
+  it("accepts a valid HOME_DELIVERY checkout", () => {
     const result = checkoutSchema.safeParse(validCheckout);
     expect(result.success).toBe(true);
   });
 
-  it("rejects invalid email", () => {
+  it("rejects invalid email when HOME_DELIVERY", () => {
     const result = checkoutSchema.safeParse({
       ...validCheckout,
       shippingEmail: "not-an-email",
@@ -285,7 +272,7 @@ describe("checkoutSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects name shorter than 2 characters", () => {
+  it("rejects name shorter than 2 characters when HOME_DELIVERY", () => {
     const result = checkoutSchema.safeParse({
       ...validCheckout,
       shippingName: "J",
@@ -293,7 +280,7 @@ describe("checkoutSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects short phone number", () => {
+  it("rejects short phone number when HOME_DELIVERY", () => {
     const result = checkoutSchema.safeParse({
       ...validCheckout,
       shippingPhone: "123",
@@ -301,18 +288,28 @@ describe("checkoutSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("accepts checkout without country (country is optional)", () => {
-    // Build a checkout without shippingCountry
-    const withoutCountry = {
-      shippingName: validCheckout.shippingName,
-      shippingEmail: validCheckout.shippingEmail,
-      shippingPhone: validCheckout.shippingPhone,
-      shippingAddress: validCheckout.shippingAddress,
-      shippingCity: validCheckout.shippingCity,
-      shippingZip: validCheckout.shippingZip,
-    };
+  it("accepts HOME_DELIVERY without country (country is optional)", () => {
+    const { shippingCountry: _ignored, ...withoutCountry } = validCheckout;
+    void _ignored;
     const result = checkoutSchema.safeParse(withoutCountry);
     expect(result.success).toBe(true);
+  });
+
+  it("accepts CLUB_PICKUP without any shipping fields", () => {
+    const result = checkoutSchema.safeParse({ deliveryMethod: "CLUB_PICKUP" });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects HOME_DELIVERY without any shipping fields", () => {
+    const result = checkoutSchema.safeParse({ deliveryMethod: "HOME_DELIVERY" });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects checkout without deliveryMethod", () => {
+    const { deliveryMethod: _ignored, ...withoutMethod } = validCheckout;
+    void _ignored;
+    const result = checkoutSchema.safeParse(withoutMethod);
+    expect(result.success).toBe(false);
   });
 });
 
