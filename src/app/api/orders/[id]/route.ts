@@ -74,13 +74,20 @@ export async function PATCH(
 
   const updateData: Record<string, unknown> = { ...parsed.data };
 
-  // Set timestamp fields based on status transitions
-  // Note: granular batchedAt / orderedAt / receivedAt columns will be added in sprint 2.
-  if (parsed.data.status === "ORDERED" && !existing.shippedAt) {
-    updateData.shippedAt = new Date();
+  // Each transition INTO a status stamps its dedicated column the first time it
+  // happens. Re-saving the same status does not overwrite an existing timestamp.
+  const now = new Date();
+  if (parsed.data.status === "BATCHED" && !existing.batchedAt) {
+    updateData.batchedAt = now;
+  }
+  if (parsed.data.status === "ORDERED" && !existing.orderedAt) {
+    updateData.orderedAt = now;
+  }
+  if (parsed.data.status === "RECEIVED" && !existing.receivedAt) {
+    updateData.receivedAt = now;
   }
   if (parsed.data.status === "DELIVERED" && !existing.deliveredAt) {
-    updateData.deliveredAt = new Date();
+    updateData.deliveredAt = now;
   }
 
   const order = await prisma.order.update({

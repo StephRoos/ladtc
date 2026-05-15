@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useProduct, useUpdateProduct } from "@/hooks/use-products";
 import { ProductForm } from "@/components/forms/ProductForm";
+import { ProductStockEditor } from "@/components/admin/products/ProductStockEditor";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ProductFormData } from "@/lib/schemas";
 
@@ -56,20 +57,31 @@ export default function EditProductPage(): React.ReactNode {
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
-      <Link
-        href="/admin/products"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
-      >
-        ← Retour aux produits
-      </Link>
-      <h1 className="mb-6 text-3xl font-bold text-foreground">Modifier le produit</h1>
-      <ProductForm
-        defaultValues={defaultValues}
-        onSubmit={handleSubmit}
-        isSubmitting={updateProduct.isPending}
-        error={updateProduct.error?.message}
-      />
+    <div className="mx-auto max-w-3xl px-4 py-10 space-y-10">
+      <div>
+        <Link
+          href="/admin/products"
+          className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
+        >
+          ← Retour aux produits
+        </Link>
+        <h1 className="mb-6 text-3xl font-bold text-foreground">Modifier le produit</h1>
+        <ProductForm
+          defaultValues={defaultValues}
+          onSubmit={handleSubmit}
+          isSubmitting={updateProduct.isPending}
+          error={updateProduct.error?.message}
+        />
+      </div>
+
+      <section className="rounded-md border border-border p-6 space-y-4">
+        <h2 className="text-xl font-semibold text-foreground">Stock par taille</h2>
+        <ProductStockEditor
+          productId={product.id}
+          sizes={product.sizes}
+          productStock={product.productStock ?? []}
+        />
+      </section>
     </div>
   );
 }
