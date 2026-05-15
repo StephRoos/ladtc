@@ -22,6 +22,7 @@ const adminNavLinks: NavLink[] = [
   { href: "/admin/statistics", label: "Statistiques", adminOnly: true },
   { href: "/admin/activity-logs", label: "Logs d'activité" },
   { href: "/admin/users", label: "Utilisateurs", adminOnly: true },
+  { href: "/admin/settings", label: "Paramètres" },
 ];
 
 /**

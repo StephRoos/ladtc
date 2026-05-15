@@ -132,6 +132,14 @@ enum DeliveryMethod {
   CLUB_PICKUP
 }
 
+/// Admin-tunable key/value settings. `value` is a JSON-encoded string so it can
+/// hold numbers, booleans, or structured payloads. Read via lib/settings.ts.
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 model Product {
   id           String         @id @default(cuid())
   name         String
@@ -166,7 +174,7 @@ model Order {
   userId          String
   user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  deliveryMethod  DeliveryMethod @default(HOME_DELIVERY)
+  deliveryMethod  DeliveryMethod @default(CLUB_PICKUP)
 
   shippingName    String?
   shippingEmail   String?

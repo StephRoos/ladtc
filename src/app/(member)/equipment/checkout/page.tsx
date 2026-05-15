@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRequireAuth } from "@/hooks/use-auth";
@@ -12,12 +13,32 @@ import type { CheckoutFormData } from "@/lib/schemas";
 /**
  * Checkout page — shipping form, cart summary, and place order button.
  * Requires authentication.
+ *
+ * Delivery method drives the visible total: CLUB_PICKUP is free, HOME_DELIVERY
+ * adds the admin-configured shipping fee (fetched from /api/settings).
  */
 export default function CheckoutPage(): React.ReactNode {
   const router = useRouter();
   const { isLoading, user } = useRequireAuth();
   const { items, total, clear } = useCart();
   const createOrder = useCreateOrder();
+  const [shippingFee, setShippingFee] = useState<number>(0);
+  const [deliveryMethod, setDeliveryMethod] = useState<"HOME_DELIVERY" | "CLUB_PICKUP">(
+    "CLUB_PICKUP"
+  );
+
+  useEffect(() => {
+    fetch("/api/settings/equipment.shippingFee")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && typeof data.value === "number") {
+          setShippingFee(data.value);
+        }
+      })
+      .catch(() => {
+        // Silent fallback to 0 — total stays accurate, server is the source of truth at order time
+      });
+  }, []);
 
   if (isLoading) {
     return (
@@ -73,11 +94,14 @@ export default function CheckoutPage(): React.ReactNode {
 
   const defaultValues = user
     ? {
-        deliveryMethod: "HOME_DELIVERY" as const,
+        deliveryMethod: "CLUB_PICKUP" as const,
         shippingName: (user.name as string | undefined) ?? "",
         shippingEmail: user.email,
       }
     : undefined;
+
+  const appliedShipping = deliveryMethod === "HOME_DELIVERY" ? shippingFee : 0;
+  const grandTotal = total + appliedShipping;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
@@ -91,6 +115,8 @@ export default function CheckoutPage(): React.ReactNode {
             onSubmit={handleSubmit}
             isSubmitting={createOrder.isPending}
             error={createOrder.error?.message}
+            shippingFee={shippingFee}
+            onDeliveryMethodChange={setDeliveryMethod}
           />
         </div>
 
@@ -113,9 +139,23 @@ export default function CheckoutPage(): React.ReactNode {
               </div>
             ))}
           </div>
+          <div className="border-t border-border pt-4 space-y-1 text-sm">
+            <div className="flex justify-between text-muted-foreground">
+              <span>Sous-total</span>
+              <span>{total.toFixed(2)} €</span>
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>
+                {deliveryMethod === "HOME_DELIVERY" ? "Livraison" : "Retrait au club"}
+              </span>
+              <span>
+                {appliedShipping > 0 ? `${appliedShipping.toFixed(2)} €` : "Gratuit"}
+              </span>
+            </div>
+          </div>
           <div className="border-t border-border pt-4 flex justify-between font-semibold">
             <span>Total</span>
-            <span>{total.toFixed(2)} €</span>
+            <span>{grandTotal.toFixed(2)} €</span>
           </div>
           <p className="text-xs text-muted-foreground">
             Paiement sécurisé par Stripe (carte ou Bancontact).

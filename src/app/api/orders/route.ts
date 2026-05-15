@@ -3,6 +3,7 @@ import { requireAuth, isAuthError, COMMITTEE_ROLES } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { checkoutSchema } from "@/lib/schemas";
 import { getCurrentSeason } from "@/lib/membership";
+import { getEquipmentShippingFee } from "@/lib/settings";
 import { z } from "zod";
 
 const createOrderSchema = checkoutSchema.and(
@@ -170,7 +171,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   });
 
   const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingCost = 0;
+  // Shipping fee is admin-tunable via the Setting table. CLUB_PICKUP is always free.
+  const shippingCost =
+    deliveryMethod === "HOME_DELIVERY" ? await getEquipmentShippingFee() : 0;
   const tax = 0;
   const total = subtotal + shippingCost + tax;
 
