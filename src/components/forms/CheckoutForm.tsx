@@ -1,17 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { checkoutSchema, type CheckoutFormData } from "@/lib/schemas";
+import type { DeliveryMethod } from "@/types";
 
 interface CheckoutFormProps {
   defaultValues?: Partial<CheckoutFormData>;
   onSubmit: (data: CheckoutFormData) => Promise<void>;
   isSubmitting?: boolean;
   error?: string;
+  /** Admin-configured fee applied when HOME_DELIVERY is selected. */
+  shippingFee?: number;
+  /** Notifies the parent so it can update the order summary in real time. */
+  onDeliveryMethodChange?: (method: DeliveryMethod) => void;
 }
 
 /**
@@ -25,6 +31,8 @@ export function CheckoutForm({
   onSubmit,
   isSubmitting = false,
   error,
+  shippingFee = 0,
+  onDeliveryMethodChange,
 }: CheckoutFormProps): React.ReactNode {
   const {
     register,
@@ -34,7 +42,7 @@ export function CheckoutForm({
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      deliveryMethod: "HOME_DELIVERY",
+      deliveryMethod: "CLUB_PICKUP",
       shippingCountry: "Belgium",
       ...defaultValues,
     },
@@ -43,6 +51,10 @@ export function CheckoutForm({
   const submitting = isSubmitting || formSubmitting;
   const deliveryMethod = watch("deliveryMethod");
   const isHomeDelivery = deliveryMethod === "HOME_DELIVERY";
+
+  useEffect(() => {
+    if (deliveryMethod) onDeliveryMethodChange?.(deliveryMethod);
+  }, [deliveryMethod, onDeliveryMethodChange]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -55,24 +67,10 @@ export function CheckoutForm({
         </div>
       )}
 
-      {/* Delivery method */}
+      {/* Delivery method — CLUB_PICKUP listed first as the default */}
       <fieldset className="space-y-3">
         <legend className="text-xl font-semibold text-foreground">Mode de livraison</legend>
         <div className="space-y-2">
-          <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border p-3 hover:border-primary">
-            <input
-              type="radio"
-              value="HOME_DELIVERY"
-              {...register("deliveryMethod")}
-              className="mt-1"
-            />
-            <div>
-              <p className="font-medium text-foreground">Livraison à domicile</p>
-              <p className="text-sm text-muted-foreground">
-                Réception à l&apos;adresse fournie ci-dessous.
-              </p>
-            </div>
-          </label>
           <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border p-3 hover:border-primary">
             <input
               type="radio"
@@ -80,10 +78,34 @@ export function CheckoutForm({
               {...register("deliveryMethod")}
               className="mt-1"
             />
-            <div>
-              <p className="font-medium text-foreground">Retrait au club</p>
+            <div className="flex-1">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="font-medium text-foreground">Retrait au club</p>
+                <p className="text-sm font-medium text-green-500">Gratuit</p>
+              </div>
               <p className="text-sm text-muted-foreground">
                 Récupération sur place lors d&apos;une séance — aucune adresse requise.
+              </p>
+            </div>
+          </label>
+          <label className="flex cursor-pointer items-start gap-3 rounded-md border border-border p-3 hover:border-primary">
+            <input
+              type="radio"
+              value="HOME_DELIVERY"
+              {...register("deliveryMethod")}
+              className="mt-1"
+            />
+            <div className="flex-1">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="font-medium text-foreground">Livraison à domicile</p>
+                {shippingFee > 0 && (
+                  <p className="text-sm font-medium text-foreground">
+                    + {shippingFee.toFixed(2)} €
+                  </p>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Réception à l&apos;adresse fournie ci-dessous.
               </p>
             </div>
           </label>
