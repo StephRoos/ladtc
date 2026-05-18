@@ -18,6 +18,7 @@ const adminNavLinks: NavLink[] = [
   { href: "/admin/batches", label: "Lots" },
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/events", label: "Événements" },
+  { href: "/admin/backyard", label: "Chrono Backyard" },
   { href: "/admin/gallery", label: "Galerie" },
   { href: "/admin/documents", label: "Documents" },
   { href: "/admin/statistics", label: "Statistiques", adminOnly: true },
