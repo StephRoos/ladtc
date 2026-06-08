@@ -23,6 +23,25 @@ interface GalleryPhotoResponse {
 }
 
 /**
+ * Extract an error message from a failed Response without assuming a JSON body.
+ * A 500/413 from the server or a proxy can return an empty or HTML body, which
+ * would make `res.json()` throw "Unexpected end of JSON input" and hide the
+ * real status. This reads the body defensively and always returns a message.
+ */
+async function errorMessageFrom(res: Response, fallback: string): Promise<string> {
+  const text = await res.text().catch(() => "");
+  if (text) {
+    try {
+      const data = JSON.parse(text) as { error?: string };
+      if (data.error) return data.error;
+    } catch {
+      // Body was not JSON (empty, HTML error page…) — fall through.
+    }
+  }
+  return `${fallback} (erreur ${res.status})`;
+}
+
+/**
  * Fetch gallery photos from the public API
  * @param page - Page number
  * @param perPage - Photos per page
@@ -66,8 +85,7 @@ async function uploadPhoto(formData: FormData): Promise<GalleryPhotoResponse> {
     body: formData,
   });
   if (!res.ok) {
-    const err = (await res.json()) as { error?: string };
-    throw new Error(err.error ?? "Impossible d'uploader la photo");
+    throw new Error(await errorMessageFrom(res, "Impossible d'uploader le média"));
   }
   return res.json() as Promise<GalleryPhotoResponse>;
 }
@@ -85,8 +103,7 @@ async function updatePhoto(
     body: JSON.stringify(data),
   });
   if (!res.ok) {
-    const err = (await res.json()) as { error?: string };
-    throw new Error(err.error ?? "Impossible de mettre à jour la photo");
+    throw new Error(await errorMessageFrom(res, "Impossible de mettre à jour le média"));
   }
   return res.json() as Promise<GalleryPhotoResponse>;
 }
@@ -97,8 +114,7 @@ async function updatePhoto(
 async function deletePhoto(id: string): Promise<{ success: boolean }> {
   const res = await fetch(`/api/admin/gallery/${id}`, { method: "DELETE" });
   if (!res.ok) {
-    const err = (await res.json()) as { error?: string };
-    throw new Error(err.error ?? "Impossible de supprimer la photo");
+    throw new Error(await errorMessageFrom(res, "Impossible de supprimer le média"));
   }
   return res.json() as Promise<{ success: boolean }>;
 }

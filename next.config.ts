@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
   // Standalone output for Docker deployment
   output: "standalone",
 
+  // With a proxy.ts present, Next buffers every request body (default 10 MB)
+  // and silently truncates beyond it — which corrupts large multipart uploads
+  // (gallery videos) and makes request.formData() throw. Raise the ceiling
+  // above the 100 MB video limit (+ multipart overhead).
+  experimental: {
+    proxyClientMaxBodySize: "110mb",
+  },
+
   // Environment variables
   env: {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
