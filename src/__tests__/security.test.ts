@@ -109,6 +109,62 @@ describe("Video embed support in blog content", () => {
   });
 });
 
+// ─── Self-hosted <video> sanitization ───────────────────────────────────────
+
+describe("Self-hosted video support in blog content", () => {
+  it("auto-embeds bare local MP4 paths as a <video> player", () => {
+    const md = "# Sortie club\n\n/uploads/blog/sortie-trail.mp4\n\nText after.";
+    const html = renderBlogContent(md);
+    expect(html).toContain("<video");
+    expect(html).toContain('src="/uploads/blog/sortie-trail.mp4"');
+    expect(html).toContain("controls");
+    expect(html).toContain('preload="metadata"');
+    expect(html).toContain("Text after.");
+  });
+
+  it("preserves raw <video> tags pointing to local uploads", () => {
+    const md = '<video src="/uploads/blog/clip.mp4" controls></video>';
+    const html = renderBlogContent(md);
+    expect(html).toContain('src="/uploads/blog/clip.mp4"');
+  });
+
+  it("strips <video> tags pointing to external hosts", () => {
+    const md = '<video src="https://evil.com/payload.mp4" controls></video><p>Safe</p>';
+    const html = renderBlogContent(md);
+    expect(html).not.toContain("evil.com");
+    expect(html).not.toContain("<video");
+    expect(html).toContain("Safe");
+  });
+
+  it("strips <video> tags with an external <source> child", () => {
+    const md =
+      '<video controls><source src="https://evil.com/payload.mp4" type="video/mp4"></video>';
+    const html = renderBlogContent(md);
+    expect(html).not.toContain("evil.com");
+    expect(html).not.toContain("<video");
+  });
+
+  it("strips <video> tags with no source at all", () => {
+    const md = "<video controls></video><p>Safe</p>";
+    const html = renderBlogContent(md);
+    expect(html).not.toContain("<video");
+    expect(html).toContain("Safe");
+  });
+
+  it("removes autoplay from local videos", () => {
+    const md = '<video src="/uploads/blog/clip.mp4" autoplay controls></video>';
+    const html = renderBlogContent(md);
+    expect(html).toContain("<video");
+    expect(html).not.toContain("autoplay");
+  });
+
+  it("does not embed external MP4 URLs written as bare text", () => {
+    const md = "https://evil.com/payload.mp4";
+    const html = renderBlogContent(md);
+    expect(html).not.toContain("<video");
+  });
+});
+
 // ─── CSP headers configuration ──────────────────────────────────────────────
 
 describe("CSP headers in next.config", () => {
@@ -117,6 +173,7 @@ describe("CSP headers in next.config", () => {
     "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://ladtc.be https:",
+    "media-src 'self'",
     "font-src 'self'",
     "connect-src 'self' https://*.sentry.io",
     "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
@@ -136,6 +193,10 @@ describe("CSP headers in next.config", () => {
     expect(cspValue).toContain("frame-src https://www.youtube.com");
     expect(cspValue).toContain("https://www.youtube-nocookie.com");
     expect(cspValue).toContain("https://player.vimeo.com");
+  });
+
+  it("restricts media sources to self only", () => {
+    expect(cspValue).toContain("media-src 'self'");
   });
 
   it("allows connections to Sentry for error tracking", () => {

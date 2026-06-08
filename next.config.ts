@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob: https://ladtc.be https:",
+            "media-src 'self'",
             "font-src 'self'",
             "connect-src 'self' https://*.sentry.io",
             "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",

@@ -9,6 +9,12 @@ const TRUSTED_IFRAME_HOSTS = [
 ];
 
 /**
+ * Path prefix for self-hosted videos. Only files under this prefix may be
+ * played via a native <video> tag — external video sources are stripped.
+ */
+const LOCAL_VIDEO_PREFIX = "/uploads/";
+
+/**
  * Regex patterns to detect bare YouTube/Vimeo URLs on their own line.
  * These get auto-converted to responsive iframe embeds before sanitization.
  */
@@ -24,6 +30,14 @@ const VIDEO_URL_PATTERNS: { pattern: RegExp; toEmbed: (match: RegExpExecArray) =
     pattern: /^https?:\/\/(?:www\.)?vimeo\.com\/(\d+)/,
     toEmbed: (m) =>
       `<div class="video-embed"><iframe src="https://player.vimeo.com/video/${m[1]}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`,
+  },
+  {
+    // Self-hosted MP4: /uploads/blog/file.mp4 (relative path, local only).
+    // Strict charset (\w, dash, dot, slash) prevents attribute injection
+    // since the match is interpolated into the src attribute below.
+    pattern: /^\/uploads\/[\w\-/.]+\.mp4$/,
+    toEmbed: (m) =>
+      `<video class="video-player" controls preload="metadata" src="${m[0]}"></video>`,
   },
 ];
 
@@ -79,11 +93,35 @@ function removeUntrustedIframes(node: Element): void {
 }
 
 /**
+ * DOMPurify post-pass: remove <video> elements whose source is not a local
+ * upload. DOMPurify allows <video> by default, so without this filter a
+ * post author could embed media from arbitrary external hosts.
+ */
+function removeUntrustedVideos(node: HTMLVideoElement): void {
+  // Collect the src attribute plus any <source> children
+  const sources = [
+    node.getAttribute("src"),
+    ...Array.from(node.querySelectorAll("source")).map((s) => s.getAttribute("src")),
+  ].filter((src): src is string => src !== null);
+
+  const allLocal =
+    sources.length > 0 && sources.every((src) => src.startsWith(LOCAL_VIDEO_PREFIX));
+  if (!allLocal) {
+    node.remove();
+    return;
+  }
+
+  // No autoplay on blog posts — keep playback user-initiated
+  node.removeAttribute("autoplay");
+}
+
+/**
  * Render Markdown to sanitized HTML with video embed support.
- * Pipeline: Markdown → marked (with video extension) → DOMPurify (iframe allowlist)
+ * Pipeline: Markdown → marked (with video extension) → DOMPurify
+ * (iframe domain allowlist + local-only <video> sources)
  *
  * @param markdown - Raw Markdown content
- * @returns Sanitized HTML string with trusted video iframes preserved
+ * @returns Sanitized HTML string with trusted video embeds preserved
  */
 export function renderBlogContent(markdown: string): string {
   const rawHtml = marked.parse(markdown) as string;
@@ -100,6 +138,7 @@ export function renderBlogContent(markdown: string): string {
   const wrapper = document.createElement("div");
   wrapper.innerHTML = clean;
   wrapper.querySelectorAll("iframe").forEach(removeUntrustedIframes);
+  wrapper.querySelectorAll("video").forEach(removeUntrustedVideos);
 
   return wrapper.innerHTML;
 }

@@ -151,3 +151,13 @@
   height: 100%;
   border: 0;
 }
+
+/* Self-hosted <video> player in blog content (keeps native aspect ratio) */
+.video-player {
+  display: block;
+  width: 100%;
+  max-height: 80vh;
+  margin: 1.5rem 0;
+  border-radius: var(--radius);
+  background-color: #000;
+}
