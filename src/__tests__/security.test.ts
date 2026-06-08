@@ -173,7 +173,7 @@ describe("CSP headers in next.config", () => {
     "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://ladtc.be https:",
-    "media-src 'self'",
+    "media-src 'self' blob:",
     "font-src 'self'",
     "connect-src 'self' https://*.sentry.io",
     "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
@@ -195,8 +195,8 @@ describe("CSP headers in next.config", () => {
     expect(cspValue).toContain("https://player.vimeo.com");
   });
 
-  it("restricts media sources to self only", () => {
-    expect(cspValue).toContain("media-src 'self'");
+  it("restricts media sources to self (plus blob for upload previews)", () => {
+    expect(cspValue).toContain("media-src 'self' blob:");
   });
 
   it("allows connections to Sentry for error tracking", () => {

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useUploadPhoto } from "@/hooks/use-gallery";
 import { Upload, X, ImageIcon } from "lucide-react";
 import Image from "next/image";
+import { ACCEPT_ATTRIBUTE, validateMediaFile } from "@/lib/media";
 
 /**
  * Gallery photo upload form with drag & drop, title, description, and category fields.
@@ -29,16 +30,24 @@ export function GalleryUploadForm(): React.ReactNode {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
-    const validFiles = Array.from(newFiles).filter((f) =>
-      ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(f.type)
-    );
-    if (validFiles.length === 0) {
-      setError("Formats acceptés : JPG, PNG, WebP, GIF");
+    const incoming = Array.from(newFiles);
+    // Validate each file's type and per-kind size (images 5 Mo, vidéos 100 Mo).
+    // Reject the whole batch on the first invalid file so the user gets a clear
+    // message rather than a silently dropped file.
+    for (const f of incoming) {
+      const check = validateMediaFile(f);
+      if (!check.ok) {
+        setError(`${f.name} : ${check.error}`);
+        return;
+      }
+    }
+    if (incoming.length === 0) {
+      setError("Formats acceptés : JPG, PNG, WebP, GIF, MP4");
       return;
     }
     setError(null);
-    setFiles(validFiles);
-    setPreviews(validFiles.map((f) => URL.createObjectURL(f)));
+    setFiles(incoming);
+    setPreviews(incoming.map((f) => URL.createObjectURL(f)));
   }, []);
 
   function handleDrop(e: React.DragEvent): void {
@@ -102,7 +111,7 @@ export function GalleryUploadForm(): React.ReactNode {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Drag & drop zone */}
       <div>
-        <Label>Photos</Label>
+        <Label>Photos et vidéos</Label>
         <div
           onDrop={handleDrop}
           onDragOver={handleDragOver}
@@ -116,15 +125,15 @@ export function GalleryUploadForm(): React.ReactNode {
         >
           <Upload className="mb-2 h-8 w-8 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
-            Glissez-déposez vos photos ici ou cliquez pour sélectionner
+            Glissez-déposez vos photos ou vidéos ici ou cliquez pour sélectionner
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            JPG, PNG, WebP, GIF — 5 Mo max par fichier
+            Images JPG, PNG, WebP, GIF (5 Mo max) — Vidéos MP4 (100 Mo max)
           </p>
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+            accept={ACCEPT_ATTRIBUTE}
             multiple
             className="hidden"
             onChange={(e) => e.target.files && handleFiles(e.target.files)}
@@ -137,12 +146,24 @@ export function GalleryUploadForm(): React.ReactNode {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
           {previews.map((src, i) => (
             <div key={src} className="group relative aspect-square overflow-hidden rounded-lg border border-border">
-              <Image
-                src={src}
-                alt={`Aperçu ${i + 1}`}
-                fill
-                className="object-cover"
-              />
+              {files[i]?.type.startsWith("video/") ? (
+                // Local blob preview: a <video> shows the first frame; next/image
+                // can't render video, so it's used only for image files.
+                <video
+                  src={src}
+                  className="h-full w-full object-cover"
+                  muted
+                  playsInline
+                  preload="metadata"
+                />
+              ) : (
+                <Image
+                  src={src}
+                  alt={`Aperçu ${i + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              )}
               <button
                 type="button"
                 onClick={(e) => {
