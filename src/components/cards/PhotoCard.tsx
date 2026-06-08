@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { GalleryPhoto } from "@/types";
 
@@ -8,9 +9,12 @@ interface PhotoCardProps {
 }
 
 /**
- * Gallery photo card — displays image, title, and category badge. Click opens lightbox.
+ * Gallery media card — displays an image (or a video first frame with a play
+ * overlay), title, and category badge. Click opens the lightbox.
  */
 export function PhotoCard({ photo, onClick }: PhotoCardProps): React.ReactNode {
+  const isVideo = photo.mediaType === "VIDEO";
+
   return (
     <button
       type="button"
@@ -19,13 +23,32 @@ export function PhotoCard({ photo, onClick }: PhotoCardProps): React.ReactNode {
     >
       <div className="overflow-hidden rounded-lg border border-border bg-card transition-all duration-200 group-hover:border-primary/40">
         <div className="relative aspect-square w-full overflow-hidden bg-muted">
-          <Image
-            src={photo.url}
-            alt={photo.title}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+          {isVideo ? (
+            <>
+              {/* preload=metadata shows the first frame as a thumbnail without
+                  downloading the whole video */}
+              <video
+                src={photo.url}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                muted
+                playsInline
+                preload="metadata"
+              />
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-black/55 text-white">
+                  <Play className="h-6 w-6 translate-x-0.5 fill-current" />
+                </span>
+              </div>
+            </>
+          ) : (
+            <Image
+              src={photo.url}
+              alt={photo.title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          )}
         </div>
         <div className="p-3">
           <h3 className="line-clamp-1 text-sm font-medium text-foreground">

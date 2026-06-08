@@ -95,16 +95,27 @@ function Lightbox({
           </button>
         )}
 
-        {/* Image */}
+        {/* Media: video player for videos, image otherwise */}
         <div className="relative flex min-h-[50vh] items-center justify-center">
-          <Image
-            src={photo.url}
-            alt={photo.title}
-            width={1200}
-            height={800}
-            className="max-h-[80vh] w-auto object-contain"
-            priority
-          />
+          {photo.mediaType === "VIDEO" ? (
+            <video
+              key={photo.url}
+              src={photo.url}
+              controls
+              autoPlay
+              playsInline
+              className="max-h-[80vh] w-auto"
+            />
+          ) : (
+            <Image
+              src={photo.url}
+              alt={photo.title}
+              width={1200}
+              height={800}
+              className="max-h-[80vh] w-auto object-contain"
+              priority
+            />
+          )}
         </div>
 
         {/* Caption */}

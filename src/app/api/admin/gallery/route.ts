@@ -3,9 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { galleryPhotoSchema } from "@/lib/schemas";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { putLocal } from "@/lib/storage";
-
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+import { validateMediaFile } from "@/lib/media";
 
 /**
  * GET /api/admin/gallery
@@ -41,18 +39,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Aucun fichier fourni" }, { status: 400 });
   }
 
-  if (!ALLOWED_TYPES.includes(file.type)) {
-    return NextResponse.json(
-      { error: "Type de fichier non autorisé. Formats acceptés : JPG, PNG, WebP, GIF" },
-      { status: 400 }
-    );
-  }
-
-  if (file.size > MAX_SIZE) {
-    return NextResponse.json(
-      { error: "Le fichier dépasse la taille maximale de 5 Mo" },
-      { status: 400 }
-    );
+  // Type + per-kind size validation (images 5 MB, videos 100 MB)
+  const validation = validateMediaFile(file);
+  if (!validation.ok) {
+    return NextResponse.json({ error: validation.error }, { status: validation.status });
   }
 
   const title = formData.get("title") as string | null;
@@ -80,6 +70,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       title: parsed.data.title,
       description: parsed.data.description ?? null,
       category: parsed.data.category ?? null,
+      mediaType: validation.kind,
       uploadedById: authResult.user.id,
     },
     include: {

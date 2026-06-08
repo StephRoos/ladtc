@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useDeletePhoto, useUpdatePhoto } from "@/hooks/use-gallery";
 import { formatDate } from "@/lib/utils";
+import { Play } from "lucide-react";
 import type { GalleryPhoto } from "@/types";
 
 interface GalleryTableProps {
@@ -125,13 +126,28 @@ export function GalleryTable({
               <TableRow key={photo.id}>
                 <TableCell>
                   <div className="relative h-12 w-12 overflow-hidden rounded border border-border">
-                    <Image
-                      src={photo.url}
-                      alt={photo.title}
-                      fill
-                      className="object-cover"
-                      sizes="48px"
-                    />
+                    {photo.mediaType === "VIDEO" ? (
+                      <>
+                        <video
+                          src={photo.url}
+                          className="h-full w-full object-cover"
+                          muted
+                          playsInline
+                          preload="metadata"
+                        />
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/30 text-white">
+                          <Play className="h-4 w-4 fill-current" />
+                        </span>
+                      </>
+                    ) : (
+                      <Image
+                        src={photo.url}
+                        alt={photo.title}
+                        fill
+                        className="object-cover"
+                        sizes="48px"
+                      />
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="font-medium max-w-[300px] truncate">

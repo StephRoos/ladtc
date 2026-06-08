@@ -247,6 +247,7 @@ export interface GalleryPhoto {
   title: string;
   description: string | null;
   category: string | null;
+  mediaType: "IMAGE" | "VIDEO";
   uploadedById: string;
   uploadedBy: { id: string; name: string | null };
   createdAt: string;

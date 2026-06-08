@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,8 @@ import {
 import { slugify } from "@/lib/utils";
 import { CalendarDays, Info } from "lucide-react";
 import { ImagePicker } from "@/components/admin/ImagePicker";
+import { GalleryMediaPicker } from "@/components/admin/GalleryMediaPicker";
+import type { GalleryPhoto } from "@/types";
 
 interface BlogPostFormProps {
   defaultValues?: Partial<BlogPostFormData>;
@@ -48,6 +50,7 @@ export function BlogPostForm({
     handleSubmit,
     control,
     setValue,
+    getValues,
     formState: { errors, isSubmitting: formSubmitting },
   } = useForm<BlogPostFormData>({
     resolver: zodResolver(blogPostSchema),
@@ -74,6 +77,53 @@ export function BlogPostForm({
       setValue("slug", slugify(title));
     }
   }, [title, isEditing, setValue]);
+
+  // Merge RHF's ref with our own so we can insert text at the caret position.
+  const { ref: contentFieldRef, ...contentField } = register("content");
+  const contentRef = useRef<HTMLTextAreaElement | null>(null);
+
+  /**
+   * Insert a gallery media reference into the content textarea at the caret.
+   * Images become Markdown image syntax; videos become a bare /uploads URL on
+   * its own line, which the blog renderer turns into a <video> player.
+   */
+  function insertGalleryMedia(media: GalleryPhoto): void {
+    const snippet =
+      media.mediaType === "VIDEO"
+        ? media.url // bare URL on its own line → rendered as a video player
+        : `![${media.title}](${media.url})`;
+
+    const textarea = contentRef.current;
+    const current = getValues("content") ?? "";
+
+    // Without a live textarea reference, fall back to appending.
+    if (!textarea) {
+      const next = current ? `${current}\n\n${snippet}\n` : `${snippet}\n`;
+      setValue("content", next, { shouldDirty: true, shouldValidate: true });
+      return;
+    }
+
+    const start = textarea.selectionStart ?? current.length;
+    const end = textarea.selectionEnd ?? current.length;
+    const before = current.slice(0, start);
+    const after = current.slice(end);
+
+    // Ensure the snippet sits on its own paragraph (blank line before/after),
+    // which is required for the video URL to be detected as an embed.
+    const prefix = before.length === 0 || before.endsWith("\n\n") ? "" : before.endsWith("\n") ? "\n" : "\n\n";
+    const suffix = after.startsWith("\n\n") || after.length === 0 ? "" : after.startsWith("\n") ? "\n" : "\n\n";
+    const insertion = `${prefix}${snippet}${suffix}`;
+    const next = before + insertion + after;
+
+    setValue("content", next, { shouldDirty: true, shouldValidate: true });
+
+    // Restore focus and place the caret right after the inserted snippet.
+    requestAnimationFrame(() => {
+      const caret = before.length + insertion.length;
+      textarea.focus();
+      textarea.setSelectionRange(caret, caret);
+    });
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -111,13 +161,20 @@ export function BlogPostForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="content">Contenu (Markdown)</Label>
+        <div className="flex items-center justify-between gap-2">
+          <Label htmlFor="content">Contenu (Markdown)</Label>
+          <GalleryMediaPicker onSelect={insertGalleryMedia} />
+        </div>
         <textarea
           id="content"
           rows={15}
           placeholder="Rédigez votre article en Markdown..."
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 font-mono"
-          {...register("content")}
+          ref={(el) => {
+            contentFieldRef(el);
+            contentRef.current = el;
+          }}
+          {...contentField}
         />
         {errors.content && (
           <p className="text-sm text-destructive">{errors.content.message}</p>
