@@ -29,6 +29,11 @@ export function ImagePicker({
   const [externalUrl, setExternalUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { data: galleryData, isLoading: galleryLoading } = useGallery(1, 50);
+  // A featured image must be an image — videos are inserted into the article
+  // body via GalleryMediaPicker, not chosen here.
+  const galleryImages = (galleryData?.photos ?? []).filter(
+    (photo) => photo.mediaType === "IMAGE"
+  );
 
   async function handleFile(file: File): Promise<void> {
     const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -164,9 +169,9 @@ export function ImagePicker({
           <div className="flex items-center justify-center p-8">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
-        ) : galleryData?.photos && galleryData.photos.length > 0 ? (
+        ) : galleryImages.length > 0 ? (
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
-            {galleryData.photos.map((photo) => (
+            {galleryImages.map((photo) => (
               <button
                 key={photo.id}
                 type="button"
@@ -184,7 +189,7 @@ export function ImagePicker({
           </div>
         ) : (
           <div className="rounded-md border border-border p-6 text-center text-sm text-muted-foreground">
-            Aucune photo dans la galerie.
+            Aucune image dans la galerie.
           </div>
         )}
       </TabsContent>

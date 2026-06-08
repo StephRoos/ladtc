@@ -64,6 +64,30 @@ describe("blogPostSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  it("accepts a full https URL as featured image", () => {
+    const result = blogPostSchema.safeParse({
+      ...validPost,
+      featuredImageUrl: "https://example.com/photo.jpg",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a local /images/ path as featured image", () => {
+    const result = blogPostSchema.safeParse({
+      ...validPost,
+      featuredImageUrl: "/images/hero.jpg",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts an /uploads/ gallery path as featured image", () => {
+    const result = blogPostSchema.safeParse({
+      ...validPost,
+      featuredImageUrl: "/uploads/gallery/abc-123.jpg",
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("validates partial schema for updates", () => {
     const partial = blogPostSchema.partial();
     const result = partial.safeParse({ title: "Nouveau titre" });

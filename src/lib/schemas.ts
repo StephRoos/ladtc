@@ -273,7 +273,9 @@ export const blogPostSchema = z.object({
   excerpt: z.string().optional(),
   featuredImageUrl: z.union([
     z.string().url("URL d'image invalide"),
+    // Local images: bundled assets (/images/) or uploads (/uploads/, gallery + blog)
     z.string().startsWith("/images/", "Chemin d'image invalide"),
+    z.string().startsWith("/uploads/", "Chemin d'image invalide"),
     z.literal(""),
     z.undefined(),
   ]),
