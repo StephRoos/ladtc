@@ -172,7 +172,7 @@ export default function AdminMembersPage(): React.ReactNode {
           <SelectContent>
             <SelectItem value="name">Nom</SelectItem>
             <SelectItem value="joinedAt">Date d&apos;inscription</SelectItem>
-            <SelectItem value="season">Saison payée</SelectItem>
+            <SelectItem value="season">Saison</SelectItem>
           </SelectContent>
         </Select>
       </div>

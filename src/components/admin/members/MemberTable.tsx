@@ -42,7 +42,7 @@ export function MemberTable({
               <TableHead>Email</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead>Inscription</TableHead>
-              <TableHead>Saison payée</TableHead>
+              <TableHead>Saison</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -79,7 +79,7 @@ export function MemberTable({
             <TableHead>Email</TableHead>
             <TableHead>Statut</TableHead>
             <TableHead>Inscription</TableHead>
-            <TableHead>Saison payée</TableHead>
+            <TableHead>Saison</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>

@@ -123,7 +123,7 @@ export function MemberForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="season">Saison payée</Label>
+        <Label htmlFor="season">Saison</Label>
         <Input
           id="season"
           type="text"

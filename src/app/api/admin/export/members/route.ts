@@ -25,7 +25,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     "Contact urgence",
     "Tél urgence",
     "Inscription",
-    "Saison payée",
+    "Saison",
     "Dernier paiement",
     "Montant",
   ];
