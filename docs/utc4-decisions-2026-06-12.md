@@ -81,6 +81,14 @@
   - Modèle / fournisseur : ___
   - Prix : ___
   - Fenêtre de commande (boutique du site) : du ___ au ___
+- **Cotisations des nouveaux membres — arbitrage** (voir démo) :
+  - [ ] **Option A (fonctionnement actuel)** : le comité valide chaque nouveau
+        membre en créant sa fiche cotisation (montant au cas par cas),
+        le paiement en ligne n'est possible qu'après
+  - [ ] **Option B (paiement direct)** : fiche cotisation créée automatiquement
+        à l'inscription → paiement immédiat par carte/Bancontact
+    - Montant par défaut : [ ] 50 €  [ ] autre → ___
+    - Qui surveille les nouvelles inscriptions : ___
 - **Lancement du site auprès des membres** :
   - Date d'annonce (groupe Facebook membres) : ___
   - Comptes COMMITTEE à créer pour : ___
