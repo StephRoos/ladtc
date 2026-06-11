@@ -19,6 +19,30 @@ export const siteConfig = {
     location: "Ellezelles",
     region: "Pays des Collines",
   },
+  /**
+   * UTC — Ultra Trail des Collines, the race organized by the club.
+   * Update these values once the committee validates the edition details.
+   * `registrationUrl: null` displays a "coming soon" state on /utc.
+   */
+  utc: {
+    edition: 4,
+    name: "Urbanbayern Trail des Collines",
+    shortName: "UTC 4",
+    // Date from the UTC 4 sponsoring document (June 2026) — night race
+    date: "Samedi 24 octobre 2026" as string | null,
+    location: "École communale d'Ellezelles",
+    // TODO(committee 2026-06-12): confirm prices and registration link
+    registrationUrl: null as string | null,
+    // Historical race website, managed separately (urbanbayerntrail.be)
+    externalSiteUrl: "https://www.urbanbayerntrail.be" as string | null,
+    contactEmail: "ladtc2021@gmail.com" as string | null,
+    sponsoring: {
+      // Club account for sponsor payments, as printed on the sponsoring doc
+      iban: "BE71 0019 4925 1069",
+      paymentReference: "sponsor course DTC + nom de l'entreprise",
+      tiers: [1000, 500, 250, 100, 50],
+    },
+  },
   schedule: {
     training: [
       {
