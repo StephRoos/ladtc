@@ -69,10 +69,10 @@
 
 ## 7. Hors page UTC — autres décisions de la soirée
 
-- **Stripe (compte club, issue #4)** :
-  - Titulaire du compte : ___
-  - IBAN : [ ] BE71 0019 4925 1069 confirmé  [ ] autre → ___
-  - Email du compte : [ ] ladtc2021@gmail.com confirmé  [ ] autre → ___
+- **Stripe** (déjà migré le 15/05 : compte dédié LADTC, IBAN club, Bancontact actif) :
+  - Test paiement réel devant le comité : [ ] effectué et concluant  [ ] à refaire → ___
+  - Titulaire du compte (actuellement Stéphane à titre personnel) :
+    [ ] inchangé pour cette saison  [ ] à transférer à → ___
 - **Site urbanbayerntrail.be (6 €/mois)** :
   - [ ] coexiste avec /utc cette saison
   - [ ] sera remplacé par /utc → date/modalités : ___
