@@ -19,6 +19,21 @@ export const siteConfig = {
     location: "Ellezelles",
     region: "Pays des Collines",
   },
+  /**
+   * UTC — Ultra Trail des Collines, the race organized by the club.
+   * Update these values once the committee validates the edition details.
+   * `registrationUrl: null` displays a "coming soon" state on /utc.
+   */
+  utc: {
+    edition: 4,
+    name: "Ultra Trail des Collines",
+    shortName: "UTC 4",
+    // TODO(committee 2026-06-12): confirm date, formats and registration link
+    date: null as string | null,
+    location: "Ellezelles, Pays des Collines",
+    registrationUrl: null as string | null,
+    contactEmail: null as string | null,
+  },
   schedule: {
     training: [
       {

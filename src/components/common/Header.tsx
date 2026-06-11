@@ -15,6 +15,7 @@ import { signOut } from "@/lib/auth-client";
 const navLinks = [
   { href: "/", label: "Accueil" },
   { href: "/blog", label: "Blog" },
+  { href: "/utc", label: "UTC 4" },
   { href: "/equipment", label: "Équipement" },
   { href: "/team", label: "Équipe" },
   { href: "/contact", label: "Contact" },
