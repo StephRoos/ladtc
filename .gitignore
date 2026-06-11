@@ -98,3 +98,6 @@ public/uploads/*
 /src/generated
 .vercel
 .env*.local
+
+# Obsidian workspace files (docs folder opened as vault)
+.obsidian/
