@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { ProductCatalog } from "./ProductCatalog";
+import { MembershipGate } from "@/components/equipment/MembershipGate";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -35,9 +35,9 @@ export default function EquipmentPage(): React.ReactNode {
           Commandez l&apos;équipement officiel LADTC — maillots, vestes, accessoires.
         </p>
       </div>
-      <Suspense fallback={<div className="text-muted-foreground">Chargement...</div>}>
+      <MembershipGate>
         <ProductCatalog />
-      </Suspense>
+      </MembershipGate>
     </div>
   );
 }

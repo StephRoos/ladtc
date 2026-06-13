@@ -69,10 +69,10 @@ describe("validateMediaFile", () => {
     if (!res.ok) expect(res.error).toContain("5 Mo");
   });
 
-  it("rejects a video over 100 MB", () => {
+  it("rejects a video over 500 MB", () => {
     const res = validateMediaFile({ type: "video/mp4", size: MAX_VIDEO_SIZE + 1 });
     expect(res.ok).toBe(false);
-    if (!res.ok) expect(res.error).toContain("100 Mo");
+    if (!res.ok) expect(res.error).toContain("500 Mo");
   });
 
   it("accepts a video that would be rejected as an image (size between limits)", () => {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 import { ProductDetail } from "./ProductDetail";
+import { MembershipGate } from "@/components/equipment/MembershipGate";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -52,7 +53,9 @@ export default async function ProductDetailPage({ params }: Props): Promise<Reac
   const { id } = await params;
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
-      <ProductDetail id={id} />
+      <MembershipGate>
+        <ProductDetail id={id} />
+      </MembershipGate>
     </div>
   );
 }

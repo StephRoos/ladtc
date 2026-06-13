@@ -25,7 +25,7 @@ export const ACCEPT_ATTRIBUTE = ACCEPTED_MIME_TYPES.join(",");
 
 /** Size ceilings per media kind. */
 export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-export const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100 MB
+export const MAX_VIDEO_SIZE = 500 * 1024 * 1024; // 500 MB
 
 /**
  * Media kind stored on GalleryPhoto.mediaType. Mirrors the Prisma `MediaType`
