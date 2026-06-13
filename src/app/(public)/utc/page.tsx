@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/config/site";
-import { UtcGallery } from "./UtcGallery";
+import { UtcBanner } from "./UtcBanner";
 
 const utc = siteConfig.utc;
 
@@ -70,6 +70,9 @@ const formats = [
 export default function UtcPage(): React.ReactNode {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
+      {/* Banner illustration (from the gallery) */}
+      <UtcBanner />
+
       {/* Hero */}
       <div className="mb-12 text-center">
         <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
@@ -147,9 +150,6 @@ export default function UtcPage(): React.ReactNode {
           </Card>
         </div>
       </section>
-
-      {/* En images (gallery) */}
-      <UtcGallery />
 
       {/* Formats */}
       <section className="mb-16">
