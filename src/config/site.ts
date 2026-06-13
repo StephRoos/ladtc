@@ -37,6 +37,9 @@ export const siteConfig = {
     // Former race website (urbanbayerntrail.be) decommissioned — replaced by /utc
     externalSiteUrl: null as string | null,
     contactEmail: "admin@ladtc.be" as string | null,
+    // Gallery category used to illustrate the /utc page. Photos tagged with this
+    // exact category (case-sensitive) are shown in the "En images" section.
+    galleryCategory: "urbanbayern",
     sponsoring: {
       // Club account for sponsor payments, as printed on the sponsoring doc
       iban: "BE71 0019 4925 1069",

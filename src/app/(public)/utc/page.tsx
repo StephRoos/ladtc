@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/config/site";
+import { UtcGallery } from "./UtcGallery";
 
 const utc = siteConfig.utc;
 
@@ -146,6 +147,9 @@ export default function UtcPage(): React.ReactNode {
           </Card>
         </div>
       </section>
+
+      {/* En images (gallery) */}
+      <UtcGallery />
 
       {/* Formats */}
       <section className="mb-16">
