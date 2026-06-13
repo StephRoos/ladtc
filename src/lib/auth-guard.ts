@@ -59,27 +59,9 @@ export async function requireRole(
 }
 
 /**
- * Require ADMIN role. Returns AuthSession or a 401/403 NextResponse.
- * @param request - The incoming request
- */
-export async function requireAdmin(
-  request: NextRequest
-): Promise<AuthSession | NextResponse> {
-  const result = await requireAuth(request);
-  if (result instanceof NextResponse) return result;
-
-  if (result.user.role !== "ADMIN") {
-    return NextResponse.json(
-      { error: "Accès refusé — rôle ADMIN requis" },
-      { status: 403 }
-    );
-  }
-
-  return result;
-}
-
-/**
  * Require COMMITTEE or ADMIN role. Returns AuthSession or a 401/403 NextResponse.
+ * The committee manages everything, including user accounts and roles — there is
+ * no separate admin permission level anymore (ADMIN is a dormant legacy value).
  * @param request - The incoming request
  */
 export async function requireCommittee(

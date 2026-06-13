@@ -90,11 +90,11 @@ describe("roleUpdateSchema — committeeRole", () => {
     expect(result.success).toBe(false);
   });
 
-  it("allows ADMIN role with null committeeRole", () => {
+  it("rejects ADMIN role (deprecated — committee manages everything)", () => {
     const result = roleUpdateSchema.safeParse({
       role: "ADMIN",
       committeeRole: null,
     });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 });

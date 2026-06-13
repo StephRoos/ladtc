@@ -112,7 +112,13 @@
       Le comité consultera la liste des membres sur le site de temps en temps.
 - **Lancement du site auprès des membres** :
   - Date d'annonce : par MAIL envoyé aux membres (date à définir)
-  - Comptes COMMITTEE : OK. À FAIRE → ajouter Stéphane au comité (rôle COMMITTEE).
+  - Comptes COMMITTEE : OK.
+  - DÉCISION 13/06 — fusion admin/comité : le rôle ADMIN applicatif est supprimé.
+    Le COMITÉ gère désormais TOUT, y compris les comptes et les rôles (le vrai
+    super-pouvoir restant = l'accès au code/BDD de Stéphane). Plus de fonctions
+    distinctes (committeeRole conservé mais optionnel : président/trésorier/secrétaire).
+    Migration : tous les comptes ADMIN → COMMITTEE (Stéphane inclus → apparaît sur /team).
+    Garde-fou : un membre du comité ne peut pas se retirer lui-même du comité.
 - **Prochaine réunion (août)** : à définir
 
 ## Notes libres

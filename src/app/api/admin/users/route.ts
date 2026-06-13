@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin, isAuthError } from "@/lib/auth-guard";
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 
 const PAGE_SIZE = 20;
@@ -10,7 +10,7 @@ const PAGE_SIZE = 20;
  * Restricted to ADMIN only.
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const authResult = await requireAdmin(request);
+  const authResult = await requireCommittee(request);
   if (isAuthError(authResult)) return authResult;
 
   const { searchParams } = new URL(request.url);

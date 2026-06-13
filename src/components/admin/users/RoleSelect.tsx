@@ -16,8 +16,11 @@ import type { UserRole } from "@/types";
 const ROLE_LABELS: Record<UserRole, string> = {
   MEMBER: "Membre",
   COMMITTEE: "Comité",
-  ADMIN: "Admin",
+  ADMIN: "Admin", // legacy value, kept for display of any pre-existing account
 };
+
+// Roles a committee member can assign. ADMIN is deprecated and not selectable.
+const SELECTABLE_ROLES: UserRole[] = ["MEMBER", "COMMITTEE"];
 
 interface RoleSelectProps {
   userId: string;
@@ -96,7 +99,7 @@ export function RoleSelect({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {(Object.keys(ROLE_LABELS) as UserRole[]).map((role) => (
+            {SELECTABLE_ROLES.map((role) => (
               <SelectItem key={role} value={role}>
                 {ROLE_LABELS[role]}
               </SelectItem>

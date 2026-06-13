@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 interface NavLink {
   href: string;
   label: string;
-  adminOnly?: boolean;
 }
 
 const adminNavLinks: NavLink[] = [
@@ -21,21 +20,20 @@ const adminNavLinks: NavLink[] = [
   { href: "/admin/backyard", label: "Chrono Backyard" },
   { href: "/admin/gallery", label: "Galerie" },
   { href: "/admin/documents", label: "Documents" },
-  { href: "/admin/statistics", label: "Statistiques", adminOnly: true },
+  { href: "/admin/statistics", label: "Statistiques" },
   { href: "/admin/activity-logs", label: "Logs d'activité" },
-  { href: "/admin/users", label: "Utilisateurs", adminOnly: true },
+  { href: "/admin/users", label: "Utilisateurs" },
   { href: "/admin/settings", label: "Paramètres" },
 ];
 
 /**
- * Admin sub-navigation bar (client component for active route highlighting)
+ * Admin sub-navigation bar (client component for active route highlighting).
+ * All committee members see every link — there is no separate admin level.
  */
-export function AdminNav({ isAdmin }: { isAdmin: boolean }): React.ReactNode {
+export function AdminNav(): React.ReactNode {
   const pathname = usePathname();
 
-  const visibleLinks = adminNavLinks.filter(
-    (link) => !link.adminOnly || isAdmin
-  );
+  const visibleLinks = adminNavLinks;
 
   return (
     <div className="border-b border-border bg-muted/30">

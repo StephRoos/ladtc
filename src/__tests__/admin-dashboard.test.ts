@@ -25,9 +25,9 @@ describe("roleUpdateSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("accepts ADMIN role", () => {
+  it("rejects ADMIN role (deprecated — committee manages everything)", () => {
     const result = roleUpdateSchema.safeParse({ role: "ADMIN" });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 
   it("rejects an invalid role string", () => {

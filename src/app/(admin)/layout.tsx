@@ -28,12 +28,10 @@ export default async function AdminLayout({
     redirect("/dashboard");
   }
 
-  const isAdmin = role === "ADMIN";
-
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <AdminNav isAdmin={isAdmin} />
+      <AdminNav />
       <main className="flex-1">{children}</main>
       <Footer />
     </div>

@@ -224,7 +224,8 @@ export type OrderUpdateFormData = z.infer<typeof orderUpdateSchema>;
  */
 export const roleUpdateSchema = z
   .object({
-    role: z.enum(["MEMBER", "COMMITTEE", "ADMIN"]),
+    // ADMIN is deprecated (the committee manages everything) and cannot be assigned.
+    role: z.enum(["MEMBER", "COMMITTEE"]),
     committeeRole: z
       .string()
       .trim()

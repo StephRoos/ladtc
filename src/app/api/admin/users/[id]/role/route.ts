@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin, isAuthError } from "@/lib/auth-guard";
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { roleUpdateSchema } from "@/lib/schemas";
 import { logActivity } from "@/lib/activity-log";
@@ -14,7 +14,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const authResult = await requireAdmin(request);
+  const authResult = await requireCommittee(request);
   if (isAuthError(authResult)) return authResult;
 
   const { id } = await params;
@@ -33,6 +33,15 @@ export async function PATCH(
   }
 
   const { role, committeeRole } = parsed.data;
+
+  // Safeguard: a committee member cannot remove their own committee access
+  // (avoids accidentally locking yourself out). Force it via the database if needed.
+  if (id === authResult.user.id && role !== "COMMITTEE") {
+    return NextResponse.json(
+      { error: "Vous ne pouvez pas retirer votre propre accès au comité." },
+      { status: 400 },
+    );
+  }
 
   const target = await prisma.user.findUnique({ where: { id } });
   if (!target) {

@@ -213,8 +213,10 @@ export default function AdminDashboardPage(): React.ReactNode {
         </Card>
       </div>
 
-      {/* Admin-only shortcuts */}
-      {user && "role" in user && user.role === "ADMIN" && (
+      {/* Committee shortcuts */}
+      {user &&
+        "role" in user &&
+        (user.role === "COMMITTEE" || user.role === "ADMIN") && (
         <section>
           <h2 className="mb-4 text-lg font-semibold">Administration</h2>
           <div className="flex flex-wrap gap-3">

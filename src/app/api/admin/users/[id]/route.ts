@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin, isAuthError } from "@/lib/auth-guard";
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 
@@ -13,7 +13,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const authResult = await requireAdmin(request);
+  const authResult = await requireCommittee(request);
   if (isAuthError(authResult)) return authResult;
 
   const { id } = await params;

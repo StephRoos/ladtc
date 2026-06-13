@@ -38,14 +38,17 @@ export default function AdminUsersPage(): React.ReactNode {
   const updateRole = useUpdateUserRole();
   const deleteUser = useDeleteUser();
 
-  const isAdmin = user && "role" in user && user.role === "ADMIN";
+  const isCommittee =
+    user &&
+    "role" in user &&
+    (user.role === "COMMITTEE" || user.role === "ADMIN");
 
-  if (!isAdmin) {
+  if (!isCommittee) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-20 text-center">
         <h1 className="text-2xl font-bold text-destructive">Accès refusé</h1>
         <p className="mt-2 text-muted-foreground">
-          Cette page est réservée aux administrateurs.
+          Cette page est réservée au comité.
         </p>
         <Link href="/admin/dashboard" className="mt-4 inline-block text-sm text-primary hover:underline">
           Retour au tableau de bord

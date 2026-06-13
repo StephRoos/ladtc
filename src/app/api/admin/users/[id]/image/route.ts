@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { requireAdmin, isAuthError } from "@/lib/auth-guard";
+import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
 
@@ -16,7 +16,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const authResult = await requireAdmin(request);
+  const authResult = await requireCommittee(request);
   if (isAuthError(authResult)) return authResult;
 
   const { id } = await params;

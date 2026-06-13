@@ -14,7 +14,6 @@ import { auth } from "@/lib/auth";
 import {
   requireAuth,
   requireRole,
-  requireAdmin,
   requireCommittee,
   isAuthError,
   COMMITTEE_ROLES,
@@ -125,52 +124,6 @@ describe("requireRole", () => {
     expect(result).toBeInstanceOf(NextResponse);
     if (result instanceof NextResponse) {
       expect(result.status).toBe(403);
-    }
-  });
-});
-
-// ─── requireAdmin ──────────────────────────────────────────────────
-
-describe("requireAdmin", () => {
-  it("returns AuthSession for ADMIN role", async () => {
-    mockGetSession.mockResolvedValue(mockSession("ADMIN"));
-    const result = await requireAdmin(makeRequest());
-
-    expect(result).not.toBeInstanceOf(NextResponse);
-    if (!(result instanceof NextResponse)) {
-      expect(result.user.role).toBe("ADMIN");
-    }
-  });
-
-  it("returns 403 for COMMITTEE role (not ADMIN)", async () => {
-    mockGetSession.mockResolvedValue(mockSession("COMMITTEE"));
-    const result = await requireAdmin(makeRequest());
-
-    expect(result).toBeInstanceOf(NextResponse);
-    if (result instanceof NextResponse) {
-      expect(result.status).toBe(403);
-      const body = await result.json();
-      expect(body.error).toBe("Accès refusé — rôle ADMIN requis");
-    }
-  });
-
-  it("returns 403 for MEMBER role", async () => {
-    mockGetSession.mockResolvedValue(mockSession("MEMBER"));
-    const result = await requireAdmin(makeRequest());
-
-    expect(result).toBeInstanceOf(NextResponse);
-    if (result instanceof NextResponse) {
-      expect(result.status).toBe(403);
-    }
-  });
-
-  it("returns 401 when not authenticated", async () => {
-    mockGetSession.mockResolvedValue(null);
-    const result = await requireAdmin(makeRequest());
-
-    expect(result).toBeInstanceOf(NextResponse);
-    if (result instanceof NextResponse) {
-      expect(result.status).toBe(401);
     }
   });
 });
