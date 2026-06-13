@@ -94,10 +94,16 @@
         le paiement en ligne n'est possible qu'après
   - [x] **Option B (paiement direct)** : fiche cotisation créée automatiquement
         à l'inscription → paiement immédiat par carte/Bancontact
-    - Montant par défaut : [ ] 50 €  [x] autre → 55 € pour la nouvelle saison
-    - IMPORTANT : ajouter les FRAIS STRIPE par-dessus pour que le club
-      perçoive RÉELLEMENT 55 € net (montant facturé = 55 € + frais Stripe).
-    - Qui surveille les nouvelles inscriptions : ___ (à définir)
+    - Montant cible NET pour le club : 55 € / saison.
+    - DEUX TARIFS selon le mode de paiement (décidé le 13/06) :
+      - Paiement EN LIGNE (Stripe) : **56,10 €** → net ~55 € après frais
+        (carte EEE standard 1,5 % + 0,25 € ; Bancontact 0,35 €).
+        Note : carte premium écartée (n'arrivera jamais selon le club).
+      - Paiement EN LIQUIDE au trésorier : **55 €** (pas de frais).
+    - Affichage paiement en ligne : montrer le DÉTAIL « cotisation 55 €
+      + 1,10 € de frais de traitement en ligne » (pas une surcharge).
+    - Qui surveille les nouvelles inscriptions : TOUS les membres du comité
+      (notification à tous les comptes COMMITTEE à chaque nouvelle inscription).
 - **Lancement du site auprès des membres** :
   - Date d'annonce : par MAIL envoyé aux membres (date à définir)
   - Comptes COMMITTEE : OK. À FAIRE → ajouter Stéphane au comité (rôle COMMITTEE).

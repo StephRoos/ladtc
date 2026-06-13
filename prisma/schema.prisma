@@ -60,7 +60,7 @@ model Membership {
   joinedAt              DateTime         @default(now())
   season                String?          // Season paid for, e.g. "2025-2026" (Sept 1 to Aug 31)
   paidAt                DateTime?
-  amount                Float            @default(50.0)
+  amount                Float            @default(55.0)
   phone                 String?
   emergencyContact      String?
   emergencyContactPhone String?

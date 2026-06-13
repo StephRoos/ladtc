@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
+import { MEMBERSHIP_DUES_NET, onlineFee } from "@/lib/membership-fees";
 
 /**
  * POST /api/stripe/membership
@@ -43,7 +44,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const amount = membership.amount || 50;
+  // Net dues (cash price). Online payments add the Stripe processing fee on top
+  // so the club still nets this amount — shown as a separate line, not a surcharge.
+  const netAmount = membership.amount || MEMBERSHIP_DUES_NET;
+  const feeAmount = onlineFee(netAmount);
 
   const checkoutSession = await getStripe().checkout.sessions.create({
     mode: "payment",
@@ -55,7 +59,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           product_data: {
             name: "Cotisation annuelle LADTC",
           },
-          unit_amount: Math.round(amount * 100),
+          unit_amount: Math.round(netAmount * 100),
+        },
+        quantity: 1,
+      },
+      {
+        price_data: {
+          currency: "eur",
+          product_data: {
+            name: "Frais de traitement en ligne",
+          },
+          unit_amount: Math.round(feeAmount * 100),
         },
         quantity: 1,
       },

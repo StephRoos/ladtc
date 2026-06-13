@@ -7,8 +7,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentSeason, isSeasonCurrent } from "@/lib/membership";
+import { onlineAmount, onlineFee } from "@/lib/membership-fees";
 import type { Membership } from "@/types";
 
 async function fetchMembership(): Promise<Membership | null> {
@@ -104,15 +106,33 @@ export default function MembershipPayPage(): React.ReactNode {
           </Badge>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Montant</p>
-              <p className="text-2xl font-bold text-primary">{membership.amount.toFixed(2)} EUR</p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Saison</span>
+              <span className="font-medium">{currentSeason}</span>
             </div>
-            <div>
-              <p className="text-muted-foreground">Saison</p>
-              <p className="font-medium">{currentSeason}</p>
+            <Separator />
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Cotisation</span>
+              <span className="font-medium">{membership.amount.toFixed(2)} €</span>
             </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Frais de traitement en ligne</span>
+              <span className="font-medium">{onlineFee(membership.amount).toFixed(2)} €</span>
+            </div>
+            <Separator />
+            <div className="flex items-center justify-between">
+              <span className="font-semibold">Total à payer en ligne</span>
+              <span className="text-2xl font-bold text-primary">
+                {onlineAmount(membership.amount).toFixed(2)} €
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Les frais de traitement permettent au club de percevoir
+              l&apos;intégralité de la cotisation. Le paiement en liquide auprès
+              du trésorier reste possible au tarif de{" "}
+              {membership.amount.toFixed(2)} €.
+            </p>
           </div>
 
           {error && (
