@@ -11,9 +11,9 @@ const nextConfig: NextConfig = {
   // With a proxy.ts present, Next buffers every request body (default 10 MB)
   // and silently truncates beyond it — which corrupts large multipart uploads
   // (gallery videos) and makes request.formData() throw. Raise the ceiling
-  // above the 500 MB video limit (+ multipart overhead).
+  // above the 100 MB video limit (+ multipart overhead).
   experimental: {
-    proxyClientMaxBodySize: "520mb",
+    proxyClientMaxBodySize: "110mb",
   },
 
   // Environment variables
