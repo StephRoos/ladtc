@@ -14,36 +14,42 @@
 ## 1. Informations clés (cartes en haut de la page /utc)
 
 - Date « Samedi 24 octobre 2026 » :
-  - [ ] confirmée
+  - [x] confirmée
   - [ ] modifiée → ___
 - Heure de départ (affichable sous la date, optionnel) : ___
 - Lieu « École communale d'Ellezelles » :
   - [ ] confirmé
-  - [ ] modifié → ___
+  - [x] modifié → Salle CACS, Ellezelles
 
 ## 2. Formules et tarifs
 
 - Formats 1 boucle (9 km) / 2 boucles (18 km), en binôme :
   - [ ] reconduits
-  - [ ] modifiés → ___
-- Tarif 1 boucle : [ ] 12 €/binôme  [ ] autre → ___
-- Tarif 2 boucles : [ ] 20 €/binôme  [ ] autre → ___
-- Limite d'équipes : [ ] 150 par distance  [ ] autre → ___
+  - [x] modifiés → DEUX PARCOURS DISTINCTS désormais : un parcours de 9 km
+        et un parcours de 18 km (ce n'est plus « 1 boucle / 2 boucles »).
+        Binôme reconduit. Adapter le wording de la page en conséquence.
+- Tarif 9 km : [ ] 12 €/binôme  [x] autre → 15 €/binôme
+- Tarif 18 km : [ ] 20 €/binôme  [x] autre → 25 €/binôme
+- Limite d'équipes : [x] 150 par distance  [ ] autre → ___
 - Grand Prix « Bellezellesbutte » (classement individuel, chrono sur tapis) :
-  - [ ] reconduit
+  - [x] reconduit
   - [ ] modifié → ___
 
 ## 3. Inscriptions
 
-- Plateforme : [ ] Ultratiming  [ ] autre → ___
-- Lien d'inscription (si déjà disponible) : ___
-- Date d'ouverture des inscriptions : ___
+- Plateforme : [x] Ultratiming  [ ] autre → ___
+- Lien d'inscription (si déjà disponible) : pas encore disponible (à confirmer)
+- Date d'ouverture des inscriptions : pas encore définie (à confirmer)
   (réf. UTC 3 : 1re semaine de septembre, en même temps que les flyers)
 
 ## 4. Règlement (9 articles sur la page)
 
 - [ ] Structure validée telle quelle (les mentions « à définir » seront
       complétées plus tard)
+- [x] CHANGEMENT : ne PAS afficher les 9 articles sur /utc. À la place,
+      afficher un simple LIEN vers une page règlement dédiée.
+      Cette page sera remplie plus tard (contenu sous forme de PHOTO du
+      règlement). → page placeholder pour l'instant.
 - Rédacteur du contenu final : ___ — deadline : ___
 - Corrections immédiates (article concerné → nouveau texte) :
   - ___
@@ -53,46 +59,49 @@
 ## 5. Sponsoring
 
 - Tableau sponsoring (paliers 1000/500/250/100/50 €) :
-  - [ ] validé → lancement de la recherche de sponsors
+  - [x] validé → lancement de la recherche de sponsors
   - [ ] modifié → ___
 - Section « Devenir sponsor » de la page /utc :
-  - [ ] OK telle quelle
+  - [x] OK telle quelle
   - [ ] modifications → ___
 - IBAN affiché (BE71 0019 4925 1069) et email (ladtc2021@gmail.com) :
   - [ ] confirmés
-  - [ ] à remplacer par → ___
+  - [x] IBAN inchangé (BE71 0019 4925 1069) ; email remplacé → admin@ladtc.be
 
 ## 6. Badges « Projet — à valider par le comité »
 
-- [ ] Retirer tous les badges (page validée)
+- [x] Retirer tous les badges (page validée)
 - [ ] Garder le badge sur les sections : ___
 
 ## 7. Hors page UTC — autres décisions de la soirée
 
 - **Stripe** (déjà migré le 15/05 : compte dédié LADTC, IBAN club, Bancontact actif) :
-  - Test paiement réel devant le comité : [ ] effectué et concluant  [ ] à refaire → ___
+  - Test paiement réel devant le comité : [x] effectué et concluant  [ ] à refaire → ___
   - Titulaire du compte (actuellement Stéphane à titre personnel) :
-    [ ] inchangé pour cette saison  [ ] à transférer à → ___
+    [x] inchangé pour cette saison  [ ] à transférer à → ___
 - **Site urbanbayerntrail.be (6 €/mois)** :
   - [ ] coexiste avec /utc cette saison
-  - [ ] sera remplacé par /utc → date/modalités : ___
-- **Maillots** :
-  - Périmètre : [ ] podiums UTC  [ ] équipement club membres  [ ] les deux
-  - Modèle / fournisseur : ___
-  - Prix : ___
-  - Fenêtre de commande (boutique du site) : du ___ au ___
+  - [x] sera remplacé par /utc → N'EXISTE PLUS (site supprimé, /utc le remplace)
+- **Maillots / équipements** :
+  - [x] DÉCISION : l'achat de TOUS les équipements passera par le site
+        (boutique en ligne). Périmètre = équipement club + maillots.
+  - Modèle / fournisseur : ___ (à définir)
+  - Prix : ___ (à définir)
+  - Fenêtre de commande (boutique du site) : du ___ au ___ (à définir)
 - **Cotisations des nouveaux membres — arbitrage** (voir démo) :
   - [ ] **Option A (fonctionnement actuel)** : le comité valide chaque nouveau
         membre en créant sa fiche cotisation (montant au cas par cas),
         le paiement en ligne n'est possible qu'après
-  - [ ] **Option B (paiement direct)** : fiche cotisation créée automatiquement
+  - [x] **Option B (paiement direct)** : fiche cotisation créée automatiquement
         à l'inscription → paiement immédiat par carte/Bancontact
-    - Montant par défaut : [ ] 50 €  [ ] autre → ___
-    - Qui surveille les nouvelles inscriptions : ___
+    - Montant par défaut : [ ] 50 €  [x] autre → 55 € pour la nouvelle saison
+    - IMPORTANT : ajouter les FRAIS STRIPE par-dessus pour que le club
+      perçoive RÉELLEMENT 55 € net (montant facturé = 55 € + frais Stripe).
+    - Qui surveille les nouvelles inscriptions : ___ (à définir)
 - **Lancement du site auprès des membres** :
-  - Date d'annonce (groupe Facebook membres) : ___
-  - Comptes COMMITTEE à créer pour : ___
-- **Prochaine réunion (août)** — 3 dates à proposer au sondage : ___ / ___ / ___
+  - Date d'annonce : par MAIL envoyé aux membres (date à définir)
+  - Comptes COMMITTEE : OK. À FAIRE → ajouter Stéphane au comité (rôle COMMITTEE).
+- **Prochaine réunion (août)** : à définir
 
 ## Notes libres
 

@@ -34,24 +34,23 @@ export const metadata: Metadata = {
 };
 
 /**
- * Race formats — based on the UTC 3 formula (2025). Prices and details are
- * carried over from the previous edition until the committee validates the
- * 2026 values (meeting of 2026-06-12).
+ * Race formats — validated by the committee (meeting of 2026-06-12).
+ * Two distinct courses (9 km and 18 km), run in pairs.
  */
-const draftFormats = [
+const formats = [
   {
-    name: "1 boucle — 9 km",
+    name: "Parcours 9 km",
     detail: "En binôme",
-    price: "12 € par binôme (tarif UTC 3, à confirmer)",
+    price: "15 € par binôme",
     description:
-      "Une boucle sur les sentiers du Pays des Collines, accessible au plus grand nombre.",
+      "Un parcours sur les sentiers du Pays des Collines, accessible au plus grand nombre.",
   },
   {
-    name: "2 boucles — 18 km",
+    name: "Parcours 18 km",
     detail: "En binôme",
-    price: "20 € par binôme (tarif UTC 3, à confirmer)",
+    price: "25 € par binôme",
     description:
-      "Le format long : deux passages sur la boucle, pour les binômes aguerris.",
+      "Le format long, sur un second parcours distinct, pour les binômes aguerris.",
   },
   {
     name: "Grand Prix « Bellezellesbutte »",
@@ -63,60 +62,9 @@ const draftFormats = [
 ];
 
 /**
- * Draft regulation — structure and known facts from UTC 3, to be reviewed
- * and completed by the committee before publication.
- */
-const draftReglement = [
-  {
-    title: "Article 1 — Organisation",
-    body: `L'${utc.name} (${utc.shortName}) est organisé par la dtc, club de trail running d'Ellezelles, le ${utc.date?.toLowerCase() ?? "(date à confirmer)"}. Course en nocturne : lampe frontale obligatoire. Départ et arrivée sur le site de l'école communale d'Ellezelles. Course folklorique sur le thème de l'Oberbayern : fanfare, costumes et restauration typique.`,
-  },
-  {
-    title: "Article 2 — Formule de course",
-    body: "Course en binôme. Deux distances : 1 boucle (9 km) ou 2 boucles (18 km). Nombre d'équipes limité à 150 par distance. Détails du tracé : à valider par le comité (nouveau parcours à soumettre à la commune).",
-  },
-  {
-    title: "Article 3 — Inscriptions",
-    body: "Inscriptions en ligne via la plateforme Ultratiming. Tarifs, date d'ouverture et modalités de remboursement : à confirmer par le comité.",
-  },
-  {
-    title: "Article 4 — Grand Prix « Bellezellesbutte »",
-    body: "Segment montagne chronométré sur tapis (départ et arrivée du segment). Classement individuel : 3 meilleurs hommes et 3 meilleures dames, toutes distances confondues.",
-  },
-  {
-    title: "Article 5 — Ravitaillements et sécurité",
-    body: "Un ravitaillement durant la course (boissons et oranges) et un ravitaillement complet à l'arrivée, avec soupe d'après-course. Dispositif de sécurité : à détailler par le comité.",
-  },
-  {
-    title: "Article 6 — Podiums et récompenses",
-    body: "Par distance : podium hommes, podium mixte et podium dames. Grand Prix Montagne : 3 meilleurs hommes et 3 meilleures dames. Maillots distinctifs pour les vainqueurs (maillot jaune par catégorie, maillot à pois pour le Grand Prix) : à confirmer pour cette édition.",
-  },
-  {
-    title: "Article 7 — Assurances et responsabilité",
-    body: "L'épreuve est couverte par une assurance événement. Chaque participant court sous sa propre responsabilité et déclare être apte à la pratique de la course à pied.",
-  },
-  {
-    title: "Article 8 — Droit à l'image",
-    body: "Utilisation des photos et vidéos prises pendant l'épreuve : à définir par le comité.",
-  },
-  {
-    title: "Article 9 — Annulation et force majeure",
-    body: "Conditions d'annulation ou de modification de l'épreuve : à définir par le comité.",
-  },
-];
-
-function DraftBadge(): React.ReactNode {
-  return (
-    <Badge variant="outline" className="border-amber-500/50 text-amber-500">
-      Projet — à valider par le comité
-    </Badge>
-  );
-}
-
-/**
  * UTC race page — public section for the club's flagship race.
- * Content is driven by `siteConfig.utc`; draft sections are explicitly
- * flagged until the committee validates them.
+ * Content is driven by `siteConfig.utc` and validated by the committee
+ * (meeting of 2026-06-12).
  */
 export default function UtcPage(): React.ReactNode {
   return (
@@ -163,7 +111,7 @@ export default function UtcPage(): React.ReactNode {
             <CardContent>
               <p className="text-lg font-bold">{utc.location}</p>
               <p className="text-sm text-muted-foreground">
-                Départ et arrivée sur le site de l&apos;école
+                Départ et arrivée à la salle
               </p>
             </CardContent>
           </Card>
@@ -203,10 +151,9 @@ export default function UtcPage(): React.ReactNode {
       <section className="mb-16">
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <h2 className="text-2xl font-bold">Parcours et formules</h2>
-          <DraftBadge />
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {draftFormats.map((format) => (
+          {formats.map((format) => (
             <Card key={format.name} className="border-border bg-card">
               <CardHeader>
                 <CardTitle className="text-xl">{format.name}</CardTitle>
@@ -235,19 +182,16 @@ export default function UtcPage(): React.ReactNode {
       <section className="mb-16">
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <h2 className="text-2xl font-bold">Règlement</h2>
-          <DraftBadge />
         </div>
         <Card className="border-border bg-card">
-          <CardContent className="pt-6">
-            {draftReglement.map((article, index) => (
-              <div key={article.title}>
-                {index > 0 && <Separator className="my-4" />}
-                <h3 className="mb-1 font-semibold text-foreground">
-                  {article.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">{article.body}</p>
-              </div>
-            ))}
+          <CardContent className="flex flex-col items-start gap-4 pt-6">
+            <p className="text-sm text-muted-foreground">
+              Le règlement complet de l&apos;{utc.shortName} est disponible sur
+              une page dédiée.
+            </p>
+            <Button variant="outline" asChild>
+              <Link href="/utc/reglement">Consulter le règlement</Link>
+            </Button>
           </CardContent>
         </Card>
       </section>
@@ -256,7 +200,6 @@ export default function UtcPage(): React.ReactNode {
       <section className="mb-16">
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <h2 className="text-2xl font-bold">Devenir sponsor</h2>
-          <DraftBadge />
         </div>
         <Card className="border-border bg-card">
           <CardContent className="space-y-4 pt-6">

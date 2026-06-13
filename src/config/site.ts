@@ -28,14 +28,15 @@ export const siteConfig = {
     edition: 4,
     name: "Urbanbayern Trail des Collines",
     shortName: "UTC 4",
-    // Date from the UTC 4 sponsoring document (June 2026) — night race
+    // Date confirmed by the committee (2026-06-12) — night race
     date: "Samedi 24 octobre 2026" as string | null,
-    location: "École communale d'Ellezelles",
-    // TODO(committee 2026-06-12): confirm prices and registration link
+    // Venue updated by the committee (2026-06-12): Salle CACS, Ellezelles
+    location: "Salle CACS, Ellezelles",
+    // Registration link not available yet (Ultratiming) — confirmed 2026-06-12
     registrationUrl: null as string | null,
-    // Historical race website, managed separately (urbanbayerntrail.be)
-    externalSiteUrl: "https://www.urbanbayerntrail.be" as string | null,
-    contactEmail: "ladtc2021@gmail.com" as string | null,
+    // Former race website (urbanbayerntrail.be) decommissioned — replaced by /utc
+    externalSiteUrl: null as string | null,
+    contactEmail: "admin@ladtc.be" as string | null,
     sponsoring: {
       // Club account for sponsor payments, as printed on the sponsoring doc
       iban: "BE71 0019 4925 1069",
