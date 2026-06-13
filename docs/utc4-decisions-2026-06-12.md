@@ -102,8 +102,8 @@
       - Paiement EN LIQUIDE au trésorier : **55 €** (pas de frais).
     - Affichage paiement en ligne : montrer le DÉTAIL « cotisation 55 €
       + 1,10 € de frais de traitement en ligne » (pas une surcharge).
-    - Qui surveille les nouvelles inscriptions : TOUS les membres du comité
-      (notification à tous les comptes COMMITTEE à chaque nouvelle inscription).
+    - Qui surveille les nouvelles inscriptions : PAS de notification.
+      Le comité consultera la liste des membres sur le site de temps en temps.
 - **Lancement du site auprès des membres** :
   - Date d'annonce : par MAIL envoyé aux membres (date à définir)
   - Comptes COMMITTEE : OK. À FAIRE → ajouter Stéphane au comité (rôle COMMITTEE).
