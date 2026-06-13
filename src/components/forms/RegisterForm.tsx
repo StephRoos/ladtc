@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,9 +22,8 @@ import { registerSchema, type RegisterFormData } from "@/lib/schemas";
  * Registration form component with name, email, password, and confirm password fields
  */
 export function RegisterForm(): React.ReactNode {
-  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [redirecting, setRedirecting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -37,6 +35,7 @@ export function RegisterForm(): React.ReactNode {
 
   async function onSubmit(data: RegisterFormData): Promise<void> {
     setServerError(null);
+    setSuccessMessage(null);
 
     const result = await signUp.email({
       name: data.name,
@@ -52,11 +51,9 @@ export function RegisterForm(): React.ReactNode {
       return;
     }
 
-    // A pending membership is auto-created on signup (server-side hook).
-    // Send the new member straight to the dues payment page (Option B).
-    // The email verification link is still sent in the background.
-    setRedirecting(true);
-    router.push("/membership/pay");
+    setSuccessMessage(
+      "Un email de vérification a été envoyé à votre adresse. Vérifiez votre boîte de réception."
+    );
   }
 
   return (
@@ -70,6 +67,14 @@ export function RegisterForm(): React.ReactNode {
       </CardHeader>
 
       <CardContent>
+        {successMessage ? (
+          <div
+            role="status"
+            className="rounded-md bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400"
+          >
+            {successMessage}
+          </div>
+        ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {serverError && (
               <div
@@ -145,18 +150,11 @@ export function RegisterForm(): React.ReactNode {
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting || redirecting}
-            >
-              {isSubmitting
-                ? "Inscription en cours..."
-                : redirecting
-                  ? "Redirection vers le paiement..."
-                  : "S'inscrire"}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Inscription en cours..." : "S'inscrire"}
             </Button>
           </form>
+        )}
       </CardContent>
 
       <CardFooter className="flex-col gap-2">

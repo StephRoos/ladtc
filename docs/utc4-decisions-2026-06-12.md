@@ -92,8 +92,14 @@
   - [ ] **Option A (fonctionnement actuel)** : le comité valide chaque nouveau
         membre en créant sa fiche cotisation (montant au cas par cas),
         le paiement en ligne n'est possible qu'après
-  - [x] **Option B (paiement direct)** : fiche cotisation créée automatiquement
-        à l'inscription → paiement immédiat par carte/Bancontact
+  - [x] **Option B (paiement direct)** : RETENUE sur le principe, mais
+        PAS de paiement à l'inscription pour cette année (mise à jour 13/06) :
+        les membres ont déjà payé leur cotisation, ils créent juste leur compte
+        sur le nouveau site → aucune redirection vers le paiement à l'inscription.
+        Les années suivantes : simple RENOUVELLEMENT via la page de paiement
+        existante (/membership/pay) quand la cotisation expire.
+        → la création auto de cotisation + redirection (incrément 2) a été retirée ;
+          la page de paiement avec frais inclus (incrément 1) est conservée.
     - Montant cible NET pour le club : 55 € / saison.
     - DEUX TARIFS selon le mode de paiement (décidé le 13/06) :
       - Paiement EN LIGNE (Stripe) : **56,10 €** → net ~55 € après frais

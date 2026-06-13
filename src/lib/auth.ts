@@ -47,23 +47,4 @@ export const auth = betterAuth({
       );
     },
   },
-  databaseHooks: {
-    user: {
-      create: {
-        // Auto-create a pending membership for self-registered members so they
-        // can pay their dues right after signing up (committee decision
-        // 2026-06-12, Option B). Admin-created members are created via Prisma
-        // directly with their own membership and bypass this adapter hook.
-        after: async (user) => {
-          const existing = await prisma.membership.findUnique({
-            where: { userId: user.id },
-          });
-          if (!existing) {
-            // amount defaults to the current season dues (55 €) via the schema.
-            await prisma.membership.create({ data: { userId: user.id } });
-          }
-        },
-      },
-    },
-  },
 });
