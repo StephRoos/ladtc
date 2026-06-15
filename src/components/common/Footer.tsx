@@ -31,6 +31,7 @@ export function Footer(): React.ReactNode {
               {[
                 { href: "/", label: "Accueil" },
                 { href: "/blog", label: "Blog" },
+                { href: "/gallery", label: "Galerie" },
                 { href: "/utc", label: "UTC 4" },
                 { href: "/team", label: "Équipe" },
                 { href: "/contact", label: "Contact" },
