@@ -4,7 +4,27 @@ import { galleryPhotoSchema } from "@/lib/schemas";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { putLocal } from "@/lib/storage";
 import { validateMediaFile } from "@/lib/media";
-import { parseVideoEmbed, resolveDirectVideoUrl } from "@/lib/video-embed";
+import { parseVideoEmbed, resolveDirectMediaUrl } from "@/lib/video-embed";
+
+/**
+ * Probe a self-hosted media URL's content-type (server-side, so no CORS) to
+ * tell an image from a video. Returns "UNKNOWN" when unreachable or unsupported.
+ */
+async function probeMediaKind(url: string): Promise<"IMAGE" | "VIDEO" | "UNKNOWN"> {
+  try {
+    let res = await fetch(url, { method: "HEAD", redirect: "follow" });
+    // Some endpoints don't answer HEAD — fall back to a 1-byte ranged GET.
+    if (!res.ok) {
+      res = await fetch(url, { method: "GET", headers: { Range: "bytes=0-0" }, redirect: "follow" });
+    }
+    const type = res.headers.get("content-type")?.toLowerCase() ?? "";
+    if (type.startsWith("image/")) return "IMAGE";
+    if (type.startsWith("video/")) return "VIDEO";
+    return "UNKNOWN";
+  } catch {
+    return "UNKNOWN";
+  }
+}
 
 /**
  * GET /api/admin/gallery
@@ -83,25 +103,36 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let url: string;
     let mediaType: "IMAGE" | "VIDEO";
     if (embedUrl) {
-      // Accept a YouTube/Vimeo embed, or a self-hosted direct video link
-      // (Nextcloud share / NAS HTTPS file). Nextcloud shares are normalised to
-      // their download endpoint so they stream in a <video> tag.
+      // A YouTube/Vimeo embed is always a video (rendered as an iframe).
       if (parseVideoEmbed(embedUrl)) {
         url = embedUrl;
+        mediaType = "VIDEO";
       } else {
-        const direct = resolveDirectVideoUrl(embedUrl);
+        // Self-hosted media: Nextcloud share or any HTTPS image/video URL.
+        const direct = resolveDirectMediaUrl(embedUrl);
         if (!direct) {
           return NextResponse.json(
             {
               error:
-                "Lien vidéo non reconnu (YouTube, Vimeo, lien de partage Nextcloud, ou URL HTTPS .mp4 attendus)",
+                "Lien non reconnu (YouTube, Vimeo, lien de partage Nextcloud, ou URL HTTPS d'une image/vidéo attendus)",
             },
             { status: 422 }
           );
         }
-        url = direct;
+        url = direct.url;
+        // The Nextcloud share URL hides the file type — probe its content-type.
+        let kind = direct.kind;
+        if (kind === "UNKNOWN") {
+          kind = await probeMediaKind(direct.url);
+          if (kind === "UNKNOWN") {
+            return NextResponse.json(
+              { error: "Lien injoignable ou type de fichier non supporté (image/vidéo attendus)" },
+              { status: 422 }
+            );
+          }
+        }
+        mediaType = kind;
       }
-      mediaType = "VIDEO";
     } else {
       // Type + per-kind size validation (images 5 MB, videos 100 MB)
       const validation = validateMediaFile(file as File);

@@ -48,11 +48,12 @@ export function isExternalVideo(url: string): boolean {
   return parseVideoEmbed(url) !== null;
 }
 
-// Direct (self-hosted) video files served from a Nextcloud public share or any
-// HTTPS URL ending in a video extension. These play in a native <video> element
-// (range requests handle streaming) — the "independent" path for heavy videos
-// kept on the NAS instead of YouTube.
+// Direct (self-hosted) media served from a Nextcloud public share or any HTTPS
+// URL ending in a media extension. Videos play in a native <video> element
+// (range requests handle streaming); images render with <Image>. The
+// "independent" path for heavy media kept on the NAS instead of YouTube.
 const VIDEO_EXT_RE = /\.(mp4|webm|ogg|ogv|mov|m4v)(\?.*)?$/i;
+const IMAGE_EXT_RE = /\.(jpe?g|png|webp|gif|avif|heic|heif)(\?.*)?$/i;
 // Public share link: capture host (group 1) and token (group 2), ignoring any
 // trailing /download the user may have copied.
 const NEXTCLOUD_SHARE_RE =
@@ -60,25 +61,35 @@ const NEXTCLOUD_SHARE_RE =
 // Already the direct public WebDAV endpoint — accept as-is.
 const NEXTCLOUD_DAV_RE = /^https:\/\/[^/]+\/public\.php\/dav\/files\/[A-Za-z0-9]+/i;
 
+/** A self-hosted media link resolved to a directly usable URL plus its kind. */
+export interface DirectMedia {
+  url: string;
+  /** "UNKNOWN" when the URL doesn't reveal the type (Nextcloud share) and a
+   *  content-type probe is needed by the caller. */
+  kind: "IMAGE" | "VIDEO" | "UNKNOWN";
+}
+
 /**
- * Resolve a self-hosted video link into a directly playable URL, or null when
- * the link is not a recognised direct video.
+ * Resolve a self-hosted media link (photo or video) into a directly usable URL,
+ * or null when the link is not a recognised direct media source.
  *
  * - A Nextcloud public share ("…/s/TOKEN") is rewritten to its public WebDAV
- *   file endpoint ("…/public.php/dav/files/TOKEN"). That endpoint streams with
- *   proper range support (HTTP 206), whereas "…/s/TOKEN/download" only 303-
- *   redirects to it — so we target it directly and avoid the redirect.
- * - Any HTTPS URL ending in a video extension is taken as-is.
+ *   file endpoint ("…/public.php/dav/files/TOKEN") — it streams with HTTP 206
+ *   range support, whereas "…/s/TOKEN/download" only 303-redirects there. The
+ *   kind is "UNKNOWN" (the URL hides the file type) so the caller probes the
+ *   content-type.
+ * - An HTTPS URL ending in a known image/video extension keeps its URL and a
+ *   resolved kind.
  *
- * HTTPS is required: an http source would be blocked as mixed content on the
- * site.
+ * HTTPS is required: an http source would be blocked as mixed content.
  */
-export function resolveDirectVideoUrl(url: string): string | null {
+export function resolveDirectMediaUrl(url: string): DirectMedia | null {
   const trimmed = url.trim();
   if (!/^https:\/\//i.test(trimmed)) return null;
   const nc = NEXTCLOUD_SHARE_RE.exec(trimmed);
-  if (nc) return `${nc[1]}/public.php/dav/files/${nc[2]}`;
-  if (NEXTCLOUD_DAV_RE.test(trimmed)) return trimmed;
-  if (VIDEO_EXT_RE.test(trimmed)) return trimmed;
+  if (nc) return { url: `${nc[1]}/public.php/dav/files/${nc[2]}`, kind: "UNKNOWN" };
+  if (NEXTCLOUD_DAV_RE.test(trimmed)) return { url: trimmed, kind: "UNKNOWN" };
+  if (VIDEO_EXT_RE.test(trimmed)) return { url: trimmed, kind: "VIDEO" };
+  if (IMAGE_EXT_RE.test(trimmed)) return { url: trimmed, kind: "IMAGE" };
   return null;
 }

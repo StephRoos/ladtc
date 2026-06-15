@@ -98,7 +98,7 @@ export function GalleryUploadForm(): React.ReactNode {
       return;
     }
     if (mode === "link" && !embedUrl.trim()) {
-      setError("Veuillez coller un lien YouTube ou Vimeo");
+      setError("Veuillez coller un lien (YouTube, Vimeo ou partage Nextcloud)");
       return;
     }
 
@@ -151,7 +151,7 @@ export function GalleryUploadForm(): React.ReactNode {
             mode === "link" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
           }`}
         >
-          Lien vidéo (YouTube/Vimeo)
+          Lien média (photo/vidéo)
         </button>
       </div>
 
@@ -231,17 +231,18 @@ export function GalleryUploadForm(): React.ReactNode {
 
       {mode === "link" && (
         <div>
-          <Label htmlFor="embedUrl">Lien de la vidéo</Label>
+          <Label htmlFor="embedUrl">Lien de la photo ou vidéo</Label>
           <Input
             id="embedUrl"
             type="url"
             value={embedUrl}
             onChange={(e) => setEmbedUrl(e.target.value)}
-            placeholder="https://youtu.be/… ou https://nextcloud…/s/… ou …/video.mp4"
+            placeholder="https://youtu.be/… ou https://cloud.ladtc.be/s/…"
             className="mt-2"
           />
           <p className="mt-1 text-xs text-muted-foreground">
-            Pour les vidéos lourdes (&gt; 100 Mo). Trois possibilités :
+            Idéal pour les médias lourds (vidéos &gt; 100 Mo, photos haute
+            résolution). Trois possibilités :
           </p>
           <ul className="mt-1 list-disc pl-5 text-xs text-muted-foreground">
             <li>
@@ -251,8 +252,9 @@ export function GalleryUploadForm(): React.ReactNode {
             </li>
             <li>
               <strong>Nextcloud / NAS</strong> : collez un lien de partage public
-              Nextcloud ou une URL HTTPS directe vers le fichier (.mp4). La vidéo
-              reste hébergée sur le NAS, le site ne stocke que le lien.
+              Nextcloud (photo OU vidéo) ou une URL HTTPS directe. Le média reste
+              hébergé sur le NAS, le site ne stocke que le lien. Le type (photo ou
+              vidéo) est détecté automatiquement.
             </li>
           </ul>
         </div>
@@ -350,7 +352,7 @@ export function GalleryUploadForm(): React.ReactNode {
             <>
               <Upload className="mr-2 h-4 w-4" />
               {mode === "link"
-                ? "Ajouter la vidéo"
+                ? "Ajouter le média"
                 : files.length > 1
                   ? `Uploader ${files.length} photos`
                   : "Uploader la photo"}
