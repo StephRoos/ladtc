@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { DEFAULT_DTC_MEANINGS } from "@/config/site";
 
 /**
  * Admin-tunable key/value settings backed by the `Setting` table.
@@ -9,10 +10,12 @@ import { prisma } from "@/lib/prisma";
  * Known keys (extend this list when adding new settings):
  *   - "equipment.shippingFee": number (in euros) — fee applied when
  *     deliveryMethod = HOME_DELIVERY on an equipment order.
+ *   - "site.dtcMeanings": string[] — random "la dtc" subtitles for the header.
  */
 
 export const SETTING_KEYS = {
   EQUIPMENT_SHIPPING_FEE: "equipment.shippingFee",
+  SITE_DTC_MEANINGS: "site.dtcMeanings",
 } as const;
 
 /** Default shipping fee in euros when the Setting row is missing. */
@@ -47,9 +50,35 @@ export async function getEquipmentShippingFee(): Promise<number> {
 }
 
 /**
+ * Reads the list of "la dtc" header subtitles. Falls back to the bundled
+ * defaults when the setting is absent, malformed, or empty — the header always
+ * has something to display.
+ */
+export async function getDtcMeanings(): Promise<string[]> {
+  const raw = await getSettingRaw(SETTING_KEYS.SITE_DTC_MEANINGS);
+  if (raw === null) return DEFAULT_DTC_MEANINGS;
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (
+      Array.isArray(parsed) &&
+      parsed.length > 0 &&
+      parsed.every((v) => typeof v === "string")
+    ) {
+      return parsed as string[];
+    }
+  } catch {
+    // Malformed JSON — fall back to defaults below.
+  }
+  return DEFAULT_DTC_MEANINGS;
+}
+
+/**
  * Upserts a setting with a JSON-serialised value.
  */
-export async function setSetting(key: string, value: number | string | boolean): Promise<void> {
+export async function setSetting(
+  key: string,
+  value: number | string | boolean | string[]
+): Promise<void> {
   const encoded = JSON.stringify(value);
   await prisma.setting.upsert({
     where: { key },

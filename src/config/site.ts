@@ -64,22 +64,17 @@ export const siteConfig = {
 };
 
 /**
- * Random meanings for "la dtc" — displayed randomly on each visit.
- * Committee members can update this list.
+ * Default random meanings for "la dtc", displayed randomly in the header.
+ * The committee can override this list from Admin → Paramètres; it is stored in
+ * the Setting table (key "site.dtcMeanings") and this array is the fallback when
+ * no override exists. See lib/settings.ts (getDtcMeanings).
  */
-export const dtcMeanings: string[] = [
+export const DEFAULT_DTC_MEANINGS: string[] = [
   "la Dominicale Trail Club",
   "la Découverte du Trail des Collines",
   "la Dynamique du Trail des Collines",
   "la Déjantée du Trail des Collines",
   "la Dose de Trail et de Collines",
 ];
-
-/**
- * Pick a random meaning for "la dtc"
- */
-export function getRandomDtcMeaning(): string {
-  return dtcMeanings[Math.floor(Math.random() * dtcMeanings.length)];
-}
 
 export type SiteConfig = typeof siteConfig;

@@ -3,13 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { getRandomDtcMeaning } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
+import { useRandomDtcMeaning } from "@/hooks/use-dtc-meanings";
 import { signOut } from "@/lib/auth-client";
 
 const navLinks = [
@@ -22,18 +22,6 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
-// Cache the random "dtc" meaning so the client snapshot is stable across
-// renders (a fresh Math.random() on every read would loop useSyncExternalStore).
-let clientSubtitle: string | null = null;
-const subtitleSubscribe = (): (() => void) => () => {};
-const getClientSubtitle = (): string => {
-  if (clientSubtitle === null) clientSubtitle = getRandomDtcMeaning();
-  return clientSubtitle;
-};
-// Server renders nothing; the random subtitle appears on the client only. This
-// keeps the server and client first render identical (no hydration mismatch).
-const getServerSubtitle = (): null => null;
-
 /**
  * Site navigation header with mobile menu and auth state
  */
@@ -43,15 +31,10 @@ export function Header(): React.ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isLoading, isAuthenticated } = useAuth();
   const { itemCount } = useCart();
-  // Random "dtc" meaning, client-only. useSyncExternalStore returns the server
-  // snapshot (null) during SSR + hydration, then the client snapshot after
-  // mount — the idiomatic way to render intentionally client-only content
-  // without a hydration mismatch or a setState-in-effect.
-  const subtitle = useSyncExternalStore(
-    subtitleSubscribe,
-    getClientSubtitle,
-    getServerSubtitle
-  );
+  // Random "la dtc" subtitle, fetched from the committee-editable settings list.
+  // Null until the list loads on the client, so SSR and first client render
+  // stay identical (no hydration mismatch — the subtitle is client-only).
+  const subtitle = useRandomDtcMeaning();
 
   async function handleSignOut(): Promise<void> {
     await signOut();

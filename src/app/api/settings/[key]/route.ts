@@ -5,10 +5,10 @@ import { z } from "zod";
 
 const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
 
-const ALLOWED_KEYS = new Set(["equipment.shippingFee"]);
+const ALLOWED_KEYS = new Set(["equipment.shippingFee", "site.dtcMeanings"]);
 
 const updateSchema = z.object({
-  value: z.union([z.number(), z.string(), z.boolean()]),
+  value: z.union([z.number(), z.string(), z.boolean(), z.array(z.string())]),
 });
 
 /**
@@ -85,7 +85,29 @@ export async function PATCH(
     }
   }
 
-  await setSetting(key, parsed.data.value);
+  // Subtitles: must be a list of strings; trim and drop blanks, then require at
+  // least one so the header always has something to show.
+  let valueToStore = parsed.data.value;
+  if (key === "site.dtcMeanings") {
+    if (!Array.isArray(parsed.data.value)) {
+      return NextResponse.json(
+        { error: "Les sous-titres doivent être une liste" },
+        { status: 422 }
+      );
+    }
+    const cleaned = parsed.data.value
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+    if (cleaned.length === 0) {
+      return NextResponse.json(
+        { error: "Ajoutez au moins un sous-titre" },
+        { status: 422 }
+      );
+    }
+    valueToStore = cleaned;
+  }
 
-  return NextResponse.json({ key, value: parsed.data.value });
+  await setSetting(key, valueToStore);
+
+  return NextResponse.json({ key, value: valueToStore });
 }
