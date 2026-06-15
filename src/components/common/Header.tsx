@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getRandomDtcMeaning } from "@/config/site";
@@ -22,6 +22,18 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
+// Cache the random "dtc" meaning so the client snapshot is stable across
+// renders (a fresh Math.random() on every read would loop useSyncExternalStore).
+let clientSubtitle: string | null = null;
+const subtitleSubscribe = (): (() => void) => () => {};
+const getClientSubtitle = (): string => {
+  if (clientSubtitle === null) clientSubtitle = getRandomDtcMeaning();
+  return clientSubtitle;
+};
+// Server renders nothing; the random subtitle appears on the client only. This
+// keeps the server and client first render identical (no hydration mismatch).
+const getServerSubtitle = (): null => null;
+
 /**
  * Site navigation header with mobile menu and auth state
  */
@@ -31,7 +43,15 @@ export function Header(): React.ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isLoading, isAuthenticated } = useAuth();
   const { itemCount } = useCart();
-  const [subtitle] = useState(() => getRandomDtcMeaning());
+  // Random "dtc" meaning, client-only. useSyncExternalStore returns the server
+  // snapshot (null) during SSR + hydration, then the client snapshot after
+  // mount — the idiomatic way to render intentionally client-only content
+  // without a hydration mismatch or a setState-in-effect.
+  const subtitle = useSyncExternalStore(
+    subtitleSubscribe,
+    getClientSubtitle,
+    getServerSubtitle
+  );
 
   async function handleSignOut(): Promise<void> {
     await signOut();
