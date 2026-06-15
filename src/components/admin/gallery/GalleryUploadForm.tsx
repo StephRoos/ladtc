@@ -21,8 +21,12 @@ export function GalleryUploadForm(): React.ReactNode {
   const { data: albums } = useAdminAlbums();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // "files" uploads local media; "link" embeds a YouTube/Vimeo video (no upload,
+  // so it sidesteps the 100 MB ceiling for heavy event videos).
+  const [mode, setMode] = useState<"files" | "link">("files");
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [embedUrl, setEmbedUrl] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -76,14 +80,25 @@ export function GalleryUploadForm(): React.ReactNode {
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   }
 
+  /** Shared metadata fields appended to every upload request. */
+  function appendMeta(formData: FormData): void {
+    if (description) formData.append("description", description);
+    if (category) formData.append("category", category);
+    if (albumId) formData.append("albumId", albumId);
+  }
+
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
-    if (files.length === 0) {
+    if (!title.trim()) {
+      setError("Le titre est requis");
+      return;
+    }
+    if (mode === "files" && files.length === 0) {
       setError("Veuillez sélectionner au moins une photo");
       return;
     }
-    if (!title.trim()) {
-      setError("Le titre est requis");
+    if (mode === "link" && !embedUrl.trim()) {
+      setError("Veuillez coller un lien YouTube ou Vimeo");
       return;
     }
 
@@ -92,16 +107,21 @@ export function GalleryUploadForm(): React.ReactNode {
     setUploadProgress(0);
 
     try {
-      for (let i = 0; i < files.length; i++) {
+      if (mode === "link") {
         const formData = new FormData();
-        formData.append("file", files[i]);
-        formData.append("title", files.length > 1 ? `${title} (${i + 1})` : title);
-        if (description) formData.append("description", description);
-        if (category) formData.append("category", category);
-        if (albumId) formData.append("albumId", albumId);
-
+        formData.append("embedUrl", embedUrl.trim());
+        formData.append("title", title);
+        appendMeta(formData);
         await uploadPhoto.mutateAsync(formData);
-        setUploadProgress(i + 1);
+      } else {
+        for (let i = 0; i < files.length; i++) {
+          const formData = new FormData();
+          formData.append("file", files[i]);
+          formData.append("title", files.length > 1 ? `${title} (${i + 1})` : title);
+          appendMeta(formData);
+          await uploadPhoto.mutateAsync(formData);
+          setUploadProgress(i + 1);
+        }
       }
       router.push("/admin/gallery");
     } catch (err) {
@@ -113,73 +133,119 @@ export function GalleryUploadForm(): React.ReactNode {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Drag & drop zone */}
-      <div>
-        <Label>Photos et vidéos</Label>
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onClick={() => fileInputRef.current?.click()}
-          className={`mt-2 flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors ${
-            dragOver
-              ? "border-primary bg-primary/5"
-              : "border-border hover:border-primary/50"
+      {/* Mode toggle: local files vs external video link */}
+      <div className="inline-flex rounded-md border border-border p-1">
+        <button
+          type="button"
+          onClick={() => setMode("files")}
+          className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
+            mode === "files" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
           }`}
         >
-          <Upload className="mb-2 h-8 w-8 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
-            Glissez-déposez vos photos ou vidéos ici ou cliquez pour sélectionner
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Images JPG, PNG, WebP, GIF (5 Mo max) — Vidéos MP4 (100 Mo max)
-          </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept={ACCEPT_ATTRIBUTE}
-            multiple
-            className="hidden"
-            onChange={(e) => e.target.files && handleFiles(e.target.files)}
-          />
-        </div>
+          Fichiers
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("link")}
+          className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
+            mode === "link" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+          }`}
+        >
+          Lien vidéo (YouTube/Vimeo)
+        </button>
       </div>
 
-      {/* Previews */}
-      {previews.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-          {previews.map((src, i) => (
-            <div key={src} className="group relative aspect-square overflow-hidden rounded-lg border border-border">
-              {files[i]?.type.startsWith("video/") ? (
-                // Local blob preview: a <video> shows the first frame; next/image
-                // can't render video, so it's used only for image files.
-                <video
-                  src={src}
-                  className="h-full w-full object-cover"
-                  muted
-                  playsInline
-                  preload="metadata"
-                />
-              ) : (
-                <Image
-                  src={src}
-                  alt={`Aperçu ${i + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              )}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeFile(i);
-                }}
-                className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-              >
-                <X className="h-4 w-4" />
-              </button>
+      {mode === "files" && (
+        <>
+          {/* Drag & drop zone */}
+          <div>
+            <Label>Photos et vidéos</Label>
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onClick={() => fileInputRef.current?.click()}
+              className={`mt-2 flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors ${
+                dragOver
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/50"
+              }`}
+            >
+              <Upload className="mb-2 h-8 w-8 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">
+                Glissez-déposez vos photos ou vidéos ici ou cliquez pour sélectionner
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Images JPG, PNG, WebP, GIF (5 Mo max) — Vidéos MP4 (100 Mo max)
+              </p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept={ACCEPT_ATTRIBUTE}
+                multiple
+                className="hidden"
+                onChange={(e) => e.target.files && handleFiles(e.target.files)}
+              />
             </div>
-          ))}
+          </div>
+
+          {/* Previews */}
+          {previews.length > 0 && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+              {previews.map((src, i) => (
+                <div key={src} className="group relative aspect-square overflow-hidden rounded-lg border border-border">
+                  {files[i]?.type.startsWith("video/") ? (
+                    // Local blob preview: a <video> shows the first frame; next/image
+                    // can't render video, so it's used only for image files.
+                    <video
+                      src={src}
+                      className="h-full w-full object-cover"
+                      muted
+                      playsInline
+                      preload="metadata"
+                    />
+                  ) : (
+                    <Image
+                      src={src}
+                      alt={`Aperçu ${i + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  )}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeFile(i);
+                    }}
+                    className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {mode === "link" && (
+        <div>
+          <Label htmlFor="embedUrl">Lien de la vidéo</Label>
+          <Input
+            id="embedUrl"
+            type="url"
+            value={embedUrl}
+            onChange={(e) => setEmbedUrl(e.target.value)}
+            placeholder="https://youtu.be/xxxxxxxx"
+            className="mt-2"
+          />
+          <p className="mt-1 text-xs text-muted-foreground">
+            Collez un lien YouTube ou Vimeo. Idéal pour les vidéos lourdes
+            (&gt; 100 Mo) : la vidéo reste hébergée chez le fournisseur, le site
+            n&apos;héberge que le lien. Mettez la vidéo en « Non répertoriée » sur
+            YouTube pour qu&apos;elle ne soit visible que depuis le site.
+          </p>
         </div>
       )}
 
@@ -258,18 +324,27 @@ export function GalleryUploadForm(): React.ReactNode {
 
       {/* Actions */}
       <div className="flex gap-3">
-        <Button type="submit" disabled={uploading || files.length === 0}>
+        <Button
+          type="submit"
+          disabled={
+            uploading ||
+            (mode === "files" && files.length === 0) ||
+            (mode === "link" && !embedUrl.trim())
+          }
+        >
           {uploading ? (
             <>
               <ImageIcon className="mr-2 h-4 w-4 animate-pulse" />
-              Upload en cours...
+              {mode === "link" ? "Ajout en cours..." : "Upload en cours..."}
             </>
           ) : (
             <>
               <Upload className="mr-2 h-4 w-4" />
-              {files.length > 1
-                ? `Uploader ${files.length} photos`
-                : "Uploader la photo"}
+              {mode === "link"
+                ? "Ajouter la vidéo"
+                : files.length > 1
+                  ? `Uploader ${files.length} photos`
+                  : "Uploader la photo"}
             </>
           )}
         </Button>

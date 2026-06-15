@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { parseVideoEmbed } from "@/lib/video-embed";
 import type { GalleryPhoto } from "@/types";
 
 interface LightboxProps {
@@ -74,25 +75,45 @@ export function Lightbox({
         )}
 
         <div className="relative flex min-h-[50vh] items-center justify-center">
-          {photo.mediaType === "VIDEO" ? (
-            <video
-              key={photo.url}
-              src={photo.url}
-              controls
-              autoPlay
-              playsInline
-              className="max-h-[80vh] w-auto"
-            />
-          ) : (
-            <Image
-              src={photo.url}
-              alt={photo.title}
-              width={1200}
-              height={800}
-              className="max-h-[80vh] w-auto object-contain"
-              priority
-            />
-          )}
+          {(() => {
+            const embed = parseVideoEmbed(photo.url);
+            if (embed) {
+              return (
+                <div className="aspect-video w-full">
+                  <iframe
+                    key={photo.url}
+                    src={embed.embedUrl}
+                    title={photo.title}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              );
+            }
+            if (photo.mediaType === "VIDEO") {
+              return (
+                <video
+                  key={photo.url}
+                  src={photo.url}
+                  controls
+                  autoPlay
+                  playsInline
+                  className="max-h-[80vh] w-auto"
+                />
+              );
+            }
+            return (
+              <Image
+                src={photo.url}
+                alt={photo.title}
+                width={1200}
+                height={800}
+                className="max-h-[80vh] w-auto object-contain"
+                priority
+              />
+            );
+          })()}
         </div>
 
         <div className="px-6 pb-4 pt-2">

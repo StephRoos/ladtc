@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { galleryPhotoSchema } from "@/lib/schemas";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { delLocal } from "@/lib/storage";
+import { isExternalVideo } from "@/lib/video-embed";
 
 /**
  * PATCH /api/admin/gallery/[id]
@@ -90,7 +91,11 @@ export async function DELETE(
     return NextResponse.json({ error: "Photo introuvable" }, { status: 404 });
   }
 
-  await delLocal(existing.url);
+  // Only local uploads have a file to remove; external embeds (YouTube/Vimeo)
+  // just hold a URL.
+  if (!isExternalVideo(existing.url)) {
+    await delLocal(existing.url);
+  }
   await prisma.galleryPhoto.delete({ where: { id } });
 
   return NextResponse.json({ success: true });

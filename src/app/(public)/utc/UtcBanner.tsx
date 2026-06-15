@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useGallery } from "@/hooks/use-gallery";
+import { parseVideoEmbed } from "@/lib/video-embed";
 import { siteConfig } from "@/config/site";
 
 const utc = siteConfig.utc;
@@ -19,10 +20,16 @@ export function UtcBanner(): React.ReactNode {
     return null;
   }
 
+  // An external video (YouTube/Vimeo) has no local frame: use its provider
+  // thumbnail as a static illustration rather than an embedded player.
+  const embed = parseVideoEmbed(photo.url);
+  const imageSrc = embed?.thumbnailUrl ?? photo.url;
+  const showVideo = !embed && photo.mediaType === "VIDEO";
+
   return (
     <div className="mb-10 overflow-hidden rounded-lg border border-border bg-muted">
       <div className="relative aspect-[21/9] w-full">
-        {photo.mediaType === "VIDEO" ? (
+        {showVideo ? (
           <video
             src={photo.url}
             className="h-full w-full object-cover"
@@ -30,9 +37,11 @@ export function UtcBanner(): React.ReactNode {
             playsInline
             preload="metadata"
           />
+        ) : embed && !embed.thumbnailUrl ? (
+          <div className="h-full w-full bg-muted" />
         ) : (
           <Image
-            src={photo.url}
+            src={imageSrc}
             alt={photo.title || `Illustration ${utc.shortName}`}
             fill
             priority

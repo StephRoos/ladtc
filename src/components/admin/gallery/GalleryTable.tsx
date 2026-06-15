@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useDeletePhoto, useUpdatePhoto } from "@/hooks/use-gallery";
 import { useAdminAlbums } from "@/hooks/use-gallery-albums";
+import { parseVideoEmbed } from "@/lib/video-embed";
 import { formatDate } from "@/lib/utils";
 import { Play, Folder } from "lucide-react";
 import type { GalleryPhoto } from "@/types";
@@ -132,28 +133,46 @@ export function GalleryTable({
               <TableRow key={photo.id}>
                 <TableCell>
                   <div className="relative h-12 w-12 overflow-hidden rounded border border-border">
-                    {photo.mediaType === "VIDEO" ? (
-                      <>
-                        <video
+                    {(() => {
+                      const embed = parseVideoEmbed(photo.url);
+                      if (embed || photo.mediaType === "VIDEO") {
+                        return (
+                          <>
+                            {embed?.thumbnailUrl ? (
+                              <Image
+                                src={embed.thumbnailUrl}
+                                alt={photo.title}
+                                fill
+                                className="object-cover"
+                                sizes="48px"
+                              />
+                            ) : embed ? (
+                              <div className="h-full w-full bg-muted" />
+                            ) : (
+                              <video
+                                src={photo.url}
+                                className="h-full w-full object-cover"
+                                muted
+                                playsInline
+                                preload="metadata"
+                              />
+                            )}
+                            <span className="absolute inset-0 flex items-center justify-center bg-black/30 text-white">
+                              <Play className="h-4 w-4 fill-current" />
+                            </span>
+                          </>
+                        );
+                      }
+                      return (
+                        <Image
                           src={photo.url}
-                          className="h-full w-full object-cover"
-                          muted
-                          playsInline
-                          preload="metadata"
+                          alt={photo.title}
+                          fill
+                          className="object-cover"
+                          sizes="48px"
                         />
-                        <span className="absolute inset-0 flex items-center justify-center bg-black/30 text-white">
-                          <Play className="h-4 w-4 fill-current" />
-                        </span>
-                      </>
-                    ) : (
-                      <Image
-                        src={photo.url}
-                        alt={photo.title}
-                        fill
-                        className="object-cover"
-                        sizes="48px"
-                      />
-                    )}
+                      );
+                    })()}
                   </div>
                 </TableCell>
                 <TableCell className="max-w-[300px]">

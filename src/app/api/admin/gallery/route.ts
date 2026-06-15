@@ -4,6 +4,7 @@ import { galleryPhotoSchema } from "@/lib/schemas";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { putLocal } from "@/lib/storage";
 import { validateMediaFile } from "@/lib/media";
+import { parseVideoEmbed } from "@/lib/video-embed";
 
 /**
  * GET /api/admin/gallery
@@ -38,15 +39,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // inside the try so the client gets a JSON error instead of an empty 500.
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
+    const embedUrl = (formData.get("embedUrl") as string | null)?.trim() || null;
 
-    if (!file) {
-      return NextResponse.json({ error: "Aucun fichier fourni" }, { status: 400 });
-    }
-
-    // Type + per-kind size validation (images 5 MB, videos 100 MB)
-    const validation = validateMediaFile(file);
-    if (!validation.ok) {
-      return NextResponse.json({ error: validation.error }, { status: validation.status });
+    if (!file && !embedUrl) {
+      return NextResponse.json(
+        { error: "Aucun fichier ni lien vidéo fourni" },
+        { status: 400 }
+      );
     }
 
     const title = formData.get("title") as string | null;
@@ -79,16 +78,38 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
     }
 
-    const result = await putLocal(file, "gallery");
+    // Resolve the media: an external YouTube/Vimeo link (no upload, dodges the
+    // 100 MB ceiling) or a locally-stored file.
+    let url: string;
+    let mediaType: "IMAGE" | "VIDEO";
+    if (embedUrl) {
+      if (!parseVideoEmbed(embedUrl)) {
+        return NextResponse.json(
+          { error: "Lien vidéo non reconnu (YouTube ou Vimeo attendu)" },
+          { status: 422 }
+        );
+      }
+      url = embedUrl;
+      mediaType = "VIDEO";
+    } else {
+      // Type + per-kind size validation (images 5 MB, videos 100 MB)
+      const validation = validateMediaFile(file as File);
+      if (!validation.ok) {
+        return NextResponse.json({ error: validation.error }, { status: validation.status });
+      }
+      const result = await putLocal(file as File, "gallery");
+      url = result.url;
+      mediaType = validation.kind;
+    }
 
     const photo = await prisma.galleryPhoto.create({
       data: {
-        url: result.url,
+        url,
         title: parsed.data.title,
         description: parsed.data.description ?? null,
         category: parsed.data.category ?? null,
         albumId: parsed.data.albumId || null,
-        mediaType: validation.kind,
+        mediaType,
         uploadedById: authResult.user.id,
       },
       include: {

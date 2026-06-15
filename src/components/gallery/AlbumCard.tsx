@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
+import { parseVideoEmbed } from "@/lib/video-embed";
 import type { GalleryAlbumSummary } from "@/types";
 
 interface AlbumCardProps {
@@ -24,6 +25,8 @@ function formatAlbumDate(iso: string | null): string | null {
  */
 export function AlbumCard({ album }: AlbumCardProps): React.ReactNode {
   const date = formatAlbumDate(album.date);
+  // An external-video cover has no frame to show; use its provider thumbnail.
+  const coverEmbed = album.coverUrl ? parseVideoEmbed(album.coverUrl) : null;
 
   return (
     <Link
@@ -32,7 +35,21 @@ export function AlbumCard({ album }: AlbumCardProps): React.ReactNode {
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
         {album.coverUrl ? (
-          album.coverMediaType === "VIDEO" ? (
+          coverEmbed ? (
+            coverEmbed.thumbnailUrl ? (
+              <Image
+                src={coverEmbed.thumbnailUrl}
+                alt={album.name}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                <ImageIcon className="h-10 w-10" />
+              </div>
+            )
+          ) : album.coverMediaType === "VIDEO" ? (
             <video
               src={album.coverUrl}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
