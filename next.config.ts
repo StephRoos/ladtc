@@ -33,7 +33,9 @@ const nextConfig: NextConfig = {
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob: https://ladtc.be https:",
-            "media-src 'self' blob:",
+            // https: allows self-hosted videos (Nextcloud share / NAS direct
+            // links) to play in the gallery — mirrors img-src.
+            "media-src 'self' blob: https:",
             "font-src 'self'",
             "connect-src 'self' https://*.sentry.io",
             "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",

@@ -53,15 +53,21 @@ export function isExternalVideo(url: string): boolean {
 // (range requests handle streaming) — the "independent" path for heavy videos
 // kept on the NAS instead of YouTube.
 const VIDEO_EXT_RE = /\.(mp4|webm|ogg|ogv|mov|m4v)(\?.*)?$/i;
+// Public share link: capture host (group 1) and token (group 2), ignoring any
+// trailing /download the user may have copied.
 const NEXTCLOUD_SHARE_RE =
-  /^(https:\/\/[^/]+\/(?:index\.php\/)?s\/[A-Za-z0-9]+)(\/download.*)?$/;
+  /^(https:\/\/[^/]+)\/(?:index\.php\/)?s\/([A-Za-z0-9]+)(?:\/download.*)?$/i;
+// Already the direct public WebDAV endpoint — accept as-is.
+const NEXTCLOUD_DAV_RE = /^https:\/\/[^/]+\/public\.php\/dav\/files\/[A-Za-z0-9]+/i;
 
 /**
  * Resolve a self-hosted video link into a directly playable URL, or null when
  * the link is not a recognised direct video.
  *
- * - A Nextcloud public share ("…/s/TOKEN") is normalised to its file endpoint
- *   ("…/s/TOKEN/download") so it streams in a <video> tag.
+ * - A Nextcloud public share ("…/s/TOKEN") is rewritten to its public WebDAV
+ *   file endpoint ("…/public.php/dav/files/TOKEN"). That endpoint streams with
+ *   proper range support (HTTP 206), whereas "…/s/TOKEN/download" only 303-
+ *   redirects to it — so we target it directly and avoid the redirect.
  * - Any HTTPS URL ending in a video extension is taken as-is.
  *
  * HTTPS is required: an http source would be blocked as mixed content on the
@@ -71,7 +77,8 @@ export function resolveDirectVideoUrl(url: string): string | null {
   const trimmed = url.trim();
   if (!/^https:\/\//i.test(trimmed)) return null;
   const nc = NEXTCLOUD_SHARE_RE.exec(trimmed);
-  if (nc) return nc[2] ? trimmed : `${nc[1]}/download`;
+  if (nc) return `${nc[1]}/public.php/dav/files/${nc[2]}`;
+  if (NEXTCLOUD_DAV_RE.test(trimmed)) return trimmed;
   if (VIDEO_EXT_RE.test(trimmed)) return trimmed;
   return null;
 }
