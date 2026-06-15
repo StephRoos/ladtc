@@ -4,7 +4,7 @@ import { galleryPhotoSchema } from "@/lib/schemas";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { putLocal } from "@/lib/storage";
 import { validateMediaFile } from "@/lib/media";
-import { parseVideoEmbed } from "@/lib/video-embed";
+import { parseVideoEmbed, resolveDirectVideoUrl } from "@/lib/video-embed";
 
 /**
  * GET /api/admin/gallery
@@ -83,13 +83,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let url: string;
     let mediaType: "IMAGE" | "VIDEO";
     if (embedUrl) {
-      if (!parseVideoEmbed(embedUrl)) {
-        return NextResponse.json(
-          { error: "Lien vidéo non reconnu (YouTube ou Vimeo attendu)" },
-          { status: 422 }
-        );
+      // Accept a YouTube/Vimeo embed, or a self-hosted direct video link
+      // (Nextcloud share / NAS HTTPS file). Nextcloud shares are normalised to
+      // their download endpoint so they stream in a <video> tag.
+      if (parseVideoEmbed(embedUrl)) {
+        url = embedUrl;
+      } else {
+        const direct = resolveDirectVideoUrl(embedUrl);
+        if (!direct) {
+          return NextResponse.json(
+            {
+              error:
+                "Lien vidéo non reconnu (YouTube, Vimeo, lien de partage Nextcloud, ou URL HTTPS .mp4 attendus)",
+            },
+            { status: 422 }
+          );
+        }
+        url = direct;
       }
-      url = embedUrl;
       mediaType = "VIDEO";
     } else {
       // Type + per-kind size validation (images 5 MB, videos 100 MB)

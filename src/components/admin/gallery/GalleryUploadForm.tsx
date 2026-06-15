@@ -237,15 +237,24 @@ export function GalleryUploadForm(): React.ReactNode {
             type="url"
             value={embedUrl}
             onChange={(e) => setEmbedUrl(e.target.value)}
-            placeholder="https://youtu.be/xxxxxxxx"
+            placeholder="https://youtu.be/… ou https://nextcloud…/s/… ou …/video.mp4"
             className="mt-2"
           />
           <p className="mt-1 text-xs text-muted-foreground">
-            Collez un lien YouTube ou Vimeo. Idéal pour les vidéos lourdes
-            (&gt; 100 Mo) : la vidéo reste hébergée chez le fournisseur, le site
-            n&apos;héberge que le lien. Mettez la vidéo en « Non répertoriée » sur
-            YouTube pour qu&apos;elle ne soit visible que depuis le site.
+            Pour les vidéos lourdes (&gt; 100 Mo). Trois possibilités :
           </p>
+          <ul className="mt-1 list-disc pl-5 text-xs text-muted-foreground">
+            <li>
+              <strong>YouTube / Vimeo</strong> : collez le lien (mettez la vidéo
+              en « Non répertoriée » pour qu&apos;elle ne soit visible que depuis
+              le site). Lecteur intégré.
+            </li>
+            <li>
+              <strong>Nextcloud / NAS</strong> : collez un lien de partage public
+              Nextcloud ou une URL HTTPS directe vers le fichier (.mp4). La vidéo
+              reste hébergée sur le NAS, le site ne stocke que le lien.
+            </li>
+          </ul>
         </div>
       )}
 
