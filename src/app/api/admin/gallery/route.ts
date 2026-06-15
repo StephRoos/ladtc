@@ -17,6 +17,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     orderBy: { createdAt: "desc" },
     include: {
       uploadedBy: { select: { id: true, name: true } },
+      album: true,
     },
   });
 
@@ -51,11 +52,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const title = formData.get("title") as string | null;
     const description = formData.get("description") as string | null;
     const category = formData.get("category") as string | null;
+    const albumId = formData.get("albumId") as string | null;
 
     const parsed = galleryPhotoSchema.safeParse({
       title: title ?? "",
       description: description || undefined,
       category: category || undefined,
+      albumId: albumId || undefined,
     });
 
     if (!parsed.success) {
@@ -63,6 +66,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         { error: "Données invalides", details: parsed.error.flatten() },
         { status: 422 }
       );
+    }
+
+    // Reject an unknown album id rather than silently filing the photo nowhere.
+    if (parsed.data.albumId) {
+      const album = await prisma.galleryAlbum.findUnique({
+        where: { id: parsed.data.albumId },
+        select: { id: true },
+      });
+      if (!album) {
+        return NextResponse.json({ error: "Album introuvable" }, { status: 422 });
+      }
     }
 
     const result = await putLocal(file, "gallery");
@@ -73,11 +87,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         title: parsed.data.title,
         description: parsed.data.description ?? null,
         category: parsed.data.category ?? null,
+        albumId: parsed.data.albumId || null,
         mediaType: validation.kind,
         uploadedById: authResult.user.id,
       },
       include: {
         uploadedBy: { select: { id: true, name: true } },
+        album: true,
       },
     });
 

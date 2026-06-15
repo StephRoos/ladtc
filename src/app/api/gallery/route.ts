@@ -11,6 +11,7 @@ const PAGE_SIZE = 12;
  *   - page: number (default: 1)
  *   - per_page: number (default: 12, max: 50)
  *   - category: string (optional, filters by category)
+ *   - unfiled: "true" (optional, only photos not in any album)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
@@ -21,10 +22,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   );
   const skip = (page - 1) * perPage;
   const category = searchParams.get("category")?.trim();
+  const unfiled = searchParams.get("unfiled") === "true";
 
   const where: Record<string, unknown> = {};
   if (category && category.length > 0) {
     where.category = category;
+  }
+  if (unfiled) {
+    where.albumId = null;
   }
 
   const [photos, total, categories] = await Promise.all([

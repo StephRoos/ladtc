@@ -323,6 +323,23 @@ export const galleryPhotoSchema = z.object({
   title: z.string().min(1, "Le titre est requis"),
   description: z.string().optional(),
   category: z.string().optional(),
+  // Optional event folder. Empty string means "no album" (unfiled).
+  albumId: z.string().optional(),
 });
 
 export type GalleryPhotoFormData = z.infer<typeof galleryPhotoSchema>;
+
+/**
+ * Zod validation schema for a gallery album (event folder).
+ * `date` is an ISO date string (yyyy-mm-dd) coming from a date input.
+ */
+export const galleryAlbumSchema = z.object({
+  name: z.string().min(1, "Le nom est requis").max(120, "Nom trop long"),
+  description: z.string().optional(),
+  date: z
+    .string()
+    .optional()
+    .refine((v) => !v || !Number.isNaN(Date.parse(v)), "Date invalide"),
+});
+
+export type GalleryAlbumFormData = z.infer<typeof galleryAlbumSchema>;

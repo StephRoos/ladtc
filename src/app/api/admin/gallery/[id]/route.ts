@@ -37,15 +37,35 @@ export async function PATCH(
     );
   }
 
+  // An empty-string albumId means "remove from album"; a non-empty one must
+  // reference an existing album. `undefined` leaves the current album untouched.
+  let nextAlbumId = existing.albumId;
+  if (parsed.data.albumId !== undefined) {
+    if (parsed.data.albumId === "") {
+      nextAlbumId = null;
+    } else {
+      const album = await prisma.galleryAlbum.findUnique({
+        where: { id: parsed.data.albumId },
+        select: { id: true },
+      });
+      if (!album) {
+        return NextResponse.json({ error: "Album introuvable" }, { status: 422 });
+      }
+      nextAlbumId = parsed.data.albumId;
+    }
+  }
+
   const photo = await prisma.galleryPhoto.update({
     where: { id },
     data: {
-      ...parsed.data,
+      title: parsed.data.title ?? existing.title,
       description: parsed.data.description ?? existing.description,
       category: parsed.data.category ?? existing.category,
+      albumId: nextAlbumId,
     },
     include: {
       uploadedBy: { select: { id: true, name: true } },
+      album: true,
     },
   });
 

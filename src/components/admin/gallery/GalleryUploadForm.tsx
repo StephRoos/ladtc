@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useUploadPhoto } from "@/hooks/use-gallery";
+import { useAdminAlbums } from "@/hooks/use-gallery-albums";
 import { Upload, X, ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { ACCEPT_ATTRIBUTE, validateMediaFile } from "@/lib/media";
@@ -17,6 +18,7 @@ import { ACCEPT_ATTRIBUTE, validateMediaFile } from "@/lib/media";
 export function GalleryUploadForm(): React.ReactNode {
   const router = useRouter();
   const uploadPhoto = useUploadPhoto();
+  const { data: albums } = useAdminAlbums();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [files, setFiles] = useState<File[]>([]);
@@ -24,6 +26,7 @@ export function GalleryUploadForm(): React.ReactNode {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [albumId, setAlbumId] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -95,6 +98,7 @@ export function GalleryUploadForm(): React.ReactNode {
         formData.append("title", files.length > 1 ? `${title} (${i + 1})` : title);
         if (description) formData.append("description", description);
         if (category) formData.append("category", category);
+        if (albumId) formData.append("albumId", albumId);
 
         await uploadPhoto.mutateAsync(formData);
         setUploadProgress(i + 1);
@@ -203,6 +207,27 @@ export function GalleryUploadForm(): React.ReactNode {
           className="mt-2"
           rows={3}
         />
+      </div>
+
+      {/* Album (event folder) */}
+      <div>
+        <Label htmlFor="album">Album / événement (optionnel)</Label>
+        <select
+          id="album"
+          value={albumId}
+          onChange={(e) => setAlbumId(e.target.value)}
+          className="mt-2 h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground"
+        >
+          <option value="">— Aucun album —</option>
+          {albums?.map((album) => (
+            <option key={album.id} value={album.id}>
+              {album.name}
+            </option>
+          ))}
+        </select>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Les albums se gèrent depuis la page Galerie de l&apos;administration.
+        </p>
       </div>
 
       {/* Category */}

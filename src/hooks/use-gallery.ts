@@ -50,13 +50,15 @@ async function errorMessageFrom(res: Response, fallback: string): Promise<string
 async function getGalleryPhotos(
   page: number,
   perPage: number,
-  category?: string
+  category?: string,
+  unfiled?: boolean
 ): Promise<GalleryResponse> {
   const params = new URLSearchParams({
     page: String(page),
     per_page: String(perPage),
   });
   if (category) params.set("category", category);
+  if (unfiled) params.set("unfiled", "true");
 
   const res = await fetch(`/api/gallery?${params}`);
   if (!res.ok) {
@@ -124,15 +126,17 @@ async function deletePhoto(id: string): Promise<{ success: boolean }> {
  * @param page - Page number (default: 1)
  * @param perPage - Photos per page (default: 12)
  * @param category - Category filter (optional)
+ * @param unfiled - When true, only photos not in any album (optional)
  */
 export function useGallery(
   page: number = 1,
   perPage: number = 12,
-  category?: string
+  category?: string,
+  unfiled?: boolean
 ) {
   return useQuery({
-    queryKey: ["gallery", page, perPage, category],
-    queryFn: () => getGalleryPhotos(page, perPage, category),
+    queryKey: ["gallery", page, perPage, category, unfiled],
+    queryFn: () => getGalleryPhotos(page, perPage, category, unfiled),
     staleTime: STALE_TIME,
     gcTime: GC_TIME,
   });

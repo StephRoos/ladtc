@@ -23,8 +23,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useDeletePhoto, useUpdatePhoto } from "@/hooks/use-gallery";
+import { useAdminAlbums } from "@/hooks/use-gallery-albums";
 import { formatDate } from "@/lib/utils";
-import { Play } from "lucide-react";
+import { Play, Folder } from "lucide-react";
 import type { GalleryPhoto } from "@/types";
 
 interface GalleryTableProps {
@@ -41,10 +42,12 @@ export function GalleryTable({
 }: GalleryTableProps): React.ReactNode {
   const deletePhoto = useDeletePhoto();
   const updatePhoto = useUpdatePhoto();
+  const { data: albums } = useAdminAlbums();
   const [editingPhoto, setEditingPhoto] = useState<GalleryPhoto | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [editAlbumId, setEditAlbumId] = useState("");
 
   if (isLoading) {
     return (
@@ -88,6 +91,7 @@ export function GalleryTable({
     setEditTitle(photo.title);
     setEditDescription(photo.description ?? "");
     setEditCategory(photo.category ?? "");
+    setEditAlbumId(photo.albumId ?? "");
   }
 
   async function handleEdit(): Promise<void> {
@@ -98,6 +102,8 @@ export function GalleryTable({
         title: editTitle,
         description: editDescription || undefined,
         category: editCategory || undefined,
+        // Always sent (even ""): an empty value removes the photo from its album.
+        albumId: editAlbumId,
       },
     });
     setEditingPhoto(null);
@@ -150,8 +156,14 @@ export function GalleryTable({
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="font-medium max-w-[300px] truncate">
-                  {photo.title}
+                <TableCell className="max-w-[300px]">
+                  <p className="truncate font-medium">{photo.title}</p>
+                  {photo.album && (
+                    <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
+                      <Folder className="h-3 w-3 shrink-0" />
+                      {photo.album.name}
+                    </p>
+                  )}
                 </TableCell>
                 <TableCell>
                   {photo.category ? (
@@ -222,6 +234,22 @@ export function GalleryTable({
                 className="mt-1"
                 rows={3}
               />
+            </div>
+            <div>
+              <Label htmlFor="edit-album">Album / événement</Label>
+              <select
+                id="edit-album"
+                value={editAlbumId}
+                onChange={(e) => setEditAlbumId(e.target.value)}
+                className="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground"
+              >
+                <option value="">— Aucun album —</option>
+                {albums?.map((album) => (
+                  <option key={album.id} value={album.id}>
+                    {album.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <Label htmlFor="edit-category">Catégorie</Label>

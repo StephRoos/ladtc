@@ -248,10 +248,30 @@ export interface GalleryPhoto {
   description: string | null;
   category: string | null;
   mediaType: "IMAGE" | "VIDEO";
+  albumId: string | null;
+  album?: GalleryAlbum | null;
   uploadedById: string;
   uploadedBy: { id: string; name: string | null };
   createdAt: string;
   updatedAt: string;
+}
+
+/** An event folder grouping gallery photos. */
+export interface GalleryAlbum {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  date: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** An album enriched with its photo count and derived cover image, for listings. */
+export interface GalleryAlbumSummary extends GalleryAlbum {
+  photoCount: number;
+  coverUrl: string | null;
+  coverMediaType: "IMAGE" | "VIDEO" | null;
 }
 
 export interface StatisticsData {

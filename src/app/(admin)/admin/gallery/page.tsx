@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAdminGallery } from "@/hooks/use-gallery";
 import { GalleryTable } from "@/components/admin/gallery/GalleryTable";
+import { AlbumManager } from "@/components/admin/gallery/AlbumManager";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -19,6 +20,8 @@ export default function AdminGalleryPage(): React.ReactNode {
           <Link href="/admin/gallery/upload">Ajouter des photos</Link>
         </Button>
       </div>
+
+      <AlbumManager />
 
       {isError ? (
         <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-4 text-destructive">
