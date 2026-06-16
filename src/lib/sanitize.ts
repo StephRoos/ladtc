@@ -9,6 +9,13 @@ const TRUSTED_IFRAME_HOSTS = [
 ];
 
 /**
+ * Hosts allowed as the source of a native <video> tag (self-hosted club media
+ * served over the Cloudflare tunnel). Local uploads are also allowed, see
+ * LOCAL_VIDEO_PREFIX. Any other external <video> source is stripped.
+ */
+const TRUSTED_VIDEO_HOSTS = ["cloud.ladtc.be"];
+
+/**
  * Path prefix for self-hosted videos. Only files under this prefix may be
  * played via a native <video> tag — external video sources are stripped.
  */
@@ -36,6 +43,21 @@ const VIDEO_URL_PATTERNS: { pattern: RegExp; toEmbed: (match: RegExpExecArray) =
     // Strict charset (\w, dash, dot, slash) prevents attribute injection
     // since the match is interpolated into the src attribute below.
     pattern: /^\/uploads\/[\w\-/.]+\.mp4$/,
+    toEmbed: (m) =>
+      `<video class="video-player" controls preload="metadata" src="${m[0]}"></video>`,
+  },
+  {
+    // Nextcloud public share ("…/s/TOKEN") → native <video> on the public
+    // WebDAV endpoint (range streaming). The host is validated against
+    // TRUSTED_VIDEO_HOSTS after sanitization; the token charset is strict.
+    pattern: /^https:\/\/([\w.-]+)\/(?:index\.php\/)?s\/([A-Za-z0-9]+)(?:\/download.*)?$/i,
+    toEmbed: (m) =>
+      `<video class="video-player" controls preload="metadata" src="https://${m[1]}/public.php/dav/files/${m[2]}"></video>`,
+  },
+  {
+    // Already-resolved Nextcloud WebDAV URL (e.g. inserted by the gallery media
+    // picker, which stores this form). Same strict charset + host check.
+    pattern: /^https:\/\/[\w.-]+\/public\.php\/dav\/files\/[A-Za-z0-9]+$/i,
     toEmbed: (m) =>
       `<video class="video-player" controls preload="metadata" src="${m[0]}"></video>`,
   },
@@ -104,9 +126,19 @@ function removeUntrustedVideos(node: HTMLVideoElement): void {
     ...Array.from(node.querySelectorAll("source")).map((s) => s.getAttribute("src")),
   ].filter((src): src is string => src !== null);
 
-  const allLocal =
-    sources.length > 0 && sources.every((src) => src.startsWith(LOCAL_VIDEO_PREFIX));
-  if (!allLocal) {
+  // A source is allowed when it's a local upload, or an HTTPS URL on a trusted
+  // self-hosted video host (Nextcloud club instance).
+  const isAllowed = (src: string): boolean => {
+    if (src.startsWith(LOCAL_VIDEO_PREFIX)) return true;
+    try {
+      const url = new URL(src);
+      return url.protocol === "https:" && TRUSTED_VIDEO_HOSTS.includes(url.hostname);
+    } catch {
+      return false;
+    }
+  };
+  const allTrusted = sources.length > 0 && sources.every(isAllowed);
+  if (!allTrusted) {
     node.remove();
     return;
   }

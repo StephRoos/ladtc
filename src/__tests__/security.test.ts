@@ -163,6 +163,33 @@ describe("Self-hosted video support in blog content", () => {
     const html = renderBlogContent(md);
     expect(html).not.toContain("<video");
   });
+
+  it("auto-embeds a Nextcloud share link as a <video> on the WebDAV endpoint", () => {
+    const md = "# Sortie\n\nhttps://cloud.ladtc.be/s/iTWNKgg6jcpJkZb\n\nAprès.";
+    const html = renderBlogContent(md);
+    expect(html).toContain("<video");
+    expect(html).toContain(
+      'src="https://cloud.ladtc.be/public.php/dav/files/iTWNKgg6jcpJkZb"'
+    );
+    expect(html).toContain("controls");
+    expect(html).toContain("Après.");
+  });
+
+  it("strips a Nextcloud-style share link on an untrusted host", () => {
+    const md = "https://evil.example/s/abc123";
+    const html = renderBlogContent(md);
+    expect(html).not.toContain("<video");
+    expect(html).not.toContain("evil.example");
+  });
+
+  it("auto-embeds an already-resolved Nextcloud WebDAV URL", () => {
+    const md = "https://cloud.ladtc.be/public.php/dav/files/iTWNKgg6jcpJkZb";
+    const html = renderBlogContent(md);
+    expect(html).toContain("<video");
+    expect(html).toContain(
+      'src="https://cloud.ladtc.be/public.php/dav/files/iTWNKgg6jcpJkZb"'
+    );
+  });
 });
 
 // ─── CSP headers configuration ──────────────────────────────────────────────
