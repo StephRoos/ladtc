@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,13 +17,17 @@ import { ACCEPT_ATTRIBUTE, validateMediaFile } from "@/lib/media";
  */
 export function GalleryUploadForm(): React.ReactNode {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const uploadPhoto = useUploadPhoto();
   const { data: albums } = useAdminAlbums();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // "files" uploads local media; "link" embeds a YouTube/Vimeo video (no upload,
-  // so it sidesteps the 100 MB ceiling for heavy event videos).
-  const [mode, setMode] = useState<"files" | "link">("files");
+  // "files" uploads local media; "link" references a YouTube/Vimeo or self-hosted
+  // (Nextcloud/NAS) media by URL — no upload, so it sidesteps the 100 MB ceiling.
+  // ?mode=link opens directly in link mode (from the "Ajouter un lien" button).
+  const [mode, setMode] = useState<"files" | "link">(
+    searchParams.get("mode") === "link" ? "link" : "files"
+  );
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [embedUrl, setEmbedUrl] = useState("");

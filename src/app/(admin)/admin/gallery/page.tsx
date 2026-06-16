@@ -14,11 +14,18 @@ export default function AdminGalleryPage(): React.ReactNode {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-bold text-foreground">Galerie</h1>
-        <Button asChild>
-          <Link href="/admin/gallery/upload">Ajouter des photos</Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <Link href="/admin/gallery/upload?mode=link">
+              Ajouter un lien Nextcloud / YouTube
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/gallery/upload">Uploader des fichiers</Link>
+          </Button>
+        </div>
       </div>
 
       <AlbumManager />
