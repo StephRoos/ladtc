@@ -3,6 +3,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlbumCard } from "@/components/gallery/AlbumCard";
 import { PhotoGrid } from "@/components/gallery/PhotoGrid";
+import { ContributeButton } from "@/components/gallery/ContributeButton";
 import { useGalleryAlbums } from "@/hooks/use-gallery-albums";
 import { useGallery } from "@/hooks/use-gallery";
 
@@ -31,11 +32,14 @@ export default function GalleryPage(): React.ReactNode {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
-      <div className="mb-10">
-        <h1 className="text-4xl font-bold">Galerie photos</h1>
-        <p className="mt-2 text-muted-foreground">
-          Les moments forts du club, classés par événement
-        </p>
+      <div className="mb-10 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-bold">Galerie photos</h1>
+          <p className="mt-2 text-muted-foreground">
+            Les moments forts du club, classés par événement
+          </p>
+        </div>
+        <ContributeButton />
       </div>
 
       {isLoading && <AlbumGridSkeleton />}

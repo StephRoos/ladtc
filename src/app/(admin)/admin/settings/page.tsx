@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DtcMeaningsSettings } from "@/components/admin/settings/DtcMeaningsSettings";
+import { ContributionUrlSettings } from "@/components/admin/settings/ContributionUrlSettings";
 
 const SHIPPING_FEE_KEY = "equipment.shippingFee";
 
@@ -115,6 +116,8 @@ export default function AdminSettingsPage(): React.ReactNode {
       <div className="mt-6">
         <DtcMeaningsSettings />
       </div>
+
+      <ContributionUrlSettings />
     </div>
   );
 }

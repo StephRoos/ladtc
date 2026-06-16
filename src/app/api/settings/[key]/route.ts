@@ -5,7 +5,11 @@ import { z } from "zod";
 
 const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
 
-const ALLOWED_KEYS = new Set(["equipment.shippingFee", "site.dtcMeanings"]);
+const ALLOWED_KEYS = new Set([
+  "equipment.shippingFee",
+  "site.dtcMeanings",
+  "site.contributionUrl",
+]);
 
 const updateSchema = z.object({
   value: z.union([z.number(), z.string(), z.boolean(), z.array(z.string())]),
@@ -105,6 +109,24 @@ export async function PATCH(
       );
     }
     valueToStore = cleaned;
+  }
+
+  // Contribution link: a trimmed HTTPS URL, or empty string to hide the button.
+  if (key === "site.contributionUrl") {
+    if (typeof parsed.data.value !== "string") {
+      return NextResponse.json(
+        { error: "Le lien doit être une chaîne" },
+        { status: 422 }
+      );
+    }
+    const trimmed = parsed.data.value.trim();
+    if (trimmed && !/^https:\/\/\S+$/i.test(trimmed)) {
+      return NextResponse.json(
+        { error: "Le lien doit être une URL HTTPS (ou vide pour masquer le bouton)" },
+        { status: 422 }
+      );
+    }
+    valueToStore = trimmed;
   }
 
   await setSetting(key, valueToStore);

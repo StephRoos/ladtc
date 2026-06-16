@@ -11,11 +11,13 @@ import { DEFAULT_DTC_MEANINGS } from "@/config/site";
  *   - "equipment.shippingFee": number (in euros) — fee applied when
  *     deliveryMethod = HOME_DELIVERY on an equipment order.
  *   - "site.dtcMeanings": string[] — random "la dtc" subtitles for the header.
+ *   - "site.contributionUrl": string — Nextcloud file-drop link for members.
  */
 
 export const SETTING_KEYS = {
   EQUIPMENT_SHIPPING_FEE: "equipment.shippingFee",
   SITE_DTC_MEANINGS: "site.dtcMeanings",
+  SITE_CONTRIBUTION_URL: "site.contributionUrl",
 } as const;
 
 /** Default shipping fee in euros when the Setting row is missing. */
