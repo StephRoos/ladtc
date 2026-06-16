@@ -23,10 +23,12 @@ export function ContributionUrlSettings(): React.ReactNode {
   );
 
   // Seed the input from the saved value once it loads (adjust-during-render
-  // pattern, no setState-in-effect).
-  const [seeded, setSeeded] = useState<string | undefined>(undefined);
+  // pattern, no setState-in-effect). `seeded` stores the loaded value as-is
+  // (including null) so the comparison settles — converting null to undefined
+  // here would make `data !== seeded` always true and loop forever.
+  const [seeded, setSeeded] = useState<string | null | undefined>(undefined);
   if (data !== undefined && data !== seeded) {
-    setSeeded(data ?? undefined);
+    setSeeded(data);
     setValue(data ?? "");
   }
 
