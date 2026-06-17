@@ -64,11 +64,11 @@ docs/                      # Documentation (future)
 - [x] **Static Pages**: Homepage, team, contact
 - [x] **Email**: Transactional emails via Resend (SPF/DKIM/DMARC configured)
 - [x] **Monitoring**: Sentry error tracking (client + server)
+- [x] **Stripe**: Payment integration for membership fees and equipment orders (issue #4)
+- [x] **Video embeds**: YouTube, Vimeo, and Nextcloud video support in blog posts and gallery (issue #1)
 
 ### Planned
 
-- [ ] Stripe integration for payments (issue #4)
-- [ ] Video embeds in blog posts (issue #1)
 - [ ] HillsRun integration (club leaderboards, stats)
 
 ## Getting Started
