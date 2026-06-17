@@ -1,0 +1,48 @@
+# Fichiers a ignorer pour Vibe
+
+# Environnement
+.env
+.env.local
+.env.*.local
+.vibe/env
+
+# Node
+node_modules/
+.pnpm-store/
+.next/
+
+# Build
+.tsbuildinfo
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker
+.docker/
+
+# Git
+.git/
+.gitignore
+
+# Cache
+.cache/
+*.cache
+
+# Test
+.coverage/
+
+# Temporary
+*.tmp
+*.temp

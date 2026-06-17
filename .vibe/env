@@ -1,0 +1,24 @@
+# Variables d'environnement locales pour Vibe
+# NE PAS COMMITER CE FICHIER
+# Copier depuis .env.example et adapter
+
+# Application
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Database (Docker local)
+DATABASE_URL=postgresql://ladtc:password@localhost:5433/ladtc
+
+# BetterAuth
+BETTER_AUTH_SECRET=dev_secret_changer_en_production
+BETTER_AUTH_URL=http://localhost:3000
+
+# Email (Resend)
+RESEND_API_KEY=re_dev_key_changer
+
+# Admin
+ADMIN_EMAIL=admin@ladtc.be
+
+# Stripe (optionnel)
+STRIPE_SECRET_KEY=sk_test_changer
+STRIPE_WEBHOOK_SECRET=whsec_changer
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_changer
