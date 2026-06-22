@@ -26,7 +26,7 @@ export function SponsorsCarousel({
   sponsors,
   title = "Nos sponsors",
   autoplay = true,
-  autoplayInterval = 5000,
+  autoplayInterval = 3000,
 }: SponsorsCarouselProps): React.ReactNode {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -57,10 +57,15 @@ export function SponsorsCarousel({
       setCurrentIndex((prev) => {
         const nextIndex = (prev + 1) % sponsors.length;
         // Auto-scroll to the next sponsor
-        const carousel = document.querySelector("#sponsors-carousel .flex.gap-4");
+        const carousel = document.getElementById("sponsors-carousel");
         if (carousel) {
+          // Get the actual width of the first card to calculate scroll position
+          const firstCard = carousel.querySelector('.flex-shrink-0');
+          const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
+          // Add gap (1rem = 16px) between cards
+          const scrollPosition = nextIndex * (cardWidth + 16);
           carousel.scrollTo({
-            left: nextIndex * 300,
+            left: scrollPosition,
             behavior: "smooth"
           });
         }
@@ -94,6 +99,7 @@ export function SponsorsCarousel({
         <div className="relative">
           {/* Sponsors grid - shows all sponsors, carousel effect via CSS */}
           <div
+            id="sponsors-carousel"
             className="flex gap-4 overflow-x-auto pb-4 scroll-smooth "
             
           >
@@ -116,9 +122,12 @@ export function SponsorsCarousel({
               const newIndex =
                 currentIndex === 0 ? sponsors.length - 1 : currentIndex - 1;
               setCurrentIndex(newIndex);
-              document
-                .querySelector(".flex.gap-4")
-                ?.scrollTo({ left: newIndex * 300, behavior: "smooth" });
+              const carousel = document.getElementById("sponsors-carousel");
+              if (carousel) {
+                const firstCard = carousel.querySelector('.flex-shrink-0');
+                const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
+                carousel.scrollTo({ left: newIndex * (cardWidth + 16), behavior: "smooth" });
+              }
             }}
             aria-label="Sponsor précédent"
           >
@@ -132,9 +141,12 @@ export function SponsorsCarousel({
             onClick={() => {
               const newIndex = (currentIndex + 1) % sponsors.length;
               setCurrentIndex(newIndex);
-              document
-                .querySelector(".flex.gap-4")
-                ?.scrollTo({ left: newIndex * 300, behavior: "smooth" });
+              const carousel = document.getElementById("sponsors-carousel");
+              if (carousel) {
+                const firstCard = carousel.querySelector('.flex-shrink-0');
+                const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
+                carousel.scrollTo({ left: newIndex * (cardWidth + 16), behavior: "smooth" });
+              }
             }}
             aria-label="Sponsor suivant"
           >
@@ -152,9 +164,12 @@ export function SponsorsCarousel({
               }`}
               onClick={() => {
                 setCurrentIndex(index);
-                document
-                  .querySelector(".flex.gap-4")
-                  ?.scrollTo({ left: index * 300, behavior: "smooth" });
+                const carousel = document.getElementById("sponsors-carousel");
+                if (carousel) {
+                  const firstCard = carousel.querySelector('.flex-shrink-0');
+                  const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
+                  carousel.scrollTo({ left: index * (cardWidth + 16), behavior: "smooth" });
+                }
               }}
               aria-label={`Aller au sponsor ${index + 1}`}
             />
