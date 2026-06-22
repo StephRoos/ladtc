@@ -263,7 +263,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
         <Select
           value={isActiveFilter !== "" ? String(isActiveFilter) : ""}
           onValueChange={(val) => {
-            setIsActiveFilter(val === "" ? "" : val === "true");
+            setIsActiveFilter(val === "" ? "" : val === "true" ? true : false);
           }}
         >
           <SelectTrigger className="w-44">
