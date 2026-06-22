@@ -65,9 +65,9 @@ function LatestBlogSection(): React.ReactNode {
 
 function HeroSection(): React.ReactNode {
   return (
-    <section className="relative min-h-[70vh] overflow-hidden">
-      {/* Background image with gradient overlay */}
-      <div className="absolute inset-0">
+    <section className="relative overflow-hidden">
+      {/* Background image with gradient overlay - using standard height */}
+      <div className="relative aspect-[21/9] w-full overflow-hidden">
         <Image
           src="/images/hero-bg.jpg"
           alt="Trail running dans le Pays des Collines"
@@ -80,7 +80,7 @@ function HeroSection(): React.ReactNode {
       </div>
 
       {/* Content */}
-      <div className="relative mx-auto flex min-h-[70vh] max-w-7xl flex-col items-center justify-center px-4 text-center">
+      <div className="mx-auto max-w-7xl px-4 py-12 text-center">
         <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl">
           Bienvenue à <span className="text-primary">la DTC</span>
         </h1>
