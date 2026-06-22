@@ -153,7 +153,7 @@ function SponsorsPreviewSection(): React.ReactNode {
       sponsors={data.sponsors}
       title="Nos sponsors"
       autoplay={true}
-      autoplayInterval={6000}
+      scrollSpeed={40}
     />
   );
 }

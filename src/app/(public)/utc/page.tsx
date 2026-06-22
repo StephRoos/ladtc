@@ -210,7 +210,7 @@ export default function UtcPage(): React.ReactNode {
           sponsors={[]} // Will be filled dynamically
           title="Nos sponsors"
           autoplay={true}
-          autoplayInterval={6000}
+          scrollSpeed={40}
         />
       </section>
 

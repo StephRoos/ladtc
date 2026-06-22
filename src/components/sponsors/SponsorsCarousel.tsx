@@ -10,23 +10,24 @@ interface SponsorsCarouselProps {
   sponsors: Sponsor[];
   title?: string;
   autoplay?: boolean;
-  autoplayInterval?: number;
+  scrollSpeed?: number; // pixels per second
 }
 
 /**
  * SponsorsCarousel component - displays sponsors in a horizontal carousel.
  * Features:
- * - Auto-play with pause on hover
+ * - Continuous smooth auto-scrolling (no discrete jumps)
+ * - Pause on hover
  * - Manual navigation with buttons
  * - Responsive design (adapts to container width)
  * - Tier-based styling
- * - Smooth transitions
+ * - Seamless looping
  */
 export function SponsorsCarousel({
   sponsors,
   title = "Nos sponsors",
   autoplay = true,
-  autoplayInterval = 3000,
+  scrollSpeed = 40,
 }: SponsorsCarouselProps): React.ReactNode {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -49,32 +50,55 @@ export function SponsorsCarousel({
     sponsorsByTier[tier].sort((a, b) => a.order - b.order);
   });
 
-  // Auto-scroll logic
+  // Auto-scroll logic - continuous smooth scrolling
   useEffect(() => {
     if (!autoplay || isHovered) return;
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const nextIndex = (prev + 1) % sponsors.length;
-        // Auto-scroll to the next sponsor
-        const carousel = document.getElementById("sponsors-carousel");
-        if (carousel) {
-          // Get the actual width of the first card to calculate scroll position
-          const firstCard = carousel.querySelector('.flex-shrink-0');
-          const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
-          // Add gap (1rem = 16px) between cards
-          const scrollPosition = nextIndex * (cardWidth + 16);
-          carousel.scrollTo({
-            left: scrollPosition,
-            behavior: "smooth"
-          });
-        }
-        return nextIndex;
-      });
-    }, autoplayInterval);
+    const carousel = document.getElementById("sponsors-carousel");
+    if (!carousel) return;
 
-    return () => clearInterval(interval);
-  }, [autoplay, isHovered, sponsors.length, autoplayInterval]);
+    let animationId: number;
+    let startTime: number | null = null;
+    let lastScrollPosition = 0;
+    
+    // Get card width and total width
+    const firstCard = carousel.querySelector('.flex-shrink-0');
+    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
+    const cardWithGap = cardWidth + 16; // 16px for gap-4
+    const totalWidth = cardWithGap * sponsors.length;
+    
+    // Continuous scrolling speed (pixels per second)
+    const effectiveScrollSpeed = scrollSpeed;
+    
+    const animateScroll = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      
+      // Calculate new scroll position with wrap-around
+      const scrollProgress = (elapsed * effectiveScrollSpeed / 1000) % totalWidth;
+      
+      // Create seamless loop by resetting when we reach the end
+      if (scrollProgress < lastScrollPosition) {
+        // We've wrapped around, reset without visible jump
+        carousel.scrollTo({ left: 0, behavior: 'auto' });
+      }
+      
+      carousel.scrollTo({ left: scrollProgress, behavior: 'auto' });
+      lastScrollPosition = scrollProgress;
+      
+      // Update current index based on scroll position
+      const newIndex = Math.floor(scrollProgress / cardWithGap) % sponsors.length;
+      setCurrentIndex(newIndex);
+      
+      animationId = requestAnimationFrame(animateScroll);
+    };
+    
+    animationId = requestAnimationFrame(animateScroll);
+    
+    return () => {
+      cancelAnimationFrame(animationId);
+    };
+  }, [autoplay, isHovered, sponsors.length, scrollSpeed]);
 
   if (sponsors.length === 0) {
     return null;
