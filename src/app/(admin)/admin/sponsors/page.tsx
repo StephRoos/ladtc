@@ -263,7 +263,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
         <Select
           value={isActiveFilter !== "" ? String(isActiveFilter) : ""}
           onValueChange={(val) => {
-            setIsActiveFilter(val === "" ? "" : val === "true" ? true : false);
+            setIsActiveFilter(val === "" ? "" : val === "active" ? true : val === "inactive" ? false : "");
           }}
         >
           <SelectTrigger className="w-44">
@@ -271,8 +271,8 @@ export default function AdminSponsorsPage(): React.ReactNode {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="">Tous les statuts</SelectItem>
-            <SelectItem value="true">Actifs</SelectItem>
-            <SelectItem value="false">Inactifs</SelectItem>
+            <SelectItem value="active">Actifs</SelectItem>
+            <SelectItem value="inactive">Inactifs</SelectItem>
           </SelectContent>
         </Select>
         <Button variant="outline" onClick={applyFilters}>
