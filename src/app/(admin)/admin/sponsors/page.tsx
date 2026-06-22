@@ -254,7 +254,6 @@ export default function AdminSponsorsPage(): React.ReactNode {
             <SelectValue placeholder="Tous les niveaux" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tous les niveaux</SelectItem>
             <SelectItem value="GOLD">Or (Gold)</SelectItem>
             <SelectItem value="SILVER">Argent (Silver)</SelectItem>
             <SelectItem value="BRONZE">Bronze</SelectItem>
@@ -270,7 +269,6 @@ export default function AdminSponsorsPage(): React.ReactNode {
             <SelectValue placeholder="Tous les statuts" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tous les statuts</SelectItem>
             <SelectItem value="active">Actifs</SelectItem>
             <SelectItem value="inactive">Inactifs</SelectItem>
           </SelectContent>
