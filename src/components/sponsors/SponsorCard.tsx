@@ -10,19 +10,19 @@ import type { SponsorCardProps } from "@/types/sponsor";
  */
 const tierConfig = {
   GOLD: {
-    border: "border-yellow-500",
-    hoverBorder: "hover:border-yellow-400",
-    glow: "ring-yellow-500/50",
+    border: "border-border",
+    hoverBorder: "hover:border-border",
+    glow: "ring-primary/50",
   },
   SILVER: {
-    border: "border-gray-400",
-    hoverBorder: "hover:border-gray-300",
-    glow: "ring-gray-400/50",
+    border: "border-border",
+    hoverBorder: "hover:border-border",
+    glow: "ring-primary/50",
   },
   BRONZE: {
-    border: "border-amber-600",
-    hoverBorder: "hover:border-amber-500",
-    glow: "ring-amber-600/50",
+    border: "border-border",
+    hoverBorder: "hover:border-border",
+    glow: "ring-primary/50",
   },
 } as const;
 
@@ -45,20 +45,20 @@ export function SponsorCard({ sponsor }: SponsorCardProps): React.ReactNode {
       className={`group relative flex flex-col items-center justify-center rounded-lg border-2 ${config.border} ${config.hoverBorder} bg-card p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg`}
       aria-label={`Visiter le site de ${sponsor.name}`}
     >
-      {/* Logo */}
-      <div className="relative mb-4 h-20 w-32 overflow-hidden">
+      {/* Logo - larger and more prominent */}
+      <div className="relative mb-2 h-24 w-full overflow-hidden">
         {sponsor.logoUrl ? (
           <Image
             src={sponsor.logoUrl}
             alt={`${sponsor.name} logo`}
             fill
-            className="object-contain transition-transform duration-300 group-hover:scale-110"
-            sizes="(max-width: 640px) 100vw, 128px"
-            priority={false}
+            className="object-contain transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, 200px"
+            priority={true}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted/20 text-muted-foreground">
-            <span className="text-sm font-medium">Pas de logo</span>
+          <div className="flex h-full w-full items-center justify-center bg-muted/10">
+            <span className="text-xs text-muted-foreground">Logo</span>
           </div>
         )}
       </div>
@@ -68,18 +68,12 @@ export function SponsorCard({ sponsor }: SponsorCardProps): React.ReactNode {
         {sponsor.name}
       </h3>
 
-      {/* Tier badge */}
-      <span
-        className={`mt-2 px-3 py-1 text-xs font-semibold uppercase tracking-wider ${
-          sponsor.tier === "GOLD"
-            ? "bg-yellow-500/10 text-yellow-500"
-            : sponsor.tier === "SILVER"
-              ? "bg-gray-400/10 text-gray-400"
-              : "bg-amber-600/10 text-amber-500"
-        }`}
-      >
-        {sponsor.tier}
-      </span>
+      {/* Minimal text - just the name */}
+      {sponsor.name && (
+        <p className="mt-2 text-sm font-medium text-muted-foreground truncate max-w-full">
+          {sponsor.name}
+        </p>
+      )}
 
       {/* Glow effect on hover */}
       <div

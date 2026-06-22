@@ -49,12 +49,23 @@ export function SponsorsCarousel({
     sponsorsByTier[tier].sort((a, b) => a.order - b.order);
   });
 
-  // Auto-play logic
+  // Auto-scroll logic
   useEffect(() => {
     if (!autoplay || isHovered) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % sponsors.length);
+      setCurrentIndex((prev) => {
+        const nextIndex = (prev + 1) % sponsors.length;
+        // Auto-scroll to the next sponsor
+        const carousel = document.querySelector(".flex.gap-4");
+        if (carousel) {
+          carousel.scrollTo({
+            left: nextIndex * 300,
+            behavior: "smooth"
+          });
+        }
+        return nextIndex;
+      });
     }, autoplayInterval);
 
     return () => clearInterval(interval);
@@ -83,13 +94,13 @@ export function SponsorsCarousel({
         <div className="relative">
           {/* Sponsors grid - shows all sponsors, carousel effect via CSS */}
           <div
-            className="flex gap-6 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory"
-            style={{ scrollSnapType: "x mandatory" }}
+            className="flex gap-4 overflow-x-auto pb-4 scroll-smooth "
+            
           >
             {sponsors.map((sponsor) => (
               <div
                 key={sponsor.id}
-                className="flex-shrink-0 snap-center w-64 md:w-72 lg:w-80"
+                className="flex-shrink-0 snap-center w-72 md:w-80 lg:w-96"
               >
                 <SponsorCard sponsor={sponsor} />
               </div>
@@ -106,7 +117,7 @@ export function SponsorsCarousel({
                 currentIndex === 0 ? sponsors.length - 1 : currentIndex - 1;
               setCurrentIndex(newIndex);
               document
-                .querySelector(".flex.gap-6")
+                .querySelector(".flex.gap-4")
                 ?.scrollTo({ left: newIndex * 300, behavior: "smooth" });
             }}
             aria-label="Sponsor précédent"
@@ -122,7 +133,7 @@ export function SponsorsCarousel({
               const newIndex = (currentIndex + 1) % sponsors.length;
               setCurrentIndex(newIndex);
               document
-                .querySelector(".flex.gap-6")
+                .querySelector(".flex.gap-4")
                 ?.scrollTo({ left: newIndex * 300, behavior: "smooth" });
             }}
             aria-label="Sponsor suivant"
@@ -142,7 +153,7 @@ export function SponsorsCarousel({
               onClick={() => {
                 setCurrentIndex(index);
                 document
-                  .querySelector(".flex.gap-6")
+                  .querySelector(".flex.gap-4")
                   ?.scrollTo({ left: index * 300, behavior: "smooth" });
               }}
               aria-label={`Aller au sponsor ${index + 1}`}
