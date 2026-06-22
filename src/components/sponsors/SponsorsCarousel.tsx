@@ -57,7 +57,7 @@ export function SponsorsCarousel({
       setCurrentIndex((prev) => {
         const nextIndex = (prev + 1) % sponsors.length;
         // Auto-scroll to the next sponsor
-        const carousel = document.querySelector(".flex.gap-4");
+        const carousel = document.querySelector("#sponsors-carousel .flex.gap-4");
         if (carousel) {
           carousel.scrollTo({
             left: nextIndex * 300,
