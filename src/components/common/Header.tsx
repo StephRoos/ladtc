@@ -17,6 +17,7 @@ const navLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/gallery", label: "Galerie" },
   { href: "/utc", label: "UTC 4" },
+  { href: "/sponsors", label: "Sponsors" },
   { href: "/equipment", label: "Équipement" },
   { href: "/team", label: "Équipe" },
   { href: "/contact", label: "Contact" },

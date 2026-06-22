@@ -243,6 +243,28 @@ enum RegistrationStatus {
   CANCELLED
 }
 
+enum SponsorTier {
+  GOLD
+  SILVER
+  BRONZE
+}
+
+model Sponsor {
+  id          String      @id @default(cuid())
+  name        String
+  logoUrl     String?
+  tier        SponsorTier @default(BRONZE)
+  websiteUrl  String?
+  order       Int        @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([tier])
+  @@index([isActive])
+  @@index([order])
+}
+
 model Event {
   id              String              @id @default(cuid())
   title           String

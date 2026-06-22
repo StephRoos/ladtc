@@ -12,6 +12,7 @@ interface NavLink {
 const adminNavLinks: NavLink[] = [
   { href: "/admin/dashboard", label: "Tableau de bord" },
   { href: "/members", label: "Membres" },
+  { href: "/admin/sponsors", label: "Sponsors" },
   { href: "/admin/products", label: "Produits" },
   { href: "/admin/orders", label: "Commandes" },
   { href: "/admin/batches", label: "Lots" },

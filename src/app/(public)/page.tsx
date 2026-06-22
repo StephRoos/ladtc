@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BlogGrid } from "@/components/cards/BlogGrid";
 import { EventCard } from "@/components/cards/EventCard";
+import { SponsorsSection } from "@/components/sponsors/SponsorsSection";
 import { useBlogPosts } from "@/hooks/use-blog-posts";
 import { useEvents } from "@/hooks/use-events";
+import { usePublicSponsors } from "@/hooks/use-sponsors";
 
 function LatestBlogSection(): React.ReactNode {
   const { data, isLoading, isError } = useBlogPosts(1, 3);
@@ -103,6 +105,51 @@ function HeroSection(): React.ReactNode {
           </Button>
         </div>
       </div>
+    </section>
+  );
+}
+
+function SponsorsPreviewSection(): React.ReactNode {
+  const { data, isLoading, isError } = usePublicSponsors(10);
+
+  if (isLoading) {
+    return (
+      <section className="py-16 bg-muted/30">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="mb-10">
+            <h2 className="text-3xl font-bold">Nos sponsors</h2>
+            <p className="mt-2 text-muted-foreground">
+              Merci à nos partenaires
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center justify-center rounded-lg border-2 border-border bg-card p-6 text-center"
+              >
+                <div className="mb-4 h-20 w-32 overflow-hidden">
+                  <div className="h-full w-full bg-muted/20" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || !data?.sponsors || data.sponsors.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="py-16 bg-muted/30">
+      <SponsorsSection
+        sponsors={data.sponsors}
+        title="Nos sponsors"
+        showTitle={true}
+      />
     </section>
   );
 }
@@ -232,7 +279,7 @@ function TrainingSection(): React.ReactNode {
 }
 
 /**
- * Homepage — displays hero, latest blog posts and training info
+ * Homepage — displays hero, latest blog posts, upcoming events, sponsors and training info
  */
 export default function HomePage(): React.ReactNode {
   return (
@@ -240,6 +287,7 @@ export default function HomePage(): React.ReactNode {
       <HeroSection />
       <UpcomingEventsSection />
       <LatestBlogSection />
+      <SponsorsPreviewSection />
       <TrainingSection />
     </>
   );
