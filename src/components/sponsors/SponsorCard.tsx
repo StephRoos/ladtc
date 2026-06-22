@@ -29,9 +29,10 @@ const tierConfig = {
 /**
  * SponsorCard component - displays a sponsor with logo, name, and website link.
  * Features:
- * - Border color based on tier (gold, silver, bronze)
+ * - Large prominent logo (h-32)
+ * - Small minimal text
+ * - Border color based on tier
  * - Hover effect with scale-105
- * - Optional glow effect
  * - Responsive design
  */
 export function SponsorCard({ sponsor }: SponsorCardProps): React.ReactNode {
@@ -45,8 +46,8 @@ export function SponsorCard({ sponsor }: SponsorCardProps): React.ReactNode {
       className={`group relative flex flex-col items-center justify-center rounded-lg border-2 ${config.border} ${config.hoverBorder} bg-card p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg`}
       aria-label={`Visiter le site de ${sponsor.name}`}
     >
-      {/* Logo - larger and more prominent */}
-      <div className="relative mb-2 h-24 w-full overflow-hidden">
+      {/* Logo - much larger and more prominent */}
+      <div className="relative mb-1 h-32 w-full overflow-hidden">
         {sponsor.logoUrl ? (
           <Image
             src={sponsor.logoUrl}
@@ -63,17 +64,10 @@ export function SponsorCard({ sponsor }: SponsorCardProps): React.ReactNode {
         )}
       </div>
 
-      {/* Name */}
-      <h3 className="font-bold text-foreground transition-colors duration-300 group-hover:text-primary">
+      {/* Name - smaller and more minimal */}
+      <h3 className="text-sm font-medium text-muted-foreground transition-colors duration-300 group-hover:text-primary truncate max-w-full">
         {sponsor.name}
       </h3>
-
-      {/* Minimal text - just the name */}
-      {sponsor.name && (
-        <p className="mt-2 text-sm font-medium text-muted-foreground truncate max-w-full">
-          {sponsor.name}
-        </p>
-      )}
 
       {/* Glow effect on hover */}
       <div

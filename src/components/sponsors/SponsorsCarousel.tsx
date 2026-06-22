@@ -20,7 +20,8 @@ interface SponsorsCarouselProps {
  * - Pause on hover
  * - Manual navigation with buttons
  * - Responsive design (adapts to container width)
- * - Tier-based styling
+ * - Large logos with minimal text
+ * - No pagination dots (clean design)
  * - Seamless looping
  */
 export function SponsorsCarousel({
@@ -29,7 +30,6 @@ export function SponsorsCarousel({
   autoplay = true,
   scrollSpeed = 40,
 }: SponsorsCarouselProps): React.ReactNode {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
   // Group sponsors by tier for display
@@ -86,10 +86,6 @@ export function SponsorsCarousel({
       carousel.scrollTo({ left: scrollProgress, behavior: 'auto' });
       lastScrollPosition = scrollProgress;
       
-      // Update current index based on scroll position
-      const newIndex = Math.floor(scrollProgress / cardWithGap) % sponsors.length;
-      setCurrentIndex(newIndex);
-      
       animationId = requestAnimationFrame(animateScroll);
     };
     
@@ -143,14 +139,14 @@ export function SponsorsCarousel({
             size="icon"
             className="absolute left-0 top-1/2 -translate-y-1/2 transform rounded-full h-10 w-10"
             onClick={() => {
-              const newIndex =
-                currentIndex === 0 ? sponsors.length - 1 : currentIndex - 1;
-              setCurrentIndex(newIndex);
               const carousel = document.getElementById("sponsors-carousel");
               if (carousel) {
                 const firstCard = carousel.querySelector('.flex-shrink-0');
                 const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
-                carousel.scrollTo({ left: newIndex * (cardWidth + 16), behavior: "smooth" });
+                const cardWithGap = cardWidth + 16;
+                const currentScroll = carousel.scrollLeft;
+                const newScroll = Math.max(0, currentScroll - cardWithGap);
+                carousel.scrollTo({ left: newScroll, behavior: "smooth" });
               }
             }}
             aria-label="Sponsor précédent"
@@ -163,41 +159,21 @@ export function SponsorsCarousel({
             size="icon"
             className="absolute right-0 top-1/2 -translate-y-1/2 transform rounded-full h-10 w-10"
             onClick={() => {
-              const newIndex = (currentIndex + 1) % sponsors.length;
-              setCurrentIndex(newIndex);
               const carousel = document.getElementById("sponsors-carousel");
               if (carousel) {
                 const firstCard = carousel.querySelector('.flex-shrink-0');
                 const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
-                carousel.scrollTo({ left: newIndex * (cardWidth + 16), behavior: "smooth" });
+                const cardWithGap = cardWidth + 16;
+                const currentScroll = carousel.scrollLeft;
+                const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+                const newScroll = Math.min(maxScroll, currentScroll + cardWithGap);
+                carousel.scrollTo({ left: newScroll, behavior: "smooth" });
               }
             }}
             aria-label="Sponsor suivant"
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
-        </div>
-
-        {/* Pagination dots */}
-        <div className="mt-6 flex justify-center gap-2">
-          {sponsors.map((_, index) => (
-            <button
-              key={index}
-              className={`h-2 w-2 rounded-full transition-colors ${
-                index === currentIndex ? "bg-primary" : "bg-muted"
-              }`}
-              onClick={() => {
-                setCurrentIndex(index);
-                const carousel = document.getElementById("sponsors-carousel");
-                if (carousel) {
-                  const firstCard = carousel.querySelector('.flex-shrink-0');
-                  const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
-                  carousel.scrollTo({ left: index * (cardWidth + 16), behavior: "smooth" });
-                }
-              }}
-              aria-label={`Aller au sponsor ${index + 1}`}
-            />
-          ))}
         </div>
       </div>
     </section>
