@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SponsorsCarousel } from "@/components/sponsors/SponsorsCarousel";
 import {
   Card,
   CardContent,
@@ -202,6 +203,17 @@ export default function UtcPage(): React.ReactNode {
 
       {/* Sponsoring */}
       <section className="mb-16">
+
+      {/* Nos Sponsors */}
+      <section className="mb-16">
+        <SponsorsCarousel
+          sponsors={[]} // Will be filled dynamically
+          title="Nos sponsors"
+          autoplay={true}
+          autoplayInterval={6000}
+        />
+      </section>
+
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <h2 className="text-2xl font-bold">Devenir sponsor</h2>
         </div>

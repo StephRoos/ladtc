@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BlogGrid } from "@/components/cards/BlogGrid";
 import { EventCard } from "@/components/cards/EventCard";
-import { SponsorsSection } from "@/components/sponsors/SponsorsSection";
+import { SponsorsCarousel } from "@/components/sponsors/SponsorsCarousel";
 import { useBlogPosts } from "@/hooks/use-blog-posts";
 import { useEvents } from "@/hooks/use-events";
 import { usePublicSponsors } from "@/hooks/use-sponsors";
@@ -110,29 +110,34 @@ function HeroSection(): React.ReactNode {
 }
 
 function SponsorsPreviewSection(): React.ReactNode {
-  const { data, isLoading, isError } = usePublicSponsors(10);
+  const { data, isLoading, isError } = usePublicSponsors();
 
   if (isLoading) {
     return (
       <section className="py-16 bg-muted/30">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-10">
+          <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold">Nos sponsors</h2>
             <p className="mt-2 text-muted-foreground">
-              Merci à nos partenaires
+              Merci à nos partenaires pour leur soutien
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className="flex flex-col items-center justify-center rounded-lg border-2 border-border bg-card p-6 text-center"
-              >
-                <div className="mb-4 h-20 w-32 overflow-hidden">
-                  <div className="h-full w-full bg-muted/20" />
+          <div className="relative">
+            <div className="flex gap-6 overflow-x-auto pb-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 w-64 snap-center"
+                >
+                  <div className="flex flex-col items-center justify-center rounded-lg border-2 border-border bg-card p-6 text-center h-48">
+                    <div className="mb-4 h-20 w-32 overflow-hidden">
+                      <div className="h-full w-full bg-muted/20" />
+                    </div>
+                    <div className="h-4 w-24 bg-muted/20 rounded" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -144,13 +149,12 @@ function SponsorsPreviewSection(): React.ReactNode {
   }
 
   return (
-    <section className="py-16 bg-muted/30">
-      <SponsorsSection
-        sponsors={data.sponsors}
-        title="Nos sponsors"
-        showTitle={true}
-      />
-    </section>
+    <SponsorsCarousel
+      sponsors={data.sponsors}
+      title="Nos sponsors"
+      autoplay={true}
+      autoplayInterval={6000}
+    />
   );
 }
 
