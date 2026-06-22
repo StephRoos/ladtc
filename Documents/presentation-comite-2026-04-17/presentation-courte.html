@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>LADTC — Présentation au comité (version courte)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" id="theme">
+<style>
+  :root {
+    --primary: #0E7490;
+    --accent: #FF8C00;
+    --ink: #0F172A;
+    --soft: #64748B;
+    --bg-soft: #F1F5F9;
+  }
+  .reveal { font-family: -apple-system, "Segoe UI", Helvetica, sans-serif; color: var(--ink); font-size: 32px; }
+  .reveal .slides section { height: 100%; }
+  .reveal h1, .reveal h2, .reveal h3 { font-weight: 700; color: var(--ink); text-transform: none; letter-spacing: -0.01em; }
+  .reveal h1 { font-size: 2.8em; margin-bottom: 0.3em; }
+  .reveal h2 { font-size: 1.8em; margin-bottom: 0.4em; color: var(--primary); }
+  .reveal h3 { font-size: 1.25em; margin-bottom: 0.5em; }
+  .reveal p { line-height: 1.4; }
+  .reveal .lead { color: var(--soft); font-size: 0.9em; margin-top: 0; }
+  .reveal ul, .reveal ol { margin-left: 1em; }
+  .reveal li { margin: 0.3em 0; }
+  .reveal section { font-size: 0.95em; }
+  .reveal .big-number { font-size: 4em; font-weight: 800; color: var(--primary); line-height: 1; }
+  .reveal .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; text-align: left; }
+  .reveal .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; text-align: left; }
+  .reveal .four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 18px; text-align: left; }
+  .reveal .role-box { background: var(--bg-soft); padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); }
+  .reveal .role-box.accent { border-left-color: var(--accent); }
+  .reveal .role-box h3 { color: var(--primary); margin-top: 0; font-size: 1.1em; }
+  .reveal .role-box.accent h3 { color: var(--accent); }
+  .reveal .role-box ul { font-size: 0.7em; margin-top: 8px; margin-left: 0.8em; }
+  .reveal .role-box li { margin: 0.2em 0; }
+  .reveal .step-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center; margin-top: 30px; }
+  .reveal .step-card { background: var(--bg-soft); padding: 18px; border-radius: 8px; }
+  .reveal .step-number { font-size: 1.8em; font-weight: 800; color: var(--accent); }
+  .reveal .step-card h4 { margin: 8px 0 4px 0; font-size: 0.85em; color: var(--primary); }
+  .reveal .step-card p { font-size: 0.65em; color: var(--soft); margin: 0; }
+  .reveal .highlight { color: var(--accent); font-weight: 700; }
+  .reveal .title-slide { text-align: center; }
+  .reveal .title-slide h1 { font-size: 4em; margin-bottom: 0.1em; }
+  .reveal .title-slide .subtitle { font-size: 1.4em; color: var(--soft); margin-top: 0; }
+  .reveal .title-slide .meta { font-size: 0.8em; color: var(--soft); margin-top: 60px; }
+  .reveal .agenda { text-align: left; font-size: 1.1em; max-width: 700px; margin: 0 auto; }
+  .reveal .agenda li { padding: 8px 0; border-bottom: 1px solid #E2E8F0; }
+  .reveal .section-divider { background: linear-gradient(135deg, var(--primary) 0%, #164E63 100%); color: white; padding: 60px 40px; text-align: center; }
+  .reveal .section-divider h2 { color: white; font-size: 2.4em; }
+  .reveal .section-divider .section-num { font-size: 0.9em; opacity: 0.6; letter-spacing: 0.2em; }
+  .reveal .metric-row { display: flex; justify-content: space-around; margin-top: 30px; }
+  .reveal .metric { text-align: center; }
+  .reveal .metric-label { font-size: 0.75em; color: var(--soft); margin-top: 8px; }
+  .reveal .compact-list li { margin: 0.15em 0; font-size: 0.9em; }
+  .reveal .tag { display: inline-block; background: #ECFEFF; border: 1px solid #A5F3FC; border-radius: 4px; padding: 3px 10px; font-size: 0.55em; color: var(--primary); font-weight: 700; margin-right: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- SLIDE 1 — TITRE -->
+<section class="title-slide">
+  <h1>ladtc.be</h1>
+  <p class="subtitle">Le site du club, présenté au comité</p>
+  <p class="meta">LADTC · Ellezelles · 17 avril 2026</p>
+</section>
+
+<!-- SLIDE 2 — Au programme -->
+<section>
+  <h2>Au programme</h2>
+  <ol class="agenda">
+    <li>Pourquoi ce nouveau site</li>
+    <li>Ce qu'il contient et qui l'utilise</li>
+    <li>Ce qu'on peut y faire, par rôle</li>
+    <li>Sécurité, hébergement, suite</li>
+    <li>Questions et retours</li>
+  </ol>
+  <p style="margin-top: 30px; color: var(--soft); font-size: 0.85em;">Environ 15 minutes, démonstration en direct ensuite.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- PARTIE 1 — POURQUOI -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 1</p>
+  <h2>Pourquoi un nouveau site</h2>
+</section>
+
+<!-- SLIDE — Constat + choix combinés -->
+<section>
+  <h2>Le constat et le choix</h2>
+  <div class="two-col" style="margin-top: 30px;">
+    <div>
+      <h3 style="color: var(--soft);">La première version</h3>
+      <ul class="compact-list">
+        <li>WordPress, publication d'articles uniquement</li>
+        <li>Aucune gestion des membres ni des cotisations</li>
+        <li>Aucune vente d'équipement</li>
+        <li>Maintenance déléguée à un prestataire</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color: var(--primary);">Le besoin du club</h3>
+      <ul class="compact-list">
+        <li>Suivre adhésions et cotisations</li>
+        <li>Inscriptions aux événements en ligne</li>
+        <li>Catalogue d'équipement</li>
+        <li>Espace membre et autonomie du comité</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top: 30px; text-align: center; font-size: 1.05em;"><span class="highlight">Une seule adresse</span> · <span class="highlight">trois espaces</span> · <span class="highlight">tout intégré</span></p>
+</section>
+
+<!-- ================================================== -->
+<!-- PARTIE 2 — CONTENU -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 2</p>
+  <h2>Ce que le site contient</h2>
+</section>
+
+<!-- SLIDE — Tour d'horizon en 4 colonnes -->
+<section>
+  <h2>Quatre univers, une seule adresse</h2>
+  <div class="four-col" style="margin-top: 30px;">
+    <div class="role-box">
+      <h3>Blog</h3>
+      <ul><li>Articles, photos</li><li>Catégories, tags</li><li>Recherche</li></ul>
+    </div>
+    <div class="role-box">
+      <h3>Événements</h3>
+      <ul><li>Calendrier</li><li>Inscription en ligne</li><li>Sorties, courses, stages</li></ul>
+    </div>
+    <div class="role-box">
+      <h3>Équipement</h3>
+      <ul><li>Catalogue avec tailles</li><li>Panier et commande</li><li>Suivi des livraisons</li></ul>
+    </div>
+    <div class="role-box accent">
+      <h3>Espace membre</h3>
+      <ul><li>Profil, cotisation</li><li>Mes inscriptions</li><li>Mes commandes</li></ul>
+    </div>
+  </div>
+  <p style="margin-top: 30px; text-align: center; color: var(--soft); font-size: 0.85em;">À cela s'ajoutent : page d'accueil, équipe, galerie photo, contact.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- PARTIE 3 — ROLES -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 3</p>
+  <h2>Quatre rôles, ce qu'ils permettent</h2>
+</section>
+
+<!-- SLIDE — Vue 4 rôles -->
+<section>
+  <h2>Les quatre rôles</h2>
+  <div class="two-col" style="margin-top: 30px;">
+    <div class="role-box">
+      <h3>Visiteur</h3>
+      <p style="font-size: 0.85em; margin: 0;">Toute personne sans compte. Accès aux pages publiques uniquement.</p>
+    </div>
+    <div class="role-box">
+      <h3>Membre</h3>
+      <p style="font-size: 0.85em; margin: 0;">Compte créé. Accès à l'espace personnel, inscription événements, commandes.</p>
+    </div>
+    <div class="role-box accent">
+      <h3>Comité</h3>
+      <p style="font-size: 0.85em; margin: 0;">Tâches éditoriales et administratives : publier, gérer membres, suivre commandes.</p>
+    </div>
+    <div class="role-box accent">
+      <h3>Administrateur</h3>
+      <p style="font-size: 0.85em; margin: 0;">Responsable technique. Tous les droits, attribution des rôles.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE — Focus rôle comité -->
+<section>
+  <h2>Ce que le comité peut faire</h2>
+  <div class="three-col" style="margin-top: 25px;">
+    <div class="role-box">
+      <h3>Contenu</h3>
+      <ul style="font-size: 0.7em;"><li>Publier des articles</li><li>Créer des événements</li><li>Ajouter des photos</li></ul>
+    </div>
+    <div class="role-box">
+      <h3>Membres</h3>
+      <ul style="font-size: 0.7em;"><li>Voir la liste</li><li>Suivre les cotisations</li><li>Envoyer des rappels</li></ul>
+    </div>
+    <div class="role-box">
+      <h3>Équipement</h3>
+      <ul style="font-size: 0.7em;"><li>Gérer le catalogue</li><li>Suivre les commandes</li><li>Marquer les expéditions</li></ul>
+    </div>
+  </div>
+  <p style="margin-top: 25px; text-align: center; color: var(--soft); font-size: 0.85em;">Aucune compétence technique requise. Tout passe par des formulaires guidés.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- PARTIE 4 — DEMO PARCOURS -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 4</p>
+  <h2>Trois parcours en bref</h2>
+</section>
+
+<!-- SLIDE — Parcours visiteur + membre + comité en 3 colonnes -->
+<section>
+  <h2>Comment chacun utilise le site</h2>
+  <div class="three-col" style="margin-top: 25px;">
+    <div class="role-box">
+      <h3>Le visiteur découvre</h3>
+      <ul style="font-size: 0.7em;">
+        <li>Lit les articles</li>
+        <li>Consulte le calendrier</li>
+        <li>Parcourt la galerie</li>
+        <li>Utilise le formulaire de contact</li>
+      </ul>
+    </div>
+    <div class="role-box">
+      <h3>Le membre vit le club</h3>
+      <ul style="font-size: 0.7em;">
+        <li>Se connecte à son espace</li>
+        <li>S'inscrit à un événement</li>
+        <li>Commande de l'équipement</li>
+        <li>Suit sa cotisation</li>
+      </ul>
+    </div>
+    <div class="role-box accent">
+      <h3>Le comité gère</h3>
+      <ul style="font-size: 0.7em;">
+        <li>Publie un article</li>
+        <li>Crée un événement</li>
+        <li>Suit cotisations et commandes</li>
+        <li>Consulte les statistiques</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top: 25px; text-align: center; color: var(--soft); font-size: 0.85em;">Démonstration en direct juste après la présentation.</p>
+</section>
+
+<!-- SLIDE — Une tâche type : publier un article -->
+<section>
+  <h2>Exemple : publier un article</h2>
+  <div class="step-grid" style="margin-top: 30px;">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Ouvrir l'admin</h4>
+      <p>Bouton « nouvel article » dans la rubrique blog.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>Rédiger</h4>
+      <p>Titre, contenu, photo de couverture, catégorie.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Publier</h4>
+      <p>Aperçu, puis bouton publier. L'article est en ligne.</p>
+    </div>
+  </div>
+  <p style="margin-top: 30px; text-align: center; color: var(--soft); font-size: 0.85em;">Même logique pour événements, photos, produits : formulaire guidé, aperçu, validation.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- PARTIE 5 — SECURITE + ROADMAP + SUPPORT -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 5</p>
+  <h2>Sécurité, hébergement, suite</h2>
+</section>
+
+<!-- SLIDE — Sécurité + RGPD combinés -->
+<section>
+  <h2>Sécurité et données personnelles</h2>
+  <div class="two-col" style="margin-top: 30px;">
+    <div>
+      <h3>Sécurité</h3>
+      <ul class="compact-list">
+        <li>Connexion chiffrée (HTTPS)</li>
+        <li>Mots de passe stockés chiffrés</li>
+        <li>Hébergement local, en Belgique (à partir du 18 avril)</li>
+        <li>Sauvegardes automatiques prévues lors de la bascule</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Données personnelles (RGPD)</h3>
+      <ul class="compact-list">
+        <li>Strict minimum collecté</li>
+        <li>Aucun partage à des tiers</li>
+        <li>Modification et suppression possibles</li>
+        <li>Pas de cookies publicitaires</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE — Roadmap -->
+<section>
+  <h2>Ce qui arrive après aujourd'hui</h2>
+  <div class="three-col" style="margin-top: 30px;">
+    <div class="role-box">
+      <h3>Court terme</h3>
+      <ul style="font-size: 0.75em;">
+        <li>Mise en production samedi 18 avril</li>
+        <li>Bascule de l'adresse ladtc.be</li>
+        <li>Email d'invitation aux membres</li>
+      </ul>
+    </div>
+    <div class="role-box">
+      <h3>Premier mois</h3>
+      <ul style="font-size: 0.75em;">
+        <li>Création des comptes comité</li>
+        <li>Premier article et premier événement</li>
+        <li>Récolte des retours</li>
+      </ul>
+    </div>
+    <div class="role-box accent">
+      <h3>Suite</h3>
+      <ul style="font-size: 0.75em;">
+        <li>Paiement en ligne (Stripe)</li>
+        <li>Rappels automatiques</li>
+        <li>Newsletter</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE — Support + principes -->
+<section>
+  <h2>Aide et principes à retenir</h2>
+  <ul style="margin-top: 30px; font-size: 1em;">
+    <li><span class="highlight">Rien n'est définitif</span> : tout peut être modifié, dépublié, corrigé</li>
+    <li><span class="highlight">Les erreurs sont tracées</span> : un journal d'activité retrouve qui a fait quoi</li>
+    <li><span class="highlight">En cas de doute, demander</span> : un message au responsable technique évite d'aggraver</li>
+    <li><span class="highlight">Mode d'emploi imprimé</span> : remis à chacun, à garder à portée</li>
+  </ul>
+</section>
+
+<!-- ================================================== -->
+<!-- QUESTIONS -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 6</p>
+  <h2>Questions et retours</h2>
+</section>
+
+<section class="title-slide">
+  <h2 style="color: var(--primary); margin-bottom: 40px;">Place aux questions</h2>
+  <p style="font-size: 1.05em; color: var(--soft);">Le mode d'emploi imprimé reste à disposition.<br>Les coordonnées du responsable technique y figurent.</p>
+  <p class="meta">Merci pour l'attention.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    controls: true,
+    progress: true,
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.04,
+    minScale: 0.2,
+    maxScale: 2.0
+  });
+</script>
+
+</body>
+</html>

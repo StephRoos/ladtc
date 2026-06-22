@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>LADTC — Mode d'emploi du site pour le comité</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #1a1a1a; line-height: 1.55; font-size: 11pt; max-width: 180mm; margin: 0 auto; padding: 12mm 0; }
+  h1 { font-size: 26pt; margin: 0 0 4pt 0; border-bottom: 3px solid #EA580C; padding-bottom: 6pt; page-break-after: avoid; }
+  h2 { font-size: 17pt; margin-top: 24pt; color: #C2410C; border-bottom: 1px solid #cbd5e1; padding-bottom: 4pt; page-break-after: avoid; }
+  h3 { font-size: 13pt; margin-top: 16pt; color: #7C2D12; page-break-after: avoid; }
+  h4 { font-size: 11pt; margin-top: 12pt; color: #1e293b; page-break-after: avoid; }
+  p { margin: 6pt 0; text-align: justify; }
+  ol, ul { margin: 6pt 0 8pt 0; padding-left: 22pt; }
+  li { margin: 3pt 0; }
+  ol li { padding-left: 4pt; }
+  code { font-family: Menlo, Consolas, monospace; background: #FFF7ED; padding: 1pt 4pt; border-radius: 3px; font-size: 10pt; }
+  .lead { font-size: 12pt; color: #475569; margin: 8pt 0 18pt 0; }
+  .box { background: #FFF7ED; border-left: 4px solid #EA580C; padding: 10pt 14pt; margin: 12pt 0; border-radius: 4px; page-break-inside: avoid; }
+  .box-warn { background: #FEF3C7; border-left: 4px solid #D97706; padding: 10pt 14pt; margin: 12pt 0; border-radius: 4px; page-break-inside: avoid; }
+  .box h4 { margin-top: 0; color: #7C2D12; }
+  .box-warn h4 { margin-top: 0; color: #92400E; }
+  .step { background: #fff; border: 1px solid #e2e8f0; padding: 10pt 14pt; margin: 10pt 0; border-radius: 4px; page-break-inside: avoid; }
+  .step-number { display: inline-block; background: #EA580C; color: white; width: 22pt; height: 22pt; border-radius: 50%; text-align: center; line-height: 22pt; font-weight: bold; margin-right: 8pt; font-size: 11pt; }
+  table { width: 100%; border-collapse: collapse; margin: 10pt 0; font-size: 10pt; page-break-inside: avoid; }
+  th { background: #C2410C; color: white; padding: 6pt 8pt; text-align: left; font-weight: 600; }
+  td { padding: 5pt 8pt; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #FFFBF5; }
+  .toc { background: #FFFBF5; padding: 14pt 18pt; border-radius: 4px; margin: 18pt 0 24pt 0; }
+  .toc h2 { margin-top: 0; border: none; color: #7C2D12; }
+  .toc ol { margin: 4pt 0; }
+  .toc a { color: #C2410C; text-decoration: none; }
+  .footer { margin-top: 40pt; padding-top: 10pt; border-top: 1px solid #cbd5e1; font-size: 9pt; color: #64748b; text-align: center; }
+  .role-card { display: inline-block; background: #FFF7ED; border: 1px solid #FDBA74; border-radius: 4px; padding: 2pt 8pt; font-size: 9pt; color: #C2410C; margin-right: 4pt; font-weight: 600; }
+  .page-break { page-break-before: always; }
+  @media print { body { padding: 0; } .no-print { display: none; } }
+</style>
+</head>
+<body>
+
+<h1>Mode d'emploi du site LADTC</h1>
+<p class="lead">Manuel destiné aux membres du comité · version du 20 avril 2026</p>
+
+<div class="box">
+<h4>À qui s'adresse ce document</h4>
+<p>Ce document s'adresse aux membres du comité du LADTC qui utiliseront le site <code>ladtc.be</code> pour gérer le club au quotidien. Il couvre toutes les tâches administratives prévues, étape par étape, avec les copies d'écran correspondantes. Aucune connaissance technique n'est requise pour suivre ce manuel.</p>
+</div>
+
+<div class="toc">
+<h2>Table des matières</h2>
+<ol>
+  <li><a href="#concept">Le concept du site</a></li>
+  <li><a href="#roles">Les trois rôles et ce qu'ils permettent</a></li>
+  <li><a href="#connexion">Se connecter la première fois</a></li>
+  <li><a href="#tableau-bord">Le tableau de bord du comité</a></li>
+  <li><a href="#membres">Gérer les membres du club</a></li>
+  <li><a href="#cotisations">Suivre les cotisations</a></li>
+  <li><a href="#evenements">Créer et gérer les événements</a></li>
+  <li><a href="#blog">Publier un article de blog</a></li>
+  <li><a href="#galerie">Ajouter des photos à la galerie</a></li>
+  <li><a href="#equipement">Gérer l'équipement et les commandes</a></li>
+  <li><a href="#documents">Espace documents du comité</a></li>
+  <li><a href="#statistiques">Consulter les statistiques du club</a></li>
+  <li><a href="#journal">Le journal d'activité</a></li>
+  <li><a href="#depannage">Problèmes fréquents et solutions</a></li>
+  <li><a href="#lexique">Lexique</a></li>
+</ol>
+</div>
+
+<!-- ============== SECTION 1 ============== -->
+<h2 id="concept">1. Le concept du site</h2>
+
+<p>Le site <strong>ladtc.be</strong> remplace la première version WordPress par un outil pensé pour les besoins réels du club. Il combine trois fonctions en un seul endroit.</p>
+
+<h3>1.1 Une vitrine pour les futurs membres</h3>
+<p>Toute personne qui visite <code>ladtc.be</code> sans être connectée accède aux pages publiques : présentation du club, blog, calendrier des événements, galerie photo, équipe, contact. L'objectif est de donner envie de rejoindre le club et de faciliter la prise de contact.</p>
+
+<h3>1.2 Un espace pour les membres</h3>
+<p>Les personnes inscrites disposent d'un espace personnel : profil, statut de cotisation, inscription aux événements, commande d'équipement, historique de commandes. Le paiement de la cotisation annuelle se fait en ligne par carte bancaire de manière sécurisée.</p>
+
+<h3>1.3 Un tableau de bord pour le comité</h3>
+<p>Le comité dispose d'un tableau de bord qui permet de gérer tous les contenus du site (articles, événements, photos, équipement) ainsi que les membres (inscriptions, cotisations, rôles) sans aucune intervention technique extérieure. C'est la partie que ce document détaille.</p>
+
+<div class="box">
+<h4>En résumé</h4>
+<p>Un site public pour attirer, un espace membre pour fidéliser, un tableau de bord pour piloter. Tout est centralisé dans une seule adresse : <code>ladtc.be</code>.</p>
+</div>
+
+<!-- ============== SECTION 2 ============== -->
+<h2 id="roles">2. Les trois rôles et ce qu'ils permettent</h2>
+
+<p>Chaque personne inscrite sur le site se voit attribuer un rôle qui détermine ce qu'elle peut faire. Les rôles sont attribués par un administrateur.</p>
+
+<table>
+<thead>
+<tr><th>Rôle</th><th>Qui</th><th>Ce qui est permis</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="role-card">MEMBRE</span></td>
+  <td>Tout membre inscrit au club</td>
+  <td>Gérer son profil, payer sa cotisation, s'inscrire à des événements, commander de l'équipement (si cotisation à jour), consulter l'annuaire des membres</td>
+</tr>
+<tr>
+  <td><span class="role-card">COMITÉ</span></td>
+  <td>Membres du comité (président, secrétaire, trésorier, coachs, etc.)</td>
+  <td>Tout ce que fait un membre, plus la gestion complète du site : articles, événements, photos, équipement, commandes, membres, cotisations, documents internes</td>
+</tr>
+<tr>
+  <td><span class="role-card">ADMIN</span></td>
+  <td>Responsable technique du site (un ou deux maximum)</td>
+  <td>Tout ce que fait le comité, plus la gestion des rôles et la configuration système</td>
+</tr>
+</tbody>
+</table>
+
+<h3>2.1 La fonction au sein du comité</h3>
+<p>En plus du rôle technique, chaque membre du comité peut afficher sa fonction précise (président, trésorier, secrétaire, responsable événements, etc.). Cette fonction apparaît sur la page <strong>Équipe</strong> du site et peut être modifiée à tout moment par un administrateur.</p>
+
+<h3>2.2 Pourquoi trois rôles plutôt qu'un seul</h3>
+<p>La séparation des rôles évite les erreurs. Un membre du comité peut gérer le contenu sans avoir accès aux paramètres système. L'administrateur garde la main sur les réglages sensibles (attribution des rôles, configuration).</p>
+
+<div class="page-break"></div>
+
+<!-- ============== SECTION 3 ============== -->
+<h2 id="connexion">3. Se connecter la première fois</h2>
+
+<p>Chaque membre du comité reçoit une invitation par email contenant un lien d'activation. La procédure ci-dessous détaille la première connexion.</p>
+
+<div class="step">
+<p><span class="step-number">1</span><strong>Ouvrir l'email d'invitation</strong></p>
+<p>L'email est envoyé par <code>noreply@ladtc.be</code> avec pour sujet « Bienvenue au comité LADTC ». Vérifier le dossier courrier indésirable si l'email n'apparaît pas dans la boîte de réception.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">2</span><strong>Cliquer sur le bouton « Activer mon compte »</strong></p>
+<p>Le bouton ouvre le site <code>ladtc.be</code> directement sur la page de création de mot de passe. Le lien est valable 24 heures.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">3</span><strong>Choisir un mot de passe</strong></p>
+<p>Le mot de passe doit contenir au moins 8 caractères, avec une majuscule, une minuscule, un chiffre. Le site vérifie sa solidité et affiche une barre de couleur : rouge (faible), orange (moyen), vert (fort). Viser le vert.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">4</span><strong>Confirmer en cliquant sur « Activer »</strong></p>
+<p>Le site redirige automatiquement vers le tableau de bord du comité. C'est la première page qui s'affiche : à partir de maintenant, le compte est actif.</p>
+</div>
+
+<h3>3.1 Se connecter les fois suivantes</h3>
+
+<ol>
+  <li>Ouvrir un navigateur (Chrome, Firefox, Safari, Edge) et aller sur <code>https://ladtc.be</code>.</li>
+  <li>Cliquer sur <strong>« Se connecter »</strong> en haut à droite de la page.</li>
+  <li>Saisir l'email et le mot de passe.</li>
+  <li>Cliquer sur <strong>« Connexion »</strong>.</li>
+</ol>
+
+<div class="box">
+<h4>Mot de passe oublié</h4>
+<p>Sur la page de connexion, cliquer sur le lien <strong>« Mot de passe oublié »</strong>. Un email de réinitialisation arrive dans les minutes qui suivent. Le lien contenu dans l'email est valable une heure.</p>
+</div>
+
+<h3>3.2 Se déconnecter</h3>
+<p>Cliquer sur l'avatar en haut à droite, puis sur <strong>« Déconnexion »</strong>. Toujours se déconnecter après usage sur un ordinateur partagé.</p>
+
+<!-- ============== SECTION 4 ============== -->
+<h2 id="tableau-bord">4. Le tableau de bord du comité</h2>
+
+<p>Le tableau de bord est le point de départ de toutes les actions administratives. Il s'affiche automatiquement après connexion pour les comptes ayant le rôle <span class="role-card">COMITÉ</span> ou <span class="role-card">ADMIN</span>.</p>
+
+<h3>4.1 Accéder au tableau de bord</h3>
+<p>Depuis n'importe quelle page du site, cliquer sur l'avatar en haut à droite, puis sur <strong>« Tableau de bord admin »</strong>. L'adresse directe est <code>ladtc.be/admin/dashboard</code>.</p>
+
+<h3>4.2 Ce que contient le tableau de bord</h3>
+
+<p>La page affiche une vue d'ensemble en quatre blocs.</p>
+
+<h4>Bloc 1 — Chiffres clés</h4>
+<ul>
+  <li>Nombre total de membres inscrits</li>
+  <li>Nombre de membres avec cotisation à jour</li>
+  <li>Nombre d'événements à venir</li>
+  <li>Nombre de commandes en attente de traitement</li>
+</ul>
+
+<h4>Bloc 2 — Graphiques d'évolution</h4>
+<ul>
+  <li>Évolution du nombre de membres sur douze mois</li>
+  <li>Répartition des cotisations par statut (à jour, en attente, expirée)</li>
+  <li>Chiffre d'affaires des commandes d'équipement par mois</li>
+</ul>
+
+<h4>Bloc 3 — Activité récente</h4>
+<p>Liste des dernières actions effectuées sur le site : nouvelles inscriptions, articles publiés, commandes passées. Chaque ligne indique l'auteur, l'action et la date.</p>
+
+<h4>Bloc 4 — Menu de navigation</h4>
+<p>Accès direct aux différentes sections : Membres, Événements, Blog, Galerie, Documents, Équipement, Commandes, Utilisateurs, Statistiques, Journal d'activité.</p>
+
+<div class="page-break"></div>
+
+<!-- ============== SECTION 5 ============== -->
+<h2 id="membres">5. Gérer les membres du club</h2>
+
+<p>La section <strong>Membres</strong> centralise toutes les informations sur les personnes inscrites au club. Accès direct : <code>ladtc.be/members</code> (ou via le menu du tableau de bord).</p>
+
+<h3>5.1 Consulter la liste des membres</h3>
+
+<p>La liste affiche les colonnes suivantes :</p>
+
+<table>
+<thead><tr><th>Colonne</th><th>Information</th></tr></thead>
+<tbody>
+<tr><td>Nom</td><td>Nom et prénom du membre</td></tr>
+<tr><td>Email</td><td>Adresse email (cliquable pour envoyer un message)</td></tr>
+<tr><td>Statut cotisation</td><td>En attente, À jour, Expirée, Inactive</td></tr>
+<tr><td>Date de renouvellement</td><td>Prochaine échéance de la cotisation</td></tr>
+<tr><td>Rôle</td><td>Membre, Comité, Admin</td></tr>
+<tr><td>Actions</td><td>Voir fiche, Modifier, Supprimer</td></tr>
+</tbody>
+</table>
+
+<h3>5.2 Rechercher un membre</h3>
+<p>Le champ de recherche en haut de la liste permet de filtrer par nom, prénom, ou email. La recherche se met à jour au fur et à mesure de la saisie.</p>
+
+<h3>5.3 Consulter la fiche d'un membre</h3>
+<p>Cliquer sur le nom du membre dans la liste ouvre sa fiche détaillée, qui contient :</p>
+<ul>
+  <li>Informations personnelles (nom, email, téléphone, contact d'urgence)</li>
+  <li>Statut de cotisation et date de renouvellement</li>
+  <li>Historique des commandes</li>
+  <li>Historique des inscriptions aux événements</li>
+  <li>Date d'adhésion au club</li>
+</ul>
+
+<h3>5.4 Ajouter un nouveau membre manuellement</h3>
+<p>Cette procédure est utilisée lorsqu'un nouveau membre ne peut pas s'inscrire lui-même (absence d'adresse email, problème technique).</p>
+
+<div class="step">
+<p><span class="step-number">1</span>Aller dans <strong>Admin &gt; Membres</strong> et cliquer sur le bouton <strong>« Ajouter un membre »</strong> en haut à droite.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">2</span>Remplir le formulaire : nom, prénom, email (indispensable), téléphone. Tous les champs marqués d'un astérisque rouge sont obligatoires.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">3</span>Choisir le statut de cotisation initial : <em>En attente</em> si la cotisation n'est pas encore payée, <em>À jour</em> si le paiement a déjà été fait en espèces ou par virement.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">4</span>Cliquer sur <strong>« Créer le compte »</strong>. Le nouveau membre reçoit automatiquement un email pour définir son mot de passe.</p>
+</div>
+
+<h3>5.5 Modifier un membre</h3>
+<ol>
+  <li>Dans la liste des membres, cliquer sur l'icône « crayon » à droite de la ligne concernée.</li>
+  <li>Modifier les champs nécessaires.</li>
+  <li>Cliquer sur <strong>« Enregistrer »</strong>.</li>
+</ol>
+
+<h3>5.6 Changer le rôle d'un membre</h3>
+<p>Seul un administrateur peut changer le rôle d'un membre (passer de MEMBRE à COMITÉ par exemple). La procédure passe par la section <strong>Admin &gt; Utilisateurs</strong> et non <strong>Admin &gt; Membres</strong>.</p>
+
+<ol>
+  <li>Aller dans <code>ladtc.be/admin/users</code>.</li>
+  <li>Retrouver l'utilisateur concerné dans la liste.</li>
+  <li>Cliquer sur le menu déroulant dans la colonne « Rôle » et sélectionner le nouveau rôle.</li>
+  <li>Pour un membre du comité, remplir en plus le champ <strong>« Fonction »</strong> (exemple : « Président », « Trésorière »).</li>
+  <li>Cliquer sur <strong>« Enregistrer »</strong>.</li>
+</ol>
+
+<div class="box-warn">
+<h4>Attention</h4>
+<p>Retirer le rôle ADMIN d'un utilisateur lui enlève immédiatement tout accès administratif. Toujours conserver au moins un administrateur actif pour éviter de se retrouver bloqué.</p>
+</div>
+
+<h3>5.7 Supprimer un membre</h3>
+<p>La suppression est définitive et supprime aussi son historique de commandes et d'inscriptions. Pour une radiation temporaire, préférer le passage de la cotisation en <em>Expirée</em>.</p>
+
+<div class="page-break"></div>
+
+<!-- ============== SECTION 6 ============== -->
+<h2 id="cotisations">6. Suivre les cotisations</h2>
+
+<p>La cotisation annuelle est fixée à 50 € par défaut. Le montant peut être ajusté individuellement si besoin (tarif réduit, tarif famille).</p>
+
+<h3>6.1 Consulter le statut des cotisations</h3>
+
+<p>Deux manières d'accéder à l'information :</p>
+<ul>
+  <li><strong>Globalement</strong> : page <strong>Statistiques</strong> (menu admin) → graphique « Répartition des membres »</li>
+  <li><strong>Individuellement</strong> : fiche du membre accessible depuis <strong>Membres</strong> → section « Cotisation »</li>
+</ul>
+
+<h3>6.2 Les quatre statuts possibles</h3>
+
+<table>
+<thead><tr><th>Statut</th><th>Signification</th><th>Affichage sur la fiche</th></tr></thead>
+<tbody>
+<tr><td>EN ATTENTE</td><td>Le membre est inscrit mais n'a pas encore payé</td><td>Pastille orange</td></tr>
+<tr><td>À JOUR</td><td>Cotisation payée, membre actif</td><td>Pastille verte</td></tr>
+<tr><td>EXPIRÉE</td><td>La cotisation n'a pas été renouvelée à la date prévue</td><td>Pastille rouge</td></tr>
+<tr><td>INACTIVE</td><td>Membre qui ne souhaite plus renouveler (radiation volontaire)</td><td>Pastille grise</td></tr>
+</tbody>
+</table>
+
+<h3>6.3 Enregistrer un paiement en espèces ou par virement</h3>
+
+<p>Lorsqu'un membre paie sa cotisation autrement que par carte bancaire en ligne (chèque, virement, espèces), le comité saisit le paiement manuellement dans la fiche du membre.</p>
+
+<div class="step">
+<p><span class="step-number">1</span>Ouvrir la fiche du membre depuis <strong>Membres</strong>.</p>
+</div>
+<div class="step">
+<p><span class="step-number">2</span>Dans la section « Cotisation », passer le statut à <strong>« À jour »</strong>.</p>
+</div>
+<div class="step">
+<p><span class="step-number">3</span>Renseigner le montant, la date de paiement, la date de prochain renouvellement, et ajouter un commentaire dans le champ « Notes » si utile (référence de virement, numéro de chèque).</p>
+</div>
+<div class="step">
+<p><span class="step-number">4</span>Cliquer sur <strong>« Enregistrer »</strong>. La fiche reflète immédiatement le paiement.</p>
+</div>
+
+<h3>6.4 Le paiement en ligne par le membre</h3>
+<p>Le membre peut payer lui-même depuis son espace personnel :</p>
+<ol>
+  <li>Se connecter sur <code>ladtc.be</code>.</li>
+  <li>Aller dans <strong>« Ma cotisation »</strong>.</li>
+  <li>Cliquer sur <strong>« Payer ma cotisation »</strong>.</li>
+  <li>Saisir les informations de carte bancaire dans la fenêtre sécurisée Stripe.</li>
+  <li>Valider. Le statut passe automatiquement à <em>À jour</em> dès que le paiement est confirmé.</li>
+</ol>
+
+<div class="box">
+<h4>Sécurité des paiements</h4>
+<p>Le site utilise Stripe, leader européen du paiement en ligne, certifié PCI-DSS. Aucune donnée bancaire n'est stockée sur le site de LADTC. Les cartes sont saisies directement dans l'interface Stripe.</p>
+</div>
+
+<h3>6.5 Relancer les membres en retard</h3>
+<p>La liste des cotisations expirées est accessible depuis <strong>Admin &gt; Membres</strong> en filtrant sur le statut « Expirée ». Le bouton <strong>« Exporter en CSV »</strong> génère une liste exploitable dans un tableur pour préparer une relance par email.</p>
+
+<!-- ============== SECTION 7 ============== -->
+<h2 id="evenements">7. Créer et gérer les événements</h2>
+
+<p>Les événements regroupent quatre catégories : entraînements hebdomadaires, courses, stages, et événements sociaux.</p>
+
+<h3>7.1 Les quatre types d'événements</h3>
+
+<table>
+<thead><tr><th>Type</th><th>Usage</th><th>Exemples</th></tr></thead>
+<tbody>
+<tr><td>ENTRAÎNEMENT</td><td>Séance régulière ou ponctuelle du club</td><td>Sortie longue du dimanche, fractionné du mercredi</td></tr>
+<tr><td>COURSE</td><td>Course externe où le club est représenté</td><td>Trail des Collines, Nature Trail de Lessines</td></tr>
+<tr><td>STAGE</td><td>Stage de plusieurs jours</td><td>Week-end en Ardennes, stage d'été</td></tr>
+<tr><td>SOCIAL</td><td>Événement convivial</td><td>Assemblée générale, barbecue de fin de saison</td></tr>
+</tbody>
+</table>
+
+<h3>7.2 Créer un événement</h3>
+
+<div class="step">
+<p><span class="step-number">1</span>Aller dans <strong>Admin &gt; Événements</strong> et cliquer sur <strong>« Nouvel événement »</strong>.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">2</span>Remplir le formulaire :</p>
+<ul>
+  <li><strong>Titre</strong> : nom court et descriptif (ex : « Sortie longue 20 km - Ellezelles »)</li>
+  <li><strong>Type</strong> : Entraînement, Course, Stage, Social</li>
+  <li><strong>Date et heure de début</strong> : sélectionner dans le calendrier</li>
+  <li><strong>Date et heure de fin</strong> : facultatif, utile pour les stages</li>
+  <li><strong>Lieu</strong> : adresse de rendez-vous ou nom du lieu</li>
+  <li><strong>Difficulté</strong> : texte libre (« Débutant », « Modéré », « D+ 500 m »)</li>
+  <li><strong>Participants maximum</strong> : nombre à partir duquel les inscriptions sont refusées (laisser vide si pas de limite)</li>
+  <li><strong>Description</strong> : détails, consignes, équipement recommandé, point de rendez-vous précis</li>
+  <li><strong>Photo</strong> : image d'illustration facultative</li>
+</ul>
+</div>
+
+<div class="step">
+<p><span class="step-number">3</span>Cliquer sur <strong>« Publier »</strong> pour rendre l'événement visible aux membres, ou <strong>« Enregistrer comme brouillon »</strong> pour finaliser plus tard.</p>
+</div>
+
+<h3>7.3 Gérer les inscriptions</h3>
+
+<p>La fiche d'un événement affiche la liste des inscrits avec trois statuts possibles :</p>
+<ul>
+  <li><strong>INSCRIT</strong> (REGISTERED) : le membre s'est inscrit mais l'événement n'a pas eu lieu</li>
+  <li><strong>PRÉSENT</strong> (ATTENDED) : le membre a participé, statut mis à jour après l'événement</li>
+  <li><strong>ANNULÉ</strong> (CANCELLED) : inscription annulée</li>
+</ul>
+
+<p>Le comité peut modifier le statut de chaque participant à la main après l'événement, ce qui permet de suivre la présence réelle.</p>
+
+<h3>7.4 Annuler ou reporter un événement</h3>
+
+<ol>
+  <li>Ouvrir la fiche de l'événement.</li>
+  <li>Cliquer sur <strong>« Modifier »</strong>.</li>
+  <li>Modifier la date ou ajouter « ANNULÉ » en début de titre, et préciser dans la description.</li>
+  <li>Cliquer sur <strong>« Enregistrer »</strong>.</li>
+</ol>
+
+<div class="box-warn">
+<h4>Notification des inscrits</h4>
+<p>L'envoi d'email automatique aux inscrits lors d'un changement de date n'est pas encore en place. Prévenir les inscrits par un message manuel (liste exportable depuis la fiche de l'événement).</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============== SECTION 8 ============== -->
+<h2 id="blog">8. Publier un article de blog</h2>
+
+<p>Le blog sert à partager les comptes-rendus, les actualités et les annonces du club.</p>
+
+<h3>8.1 Créer un nouvel article</h3>
+
+<div class="step">
+<p><span class="step-number">1</span>Aller dans <strong>Admin &gt; Blog</strong> et cliquer sur <strong>« Nouvel article »</strong>.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">2</span>Renseigner les champs principaux :</p>
+<ul>
+  <li><strong>Titre</strong> : titre accrocheur, environ 8 à 12 mots</li>
+  <li><strong>Résumé</strong> : une ou deux phrases, affichées dans la liste des articles et les aperçus réseaux sociaux</li>
+  <li><strong>Image de couverture</strong> : photo qui apparaît en haut de l'article et dans les aperçus</li>
+  <li><strong>Catégorie</strong> : choisir parmi « Actualités », « Compte-rendu », « Coaching », « Matériel » (la liste peut être enrichie par un administrateur)</li>
+  <li><strong>Étiquettes</strong> : mots-clés séparés par des virgules (ex : « course, ardennes, débutant »)</li>
+</ul>
+</div>
+
+<div class="step">
+<p><span class="step-number">3</span>Rédiger le contenu de l'article dans la zone de texte principale. Le format utilisé est <strong>Markdown</strong>, mais pas besoin de le connaître : la barre d'outils au-dessus de la zone de texte contient les boutons classiques (gras, italique, titres, listes, liens, images).</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">4</span>Cliquer sur <strong>« Aperçu »</strong> pour voir le rendu final avant publication.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">5</span>Cliquer sur <strong>« Publier »</strong> pour rendre l'article visible sur le site, ou sur <strong>« Enregistrer comme brouillon »</strong> pour terminer plus tard. Les brouillons ne sont visibles que par les auteurs et le comité.</p>
+</div>
+
+<h3>8.2 Ajouter une image dans le corps d'un article</h3>
+
+<ol>
+  <li>Placer le curseur à l'endroit où insérer l'image.</li>
+  <li>Cliquer sur l'icône « Image » dans la barre d'outils.</li>
+  <li>Choisir le fichier sur l'ordinateur (format JPG, PNG, taille maximale 5 Mo).</li>
+  <li>Attendre le téléversement (une barre de progression s'affiche).</li>
+  <li>Ajouter un texte alternatif (description courte pour l'accessibilité).</li>
+  <li>Valider.</li>
+</ol>
+
+<h3>8.3 Modifier ou supprimer un article</h3>
+
+<p>Depuis <strong>Admin &gt; Blog</strong>, utiliser les icônes « crayon » (modifier) ou « poubelle » (supprimer) à droite de chaque article. La suppression est définitive, privilégier le passage en brouillon pour retirer temporairement un article.</p>
+
+<div class="box">
+<h4>Bonne pratique éditoriale</h4>
+<p>Un article court (400 à 600 mots) avec une photo de couverture engageante est souvent plus lu qu'un article long sans illustration. Penser à relire avant publication pour corriger les coquilles.</p>
+</div>
+
+<!-- ============== SECTION 9 ============== -->
+<h2 id="galerie">9. Ajouter des photos à la galerie</h2>
+
+<p>La galerie publique regroupe les photos du club, classées par événement ou par catégorie.</p>
+
+<h3>9.1 Téléverser une ou plusieurs photos</h3>
+
+<div class="step">
+<p><span class="step-number">1</span>Aller dans <strong>Admin &gt; Galerie</strong> et cliquer sur <strong>« Ajouter des photos »</strong>.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">2</span>Choisir une ou plusieurs photos sur l'ordinateur (JPG, PNG, taille maximale 10 Mo par photo). La sélection multiple se fait en maintenant la touche Cmd (Mac) ou Ctrl (Windows).</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">3</span>Pour chaque photo, renseigner :</p>
+<ul>
+  <li><strong>Titre</strong> : court descriptif</li>
+  <li><strong>Description</strong> : facultatif, contexte de la photo</li>
+  <li><strong>Catégorie</strong> : « Courses », « Entraînements », « Stages », « Vie du club »</li>
+</ul>
+</div>
+
+<div class="step">
+<p><span class="step-number">4</span>Cliquer sur <strong>« Téléverser »</strong>. Une barre de progression s'affiche pour chaque photo.</p>
+</div>
+
+<h3>9.2 Supprimer une photo</h3>
+<p>Depuis <strong>Admin &gt; Galerie</strong>, cliquer sur la photo puis sur le bouton <strong>« Supprimer »</strong>. La suppression est définitive.</p>
+
+<div class="box-warn">
+<h4>Droit à l'image</h4>
+<p>Vérifier que toutes les personnes visibles sur les photos ont donné leur accord pour la publication sur le site, en particulier pour les photos d'enfants mineurs. En cas de doute, demander retrait immédiat à un administrateur.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============== SECTION 10 ============== -->
+<h2 id="equipement">10. Gérer l'équipement et les commandes</h2>
+
+<p>Le site permet aux membres de commander des équipements du club (maillots, vestes, accessoires) et de payer en ligne. Le comité gère le catalogue et suit les commandes.</p>
+
+<div class="box">
+<h4>Qui peut commander</h4>
+<p>Les commandes d'équipement sont réservées aux membres ayant une cotisation à jour pour la saison en cours. Un visiteur non connecté voit le catalogue (effet vitrine) mais ne peut pas ajouter au panier. Un membre dont la cotisation n'est pas à jour voit un message l'invitant à la régler. Cette restriction s'applique automatiquement — aucune action du comité n'est requise.</p>
+</div>
+
+<h3>10.1 Ajouter un produit au catalogue</h3>
+
+<div class="step">
+<p><span class="step-number">1</span>Aller dans <strong>Admin &gt; Produits</strong> et cliquer sur <strong>« Nouveau produit »</strong>.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">2</span>Remplir les champs :</p>
+<ul>
+  <li><strong>Nom</strong> : « Maillot LADTC 2026 », « Veste coupe-vent », etc.</li>
+  <li><strong>Description</strong> : matière, coupe, conseils de lavage</li>
+  <li><strong>Prix</strong> : en euros</li>
+  <li><strong>Tailles disponibles</strong> : liste séparée par des virgules (ex : « XS, S, M, L, XL, XXL »)</li>
+  <li><strong>Stock</strong> : quantité disponible (par taille, si le produit a des tailles)</li>
+  <li><strong>Référence SKU</strong> : code interne facultatif</li>
+  <li><strong>Photo</strong> : image du produit, de préférence sur fond neutre</li>
+  <li><strong>Actif</strong> : cocher pour rendre le produit visible et commandable</li>
+</ul>
+</div>
+
+<div class="step">
+<p><span class="step-number">3</span>Cliquer sur <strong>« Créer le produit »</strong>. Il apparaît immédiatement dans le catalogue public <code>ladtc.be/equipment</code>.</p>
+</div>
+
+<h3>10.2 Mettre à jour le stock</h3>
+
+<p>Depuis <strong>Admin &gt; Produits</strong>, cliquer sur le produit concerné et ajuster le nombre dans le champ « Stock ». Une alerte s'affiche sur le tableau de bord quand un produit est en rupture de stock.</p>
+
+<h3>10.3 Suivre les commandes</h3>
+
+<p>La section <strong>Admin &gt; Commandes</strong> liste toutes les commandes avec leur statut.</p>
+
+<table>
+<thead><tr><th>Statut</th><th>Signification</th><th>Action attendue du comité</th></tr></thead>
+<tbody>
+<tr><td>EN ATTENTE</td><td>Commande créée, paiement en cours</td><td>Aucune, attendre la confirmation Stripe</td></tr>
+<tr><td>CONFIRMÉE</td><td>Paiement reçu</td><td>Préparer la commande</td></tr>
+<tr><td>EXPÉDIÉE</td><td>Remise au membre ou expédiée</td><td>Suivre la livraison</td></tr>
+<tr><td>LIVRÉE</td><td>Le membre a reçu la commande</td><td>Clôturer</td></tr>
+<tr><td>ANNULÉE</td><td>Commande annulée, remboursement fait</td><td>Vérifier le remboursement</td></tr>
+</tbody>
+</table>
+
+<h3>10.4 Changer le statut d'une commande</h3>
+
+<ol>
+  <li>Ouvrir la commande depuis <strong>Admin &gt; Commandes</strong>.</li>
+  <li>Cliquer sur le menu déroulant « Statut ».</li>
+  <li>Sélectionner le nouveau statut.</li>
+  <li>Pour un passage à « EXPÉDIÉE », renseigner éventuellement le numéro de suivi (bpost ou autre).</li>
+  <li>Cliquer sur <strong>« Mettre à jour »</strong>.</li>
+</ol>
+
+<p>Les emails automatiques sont envoyés sur deux événements précis : <em>confirmation de paiement</em> (après validation Stripe) et <em>changement de statut</em>. Pour toute autre communication (retard de livraison, rupture de stock), contacter le membre directement par email.</p>
+
+<h3>10.5 Exporter les commandes pour la comptabilité</h3>
+
+<p>Depuis <strong>Admin &gt; Commandes</strong>, cliquer sur <strong>« Exporter en CSV »</strong>. Un fichier téléchargeable s'ouvre, exploitable dans Excel ou Numbers pour la comptabilité mensuelle.</p>
+
+<!-- ============== SECTION 11 ============== -->
+<h2 id="documents">11. Espace documents du comité</h2>
+
+<p>L'espace documents est un répertoire centralisé pour stocker et partager les fichiers internes du comité : procès-verbaux de réunion, notes, documents administratifs, bilans financiers. Il remplace les échanges par email et les dossiers éparpillés.</p>
+
+<div class="box">
+<h4>Accès restreint</h4>
+<p>Seuls les comptes avec le rôle <span class="role-card">COMITÉ</span> ou <span class="role-card">ADMIN</span> ont accès à cette section. Les membres ordinaires ne voient pas ce menu.</p>
+</div>
+
+<h3>11.1 Accéder aux documents</h3>
+<p>Depuis le tableau de bord, cliquer sur <strong>« Documents »</strong> dans le menu de navigation supérieur, ou aller directement à <code>ladtc.be/admin/documents</code>.</p>
+
+<h3>11.2 Ajouter un document</h3>
+
+<div class="step">
+<p><span class="step-number">1</span>Cliquer sur le bouton <strong>« Ajouter un document »</strong> en haut à droite.</p>
+</div>
+
+<div class="step">
+<p><span class="step-number">2</span>Remplir les champs :</p>
+<ul>
+  <li><strong>Titre</strong> : nom descriptif du document (ex : « PV réunion comité avril 2026 »)</li>
+  <li><strong>Catégorie</strong> : choisir parmi Procès-verbal, Notes de réunion, Administratif, Finances, Autre</li>
+  <li><strong>Fichier</strong> : sélectionner le fichier à téléverser</li>
+</ul>
+</div>
+
+<div class="step">
+<p><span class="step-number">3</span>Cliquer sur <strong>« Ajouter le document »</strong>. Le fichier apparaît immédiatement dans la liste.</p>
+</div>
+
+<h3>11.3 Formats et limites</h3>
+<table>
+<thead><tr><th>Formats acceptés</th><th>Taille maximale</th></tr></thead>
+<tbody>
+<tr><td>PDF, Word (.doc, .docx), Excel (.xls, .xlsx), images (JPG, PNG, WebP)</td><td>10 Mo par fichier</td></tr>
+</tbody>
+</table>
+
+<h3>11.4 Filtrer par catégorie</h3>
+<p>La barre de filtres au-dessus de la liste permet d'afficher uniquement les documents d'une catégorie. Cliquer sur <strong>« Toutes »</strong> pour revenir à la vue complète.</p>
+
+<h3>11.5 Télécharger un document</h3>
+<p>Cliquer sur le bouton <strong>« Télécharger »</strong> à droite du document concerné. Le fichier s'enregistre sur l'ordinateur avec son nom d'origine.</p>
+
+<h3>11.6 Supprimer un document</h3>
+<p>Cliquer sur <strong>« Supprimer »</strong> à droite du document. La suppression est immédiate et définitive — le fichier est effacé du serveur.</p>
+
+<div class="box-warn">
+<h4>Attention</h4>
+<p>Il n'existe pas de corbeille. Un document supprimé ne peut pas être récupéré. En cas de doute, télécharger le fichier sur son ordinateur avant de le supprimer du site.</p>
+</div>
+
+<h3>11.7 Bonnes pratiques</h3>
+<ul>
+  <li>Nommer les documents clairement avec la date (ex : « PV comité 2026-04-20 »)</li>
+  <li>Utiliser les catégories de manière cohérente pour faciliter la recherche</li>
+  <li>Téléverser les PV après chaque réunion pour constituer un historique consultable</li>
+  <li>Préférer le format PDF pour les documents finaux (non modifiables, lisibles partout)</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ============== SECTION 12 ============== -->
+<h2 id="statistiques">12. Consulter les statistiques du club</h2>
+
+<p>La section <strong>Admin &gt; Statistiques</strong> présente des indicateurs détaillés, complémentaires au tableau de bord.</p>
+
+<h3>12.1 Indicateurs membres</h3>
+<ul>
+  <li>Nombre de membres et évolution mensuelle sur douze mois</li>
+  <li>Répartition par statut de cotisation (à jour, en attente, expirée, inactive)</li>
+</ul>
+
+<h3>12.2 Indicateurs commandes</h3>
+<ul>
+  <li>Nombre total de commandes et chiffre d'affaires cumulé</li>
+  <li>Évolution mensuelle du chiffre d'affaires</li>
+  <li>Produits les plus commandés</li>
+</ul>
+
+<h3>12.3 Exporter les données</h3>
+<p>Les exports CSV sont disponibles depuis les pages dédiées : <strong>Membres</strong> → bouton « Exporter » pour la liste des adhérents, <strong>Commandes</strong> → bouton « Exporter » pour la comptabilité.</p>
+
+<div class="box-warn">
+<h4>Indicateurs prévus dans une version future</h4>
+<p>Les indicateurs de taux de participation aux événements, de renouvellement annuel et de répartition par tranche d'âge ne sont pas encore calculés par le site. Ils seront ajoutés sur demande du comité dans une mise à jour ultérieure.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============== SECTION 13 ============== -->
+<h2 id="journal">13. Le journal d'activité</h2>
+
+<p>Le journal d'activité (<strong>Admin &gt; Journal</strong>) conserve la trace de toutes les actions administratives effectuées sur le site.</p>
+
+<h3>13.1 Ce qui est enregistré</h3>
+<ul>
+  <li>Changement de rôle d'un utilisateur</li>
+  <li>Création d'un compte membre par le comité</li>
+  <li>Publication ou retrait d'un article</li>
+  <li>Création, modification, suppression d'un événement</li>
+  <li>Ajout, modification ou suppression d'un produit</li>
+  <li>Changement de statut d'une commande</li>
+</ul>
+<p class="lead" style="font-size: 10pt;">Les simples connexions et consultations ne sont pas journalisées pour limiter le volume du journal et respecter le principe de minimisation.</p>
+
+<h3>13.2 À quoi sert le journal</h3>
+<p>Le journal permet de retrouver qui a fait quoi et quand, par exemple pour comprendre la suppression d'un article ou la modification d'une cotisation. Il est consultable uniquement par les administrateurs.</p>
+
+<h3>13.3 Filtrer le journal</h3>
+<p>Trois filtres sont disponibles en haut de la page :</p>
+<ul>
+  <li><strong>Auteur</strong> : montrer uniquement les actions d'une personne</li>
+  <li><strong>Type d'action</strong> : création, modification, suppression</li>
+  <li><strong>Période</strong> : aujourd'hui, cette semaine, ce mois, période personnalisée</li>
+</ul>
+
+<!-- ============== SECTION 14 ============== -->
+<h2 id="depannage">14. Problèmes fréquents et solutions</h2>
+
+<h3>14.1 La page ne s'affiche pas correctement</h3>
+<p>Appuyer sur <code>Cmd + R</code> (Mac) ou <code>Ctrl + F5</code> (Windows) pour recharger la page en contournant le cache du navigateur. Si le problème persiste, se déconnecter et se reconnecter.</p>
+
+<h3>14.2 L'email de bienvenue ou de réinitialisation n'arrive pas</h3>
+<p>Vérifier le dossier courrier indésirable. Les emails de <code>noreply@ladtc.be</code> peuvent y atterrir selon le fournisseur (Gmail, Outlook, etc.). Ajouter cette adresse aux contacts pour éviter le problème à l'avenir.</p>
+
+<h3>14.3 Je ne vois pas le menu administrateur</h3>
+<p>Vérifier le rôle du compte (avatar en haut à droite, « Mon profil »). Si le rôle n'est pas <span class="role-card">COMITÉ</span> ou <span class="role-card">ADMIN</span>, contacter un administrateur pour demander l'élévation.</p>
+
+<h3>14.4 Un paiement Stripe a échoué pour un membre</h3>
+<ol>
+  <li>Le membre peut retenter le paiement depuis son espace personnel.</li>
+  <li>Si le problème persiste, proposer un paiement alternatif (virement, espèces) et enregistrer manuellement le paiement dans la fiche du membre (voir section 6.3).</li>
+</ol>
+
+<h3>14.5 Une photo ou un document ne se téléverse pas</h3>
+<p>Vérifier la taille du fichier : maximum 5 Mo pour les photos de galerie et d'articles, 10 Mo pour les documents du comité. Si la photo est trop lourde, la redimensionner à 1920×1080 pixels maximum avant téléversement (outils : Aperçu sur Mac, Photos sur Windows). Pour les documents, vérifier que le format est bien PDF, Word, Excel ou image.</p>
+
+<h3>14.6 Je ne sais plus où cliquer</h3>
+<p>Toutes les pages administratives sont accessibles depuis le menu latéral gauche du tableau de bord. Cliquer sur <strong>« Tableau de bord »</strong> en haut du menu ramène toujours à la page d'accueil administrateur.</p>
+
+<h3>14.7 Le site ne répond plus du tout</h3>
+<p>Contacter l'administrateur du site (coordonnées sur la page Équipe, section « Responsable technique »). Indiquer l'heure précise et le message d'erreur affiché si possible.</p>
+
+<!-- ============== SECTION 15 ============== -->
+<h2 id="lexique">15. Lexique</h2>
+
+<table>
+<tbody>
+<tr><td><strong>Admin / Administrateur</strong></td><td>Personne ayant les droits les plus élevés sur le site, incluant la gestion des rôles et de la configuration.</td></tr>
+<tr><td><strong>Cotisation</strong></td><td>Paiement annuel permettant à un membre de rester actif dans le club.</td></tr>
+<tr><td><strong>Brouillon</strong></td><td>Article ou événement enregistré mais pas encore rendu public.</td></tr>
+<tr><td><strong>CSV</strong></td><td>Format de fichier ouvrable avec Excel ou Numbers, utilisé pour les exports.</td></tr>
+<tr><td><strong>Markdown</strong></td><td>Format simple de mise en forme du texte utilisé dans la rédaction d'articles. La barre d'outils gère la mise en forme à la place de l'utilisateur.</td></tr>
+<tr><td><strong>Rôle</strong></td><td>Catégorie d'utilisateur qui détermine ce qu'il peut faire sur le site (membre, comité, admin).</td></tr>
+<tr><td><strong>SKU</strong></td><td>Référence interne d'un produit, utile pour l'inventaire.</td></tr>
+<tr><td><strong>Statut</strong></td><td>État actuel d'une entité (cotisation, commande, événement) : à jour, en attente, expirée, etc.</td></tr>
+<tr><td><strong>Stripe</strong></td><td>Service de paiement sécurisé utilisé pour les cotisations et les commandes d'équipement.</td></tr>
+<tr><td><strong>Tableau de bord</strong></td><td>Page d'accueil réservée au comité, présentant une vue d'ensemble du club.</td></tr>
+<tr><td><strong>Téléverser</strong></td><td>Envoyer un fichier (photo, document) depuis son ordinateur vers le site.</td></tr>
+</tbody>
+</table>
+
+<div class="footer">
+Document établi le 17 avril 2026 pour la présentation au comité du LADTC · révision du 20 avril 2026 (ajout espace documents, restriction commandes aux membres à jour).<br>
+En cas de question ou de suggestion d'amélioration de ce manuel, contacter le responsable technique du site.
+</div>
+
+</body>
+</html>

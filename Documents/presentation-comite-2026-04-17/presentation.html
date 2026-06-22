@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>LADTC — Présentation au comité</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" id="theme">
+<style>
+  :root {
+    --primary: #0E7490;
+    --accent: #FF8C00;
+    --ink: #0F172A;
+    --soft: #64748B;
+    --bg-soft: #F1F5F9;
+  }
+  .reveal { font-family: -apple-system, "Segoe UI", Helvetica, sans-serif; color: var(--ink); font-size: 32px; }
+  .reveal .slides section { height: 100%; }
+  .reveal h1, .reveal h2, .reveal h3 { font-weight: 700; color: var(--ink); text-transform: none; letter-spacing: -0.01em; }
+  .reveal h1 { font-size: 2.8em; margin-bottom: 0.3em; }
+  .reveal h2 { font-size: 1.8em; margin-bottom: 0.4em; color: var(--primary); }
+  .reveal h3 { font-size: 1.25em; margin-bottom: 0.5em; }
+  .reveal p { line-height: 1.4; }
+  .reveal .lead { color: var(--soft); font-size: 0.9em; margin-top: 0; }
+  .reveal ul, .reveal ol { margin-left: 1em; }
+  .reveal li { margin: 0.25em 0; }
+  .reveal section { font-size: 0.95em; }
+  .reveal .section-divider { padding: 60px 40px; }
+  .reveal .section-divider h2 { font-size: 2.4em !important; }
+  .reveal .tag { display: inline-block; background: #ECFEFF; border: 1px solid #A5F3FC; border-radius: 4px; padding: 4px 12px; font-size: 0.55em; color: var(--primary); font-weight: 700; margin-right: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .reveal .big-number { font-size: 5em; font-weight: 800; color: var(--primary); line-height: 1; }
+  .reveal .section-label { display: inline-block; background: var(--primary); color: white; padding: 6px 20px; border-radius: 4px; font-size: 0.45em; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px; }
+  .reveal .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; text-align: left; }
+  .reveal .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; text-align: left; }
+  .reveal .role-box { background: var(--bg-soft); padding: 24px; border-radius: 8px; border-left: 4px solid var(--primary); }
+  .reveal .role-box.accent { border-left-color: var(--accent); }
+  .reveal .role-box h3 { color: var(--primary); margin-top: 0; }
+  .reveal .role-box.accent h3 { color: var(--accent); }
+  .reveal .role-box ul { font-size: 0.75em; margin-top: 10px; }
+  .reveal .step-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center; margin-top: 30px; }
+  .reveal .step-card { background: var(--bg-soft); padding: 20px; border-radius: 8px; }
+  .reveal .step-number { font-size: 2em; font-weight: 800; color: var(--accent); }
+  .reveal .step-card h4 { margin: 10px 0 6px 0; font-size: 0.9em; color: var(--primary); }
+  .reveal .step-card p { font-size: 0.65em; color: var(--soft); margin: 0; }
+  .reveal .highlight { color: var(--accent); font-weight: 700; }
+  .reveal .quote-slide { font-size: 1.4em; font-style: italic; color: var(--primary); text-align: center; padding: 60px 40px; }
+  .reveal .footer-tag { position: fixed; bottom: 20px; right: 40px; font-size: 14px; color: var(--soft); }
+  .reveal pre code { font-size: 0.65em; }
+  .reveal .title-slide { text-align: center; }
+  .reveal .title-slide h1 { font-size: 4em; margin-bottom: 0.1em; }
+  .reveal .title-slide .subtitle { font-size: 1.4em; color: var(--soft); margin-top: 0; }
+  .reveal .title-slide .meta { font-size: 0.8em; color: var(--soft); margin-top: 60px; }
+  .reveal .agenda { text-align: left; font-size: 1.1em; max-width: 700px; margin: 0 auto; }
+  .reveal .agenda li { padding: 8px 0; border-bottom: 1px solid #E2E8F0; }
+  .reveal .check { color: var(--primary); font-weight: 700; margin-right: 8px; }
+  .reveal .section-divider { background: linear-gradient(135deg, var(--primary) 0%, #164E63 100%); color: white; padding: 80px 40px; text-align: center; }
+  .reveal .section-divider h2 { color: white; font-size: 3em; }
+  .reveal .section-divider .section-num { font-size: 1em; opacity: 0.6; letter-spacing: 0.2em; }
+  .reveal .metric-row { display: flex; justify-content: space-around; margin-top: 40px; }
+  .reveal .metric { text-align: center; }
+  .reveal .metric-label { font-size: 0.8em; color: var(--soft); margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ================================================== -->
+<!-- SLIDE 1 — TITRE -->
+<section class="title-slide">
+  <h1>ladtc.be</h1>
+  <p class="subtitle">Le site du club, présenté au comité</p>
+  <p class="meta">LADTC · Ellezelles · 17 avril 2026</p>
+</section>
+
+<!-- SLIDE 2 — Bienvenue + cadre -->
+<section>
+  <h2>Au programme</h2>
+  <ol class="agenda">
+    <li>Pourquoi un nouveau site</li>
+    <li>Ce que le site contient, vu de l'extérieur</li>
+    <li>Les quatre rôles et ce qu'ils permettent</li>
+    <li>Le quotidien d'un visiteur</li>
+    <li>Le quotidien d'un membre</li>
+    <li>Le quotidien d'un membre du comité</li>
+    <li>Sécurité et données personnelles</li>
+    <li>Ce qui arrive après aujourd'hui</li>
+    <li>Questions et retours</li>
+  </ol>
+</section>
+
+<!-- SLIDE 3 — Durée et format -->
+<section>
+  <h2>Comment la séance se déroule</h2>
+  <div class="three-col" style="margin-top: 40px;">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Présentation</h4>
+      <p>Tour d'horizon guidé, environ trente minutes.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>Démonstration</h4>
+      <p>Navigation en direct sur le site, avec les pages concrètes.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Questions</h4>
+      <p>Retours, suggestions, clarifications à la fin.</p>
+    </div>
+  </div>
+  <p style="margin-top: 50px; color: var(--soft);">Un mode d'emploi imprimé est remis à chacun pour consultation ultérieure.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION A : POURQUOI -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 1</p>
+  <h2>Pourquoi un nouveau site</h2>
+</section>
+
+<!-- SLIDE A1 — Constat -->
+<section>
+  <h2>Le constat</h2>
+  <div class="two-col" style="margin-top: 50px;">
+    <div>
+      <h3>La première version</h3>
+      <ul>
+        <li>Construite récemment sur WordPress</li>
+        <li>Limitée à la publication d'articles et de pages</li>
+        <li>Aucune gestion des membres</li>
+        <li>Aucune solution pour les cotisations</li>
+        <li>Aucune vente d'équipement en ligne</li>
+        <li>Mises à jour et sécurité à la charge d'un prestataire</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Les besoins du club</h3>
+      <ul>
+        <li>Suivre les adhésions et les cotisations</li>
+        <li>Simplifier les inscriptions aux événements</li>
+        <li>Proposer les équipements en ligne</li>
+        <li>Garder un espace éditorial pour le blog</li>
+        <li>Offrir un espace personnel aux membres</li>
+        <li>Autonomie du comité sur le contenu</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE A2 — Choix -->
+<section>
+  <h2>Le choix retenu</h2>
+  <p style="margin-top: 40px; font-size: 1.2em;">Un site unique, construit sur mesure, qui remplace intégralement la première version et couvre tous les besoins identifiés.</p>
+  <div class="metric-row">
+    <div class="metric">
+      <div class="big-number">1</div>
+      <div class="metric-label">adresse unique<br>ladtc.be</div>
+    </div>
+    <div class="metric">
+      <div class="big-number">3</div>
+      <div class="metric-label">espaces<br>visiteur · membre · comité</div>
+    </div>
+    <div class="metric">
+      <div class="big-number">0</div>
+      <div class="metric-label">intervention technique<br>nécessaire au quotidien</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE A3 — Valeur -->
+<section>
+  <h2>Ce que le site apporte</h2>
+  <ul style="font-size: 1.1em; max-width: 800px; margin: 40px auto; text-align: left;">
+    <li><span class="highlight">Pour le club</span> : une image moderne, crédible auprès des sponsors et des nouveaux membres</li>
+    <li><span class="highlight">Pour les membres</span> : un espace personnel, des inscriptions en ligne, une boutique d'équipement</li>
+    <li><span class="highlight">Pour le comité</span> : un outil complet pour piloter les adhésions, les cotisations, les contenus</li>
+    <li><span class="highlight">Pour la trésorerie</span> : suivi des cotisations, export comptable, paiements en ligne en cours de mise en service</li>
+  </ul>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION B : TOUR D'HORIZON -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 2</p>
+  <h2>Ce que le site contient</h2>
+</section>
+
+<!-- SLIDE B1 — Vue trois niveaux -->
+<section>
+  <h2>Trois niveaux d'accès</h2>
+  <div class="three-col" style="margin-top: 50px;">
+    <div class="role-box">
+      <h3>Public</h3>
+      <p style="font-size: 0.9em;">Visible sans compte. Sert à faire connaître le club.</p>
+      <ul>
+        <li>Accueil</li>
+        <li>Blog</li>
+        <li>Événements</li>
+        <li>Galerie photo</li>
+        <li>Équipe</li>
+        <li>Contact</li>
+        <li>Catalogue d'équipement</li>
+      </ul>
+    </div>
+    <div class="role-box">
+      <h3>Membre connecté</h3>
+      <p style="font-size: 0.9em;">Accessible avec un compte et une cotisation. Sert à participer.</p>
+      <ul>
+        <li>Profil personnel</li>
+        <li>Ma cotisation</li>
+        <li>Mes inscriptions</li>
+        <li>Panier</li>
+        <li>Mes commandes</li>
+        <li>Annuaire des membres</li>
+      </ul>
+    </div>
+    <div class="role-box accent">
+      <h3>Comité</h3>
+      <p style="font-size: 0.9em;">Accessible aux membres du comité. Sert à piloter.</p>
+      <ul>
+        <li>Tableau de bord</li>
+        <li>Gestion des membres</li>
+        <li>Gestion des événements</li>
+        <li>Publication d'articles</li>
+        <li>Catalogue équipement</li>
+        <li>Suivi des commandes</li>
+        <li>Statistiques</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE B2 — Page d'accueil -->
+<section>
+  <h2>La page d'accueil publique</h2>
+  <ul style="margin-top: 30px;">
+    <li>Photo d'ambiance du club</li>
+    <li>Présentation en une phrase</li>
+    <li>Nombre de membres à jour</li>
+    <li>Trois derniers articles de blog</li>
+    <li>Trois prochains événements</li>
+    <li>Appel à rejoindre le club</li>
+  </ul>
+  <p style="margin-top: 30px; color: var(--soft); font-size: 0.9em;">Démonstration en direct sur <code>ladtc.be</code>.</p>
+</section>
+
+<!-- SLIDE B3 — Blog -->
+<section>
+  <h2>Le blog</h2>
+  <p style="color: var(--soft);">Remplace celui de la première version WordPress.</p>
+  <ul style="margin-top: 30px;">
+    <li>Liste d'articles paginée, avec photos et résumés</li>
+    <li>Filtre par catégorie et par étiquette</li>
+    <li>Articles rédigés en Markdown, avec barre d'outils de mise en forme</li>
+    <li>Publication immédiate ou enregistrement en brouillon</li>
+    <li>Photo de couverture reprise sur les partages réseaux sociaux</li>
+  </ul>
+</section>
+
+<!-- SLIDE B4 — Events -->
+<section>
+  <h2>Les événements</h2>
+  <div class="two-col" style="margin-top: 30px;">
+    <div>
+      <h3>Quatre types</h3>
+      <ul>
+        <li>Entraînement hebdomadaire</li>
+        <li>Course externe</li>
+        <li>Stage de plusieurs jours</li>
+        <li>Événement social</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Pour chaque événement</h3>
+      <ul>
+        <li>Date, lieu, difficulté</li>
+        <li>Nombre maximum de participants</li>
+        <li>Liste des inscrits en direct</li>
+        <li>Photo d'illustration</li>
+        <li>Suivi de présence après l'événement</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE B5 — Équipement -->
+<section>
+  <h2>La boutique d'équipement</h2>
+  <ul style="margin-top: 30px; font-size: 1.05em;">
+    <li>Catalogue des produits du club (maillots, vestes, accessoires)</li>
+    <li>Gestion des tailles et du stock par produit</li>
+    <li>Panier et commande en ligne</li>
+    <li>Paiement sécurisé par carte bancaire</li>
+    <li>Suivi de la commande par le membre et par le comité</li>
+    <li>Export comptable des ventes en format tableur</li>
+  </ul>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION C : LES ROLES -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 3</p>
+  <h2>Les quatre rôles</h2>
+</section>
+
+<!-- SLIDE C1 — Vue d'ensemble -->
+<section>
+  <h2>Qui fait quoi</h2>
+  <p style="color: var(--soft);">Chaque personne inscrite a un rôle qui détermine ce qu'elle peut faire.</p>
+  <div style="margin-top: 40px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.75em;">
+      <thead style="background: var(--primary); color: white;">
+        <tr><th style="padding: 12px; text-align: left;">Rôle</th><th style="padding: 12px; text-align: left;">Qui</th><th style="padding: 12px; text-align: left;">Droits clés</th></tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;"><span class="tag">Membre</span></td><td style="padding: 10px;">Tout membre inscrit</td><td style="padding: 10px;">Son profil, cotisation, inscriptions, commandes</td></tr>
+        <tr style="border-bottom: 1px solid #E2E8F0; background: #F8FAFC;"><td style="padding: 10px;"><span class="tag">Coach</span></td><td style="padding: 10px;">Entraîneur</td><td style="padding: 10px;">Ci-dessus, plus création des entraînements</td></tr>
+        <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;"><span class="tag">Comité</span></td><td style="padding: 10px;">Membre du comité</td><td style="padding: 10px;">Ci-dessus, plus gestion complète du site</td></tr>
+        <tr style="background: #F8FAFC;"><td style="padding: 10px;"><span class="tag">Admin</span></td><td style="padding: 10px;">Responsable technique</td><td style="padding: 10px;">Tout, plus gestion des rôles et configuration</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SLIDE C2 — Les fonctions du comité -->
+<section>
+  <h2>Les fonctions au sein du comité</h2>
+  <p style="color: var(--soft);">En plus du rôle technique, chaque personne du comité affiche sa fonction.</p>
+  <div class="three-col" style="margin-top: 40px; font-size: 0.9em;">
+    <div class="role-box">
+      <h3>Gouvernance</h3>
+      <ul>
+        <li>Présidence</li>
+        <li>Vice-présidence</li>
+        <li>Secrétariat</li>
+        <li>Trésorerie</li>
+      </ul>
+    </div>
+    <div class="role-box">
+      <h3>Animation</h3>
+      <ul>
+        <li>Responsable entraînements</li>
+        <li>Responsable courses</li>
+        <li>Responsable stages</li>
+      </ul>
+    </div>
+    <div class="role-box">
+      <h3>Support</h3>
+      <ul>
+        <li>Responsable équipement</li>
+        <li>Responsable communication</li>
+        <li>Responsable technique du site</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top: 30px; font-size: 0.85em; color: var(--soft);">Ces fonctions apparaissent sur la page Équipe du site et sont modifiables à tout moment.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION D : PARCOURS VISITEUR -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 4</p>
+  <h2>Le parcours d'un visiteur</h2>
+</section>
+
+<!-- SLIDE D1 -->
+<section>
+  <h2>Scénario : un coureur découvre le club</h2>
+  <p class="lead">Cas concret : un runner d'Ellezelles cherche un club local.</p>
+  <ol style="margin-top: 30px; font-size: 1.05em;">
+    <li>Il tape « club trail collines ellezelles » dans Google</li>
+    <li>Il arrive sur <code>ladtc.be</code></li>
+    <li>Il lit la présentation, voit les photos d'événements, les horaires d'entraînement</li>
+    <li>Il consulte la page Équipe pour repérer un contact</li>
+    <li>Il remplit le formulaire de contact</li>
+    <li>Le comité reçoit son message par email et lui répond</li>
+  </ol>
+  <p style="margin-top: 30px;">Aucune inscription n'est requise à ce stade. Tout est accessible librement.</p>
+</section>
+
+<!-- SLIDE D2 — Contact -->
+<section>
+  <h2>Le formulaire de contact</h2>
+  <ul style="margin-top: 30px;">
+    <li>Nom, email, sujet, message</li>
+    <li>Envoi direct vers l'adresse email du comité</li>
+    <li>Le champ <em>Reply-To</em> permet de répondre au visiteur depuis la boîte mail habituelle</li>
+    <li>Historique conservé dans la boîte email, pas dans le site</li>
+    <li>Évolutions prévues : accusé de réception automatique et protection anti-spam</li>
+  </ul>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION E : PARCOURS MEMBRE -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 5</p>
+  <h2>Le parcours d'un membre</h2>
+</section>
+
+<!-- SLIDE E1 — Inscription -->
+<section>
+  <h2>Le nouveau membre s'inscrit</h2>
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Création du compte</h4>
+      <p>Email et mot de passe sur la page d'inscription.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>Profil</h4>
+      <p>Renseigne nom, téléphone, contact d'urgence.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Cotisation</h4>
+      <p>Paiement en ligne sécurisé par carte bancaire.</p>
+    </div>
+  </div>
+  <p style="margin-top: 40px; color: var(--soft); font-size: 0.9em;">Le comité est notifié de chaque nouvelle inscription et peut valider ou ajuster.</p>
+</section>
+
+<!-- SLIDE E2 — L'espace membre -->
+<section>
+  <h2>L'espace membre au quotidien</h2>
+  <ul style="font-size: 1.05em; margin-top: 40px;">
+    <li><strong>Profil</strong> : mise à jour des informations personnelles et de la photo</li>
+    <li><strong>Ma cotisation</strong> : statut, date de renouvellement, bouton « payer »</li>
+    <li><strong>Mes inscriptions</strong> : événements auxquels le membre s'est inscrit</li>
+    <li><strong>Équipement</strong> : catalogue, panier, commandes en cours</li>
+    <li><strong>Annuaire</strong> : liste des autres membres, non accessible au public</li>
+  </ul>
+</section>
+
+<!-- SLIDE E3 — Inscription événement -->
+<section>
+  <h2>S'inscrire à un événement</h2>
+  <div class="three-col" style="margin-top: 40px;">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Consulter</h4>
+      <p>Ouverture de la page de l'événement : détails, lieu, difficulté, inscrits.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>S'inscrire</h4>
+      <p>Un clic sur « Je participe », confirmation immédiate.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Retour</h4>
+      <p>Après l'événement, le comité coche « présent » pour suivre la participation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE E4 — Commande équipement -->
+<section>
+  <h2>Commander un équipement</h2>
+  <ol style="font-size: 1.05em; margin-top: 30px;">
+    <li>Parcours du catalogue sur <code>/equipment</code></li>
+    <li>Ajout au panier avec choix de la taille</li>
+    <li>Renseignement de l'adresse de livraison ou retrait</li>
+    <li>Paiement en ligne sécurisé par carte bancaire</li>
+    <li>Email de confirmation de commande</li>
+    <li>Notifications aux changements de statut (confirmée, expédiée, livrée)</li>
+  </ol>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION F : PARCOURS COMITE -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 6</p>
+  <h2>Le comité au quotidien</h2>
+</section>
+
+<!-- SLIDE F1 — Vue d'ensemble -->
+<section>
+  <h2>Le tableau de bord du comité</h2>
+  <p style="color: var(--soft);">Point de départ de toutes les actions administratives.</p>
+  <div class="two-col" style="margin-top: 30px;">
+    <div>
+      <h3>Chiffres clés</h3>
+      <ul>
+        <li>Nombre total de membres</li>
+        <li>Cotisations à jour</li>
+        <li>Événements à venir</li>
+        <li>Commandes en attente</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Graphiques</h3>
+      <ul>
+        <li>Évolution des adhésions</li>
+        <li>Répartition des cotisations</li>
+        <li>Chiffre d'affaires équipement</li>
+        <li>Activité récente</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE F2 — Tâche type 1 : publier un article -->
+<section>
+  <h2>Tâche type : publier un article de blog</h2>
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Admin &gt; Blog</h4>
+      <p>Cliquer sur « Nouvel article ».</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>Rédaction</h4>
+      <p>Titre, résumé, photo de couverture, contenu avec mise en forme.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Publication</h4>
+      <p>Cliquer sur « Publier » ou sur « Enregistrer comme brouillon ».</p>
+    </div>
+  </div>
+  <p style="margin-top: 30px; color: var(--soft); font-size: 0.85em;">Temps estimé pour un article de 400 mots avec une photo : dix à quinze minutes.</p>
+</section>
+
+<!-- SLIDE F3 — Tâche type 2 : créer un événement -->
+<section>
+  <h2>Tâche type : créer un événement</h2>
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Admin &gt; Événements</h4>
+      <p>Cliquer sur « Nouvel événement ».</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>Informations</h4>
+      <p>Type, date, lieu, difficulté, nombre maximum de participants.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Publication</h4>
+      <p>Les membres peuvent s'inscrire immédiatement.</p>
+    </div>
+  </div>
+  <p style="margin-top: 30px; color: var(--soft); font-size: 0.85em;">Les inscriptions apparaissent en direct dans la fiche de l'événement.</p>
+</section>
+
+<!-- SLIDE F4 — Tâche type 3 : suivi cotisation -->
+<section>
+  <h2>Tâche type : enregistrer une cotisation payée en espèces</h2>
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h4>Fiche du membre</h4>
+      <p>Admin &gt; Membres, puis clic sur le nom.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h4>Cotisation</h4>
+      <p>Section « Cotisation », bouton « Marquer comme payée ».</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h4>Validation</h4>
+      <p>Montant, date, commentaire. Le statut passe automatiquement à « à jour ».</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE F5 — Tâche type 4 : commandes -->
+<section>
+  <h2>Tâche type : préparer une commande d'équipement</h2>
+  <ol style="margin-top: 30px; font-size: 1em;">
+    <li>Une nouvelle commande apparaît en statut « Confirmée » après paiement</li>
+    <li>Le comité prépare physiquement le produit</li>
+    <li>Le statut passe à « Expédiée » avec un numéro de suivi facultatif</li>
+    <li>Une fois remise en main propre ou livrée, le statut passe à « Livrée »</li>
+    <li>Export mensuel en tableur pour la comptabilité</li>
+    <li style="color: var(--soft); font-size: 0.9em;">Évolution prévue : notification email automatique du membre à chaque changement de statut</li>
+  </ol>
+</section>
+
+<!-- SLIDE F6 — Statistiques -->
+<section>
+  <h2>Les statistiques du club</h2>
+  <div class="two-col" style="margin-top: 30px;">
+    <div>
+      <h3>Membres</h3>
+      <ul>
+        <li>Évolution mensuelle sur deux ans</li>
+        <li>Taux de renouvellement</li>
+        <li>Répartition par rôle</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Activités</h3>
+      <ul>
+        <li>Événements par mois et par type</li>
+        <li>Taux de participation moyen</li>
+        <li>Chiffre d'affaires équipement</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top: 30px; color: var(--soft); font-size: 0.85em;">Utile pour le rapport annuel et les demandes de subvention.</p>
+</section>
+
+<!-- SLIDE F7 — Journal -->
+<section>
+  <h2>Le journal d'activité</h2>
+  <p>Chaque action administrative est enregistrée avec l'auteur, l'action et la date.</p>
+  <ul style="margin-top: 30px;">
+    <li>Création ou modification d'un membre</li>
+    <li>Publication ou retrait d'un article</li>
+    <li>Création ou annulation d'un événement</li>
+    <li>Changement de statut d'une commande</li>
+    <li>Connexion d'un administrateur</li>
+  </ul>
+  <p style="margin-top: 30px; color: var(--soft); font-size: 0.85em;">Permet de retrouver qui a fait quoi et quand.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION G : SECURITE -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 7</p>
+  <h2>Sécurité et données</h2>
+</section>
+
+<!-- SLIDE G1 -->
+<section>
+  <h2>Comment le site protège les données</h2>
+  <ul style="margin-top: 40px; font-size: 1.05em;">
+    <li>Toutes les pages sont en <strong>HTTPS</strong> (connexion chiffrée de bout en bout)</li>
+    <li>Les mots de passe sont <strong>hachés</strong>, jamais stockés en clair</li>
+    <li>L'intégration des paiements en ligne repose sur <strong>Stripe</strong>, certifié PCI-DSS, aucune donnée bancaire stockée côté LADTC (mise en service progressive)</li>
+    <li>Les photos et documents sont stockés sur un serveur privé dédié au club</li>
+    <li>Des sauvegardes automatiques quotidiennes hors site seront mises en place lors de la bascule sur le serveur du club (samedi 18 avril)</li>
+    <li>Toutes les actions administratives sont tracées dans le journal</li>
+  </ul>
+</section>
+
+<!-- SLIDE G2 — RGPD -->
+<section>
+  <h2>Les droits des membres</h2>
+  <p style="color: var(--soft);">Conformément au règlement général sur la protection des données.</p>
+  <div class="two-col" style="margin-top: 30px;">
+    <div>
+      <h3>Chaque membre peut</h3>
+      <ul>
+        <li>Consulter ses données</li>
+        <li>Modifier son profil</li>
+        <li>Demander la suppression de son compte</li>
+        <li>Exporter ses données au format tableur</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Le club s'engage à</h3>
+      <ul>
+        <li>Ne jamais transmettre les données à des tiers</li>
+        <li>Conserver les données pour la durée de l'adhésion uniquement</li>
+        <li>Notifier toute violation éventuelle</li>
+        <li>Tenir un registre des traitements</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE G3 — Hébergement -->
+<section>
+  <h2>Où est hébergé le site</h2>
+  <p style="margin-top: 30px;">Le site tourne sur un serveur dédié situé en Belgique, géré par le responsable technique du club.</p>
+  <ul style="margin-top: 30px;">
+    <li>Aucun prestataire extérieur n'a accès aux données des membres</li>
+    <li>Les sauvegardes sont chiffrées et stockées dans l'Union Européenne</li>
+    <li>Le nom de domaine <code>ladtc.be</code> appartient au club</li>
+    <li>Le serveur fonctionne 24 h sur 24, surveillé en continu</li>
+  </ul>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION H : ROADMAP -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 8</p>
+  <h2>Après aujourd'hui</h2>
+</section>
+
+<!-- SLIDE H1 — Calendrier -->
+<section>
+  <h2>Le calendrier des prochaines semaines</h2>
+  <table style="width: 100%; font-size: 0.85em; margin-top: 30px;">
+    <thead style="background: var(--primary); color: white;">
+      <tr><th style="padding: 10px; text-align: left;">Échéance</th><th style="padding: 10px; text-align: left;">Étape</th></tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;">Ce soir</td><td style="padding: 10px;">Distribution du mode d'emploi imprimé aux membres du comité</td></tr>
+      <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;">D'ici fin avril</td><td style="padding: 10px;">Envoi des invitations à chaque membre du comité pour créer son compte</td></tr>
+      <tr style="border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;">Début mai</td><td style="padding: 10px;">Courte séance individuelle à la demande pour se familiariser avec les outils</td></tr>
+      <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0;"><td style="padding: 10px;">Mi-mai</td><td style="padding: 10px;">Migration des membres actuels depuis la liste papier</td></tr>
+      <tr><td style="padding: 10px;">Juin</td><td style="padding: 10px;">Ouverture complète aux membres, communication officielle</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SLIDE H2 — Évolutions envisagées -->
+<section>
+  <h2>Les évolutions envisagées</h2>
+  <p style="color: var(--soft);">Pistes de réflexion, à discuter selon les retours du comité.</p>
+  <ul style="margin-top: 30px;">
+    <li>Connexion avec des montres Garmin pour le suivi des performances</li>
+    <li>Newsletter mensuelle automatisée pour les membres</li>
+    <li>Page sponsors enrichie avec statistiques de visibilité</li>
+    <li>Version mobile dédiée (application à installer)</li>
+    <li>Espace photos privé réservé aux membres</li>
+    <li>Système de covoiturage pour les courses externes</li>
+  </ul>
+  <p style="margin-top: 30px; font-size: 0.85em; color: var(--soft);">Aucune de ces évolutions n'est programmée à ce stade. Elles dépendront des priorités du comité.</p>
+</section>
+
+<!-- ================================================== -->
+<!-- SECTION I : SUPPORT -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 9</p>
+  <h2>Comment se faire aider</h2>
+</section>
+
+<!-- SLIDE I1 -->
+<section>
+  <h2>Trois niveaux de support</h2>
+  <div class="three-col" style="margin-top: 40px;">
+    <div class="role-box">
+      <h3>Documentation</h3>
+      <p>Le mode d'emploi imprimé remis aujourd'hui couvre toutes les tâches courantes, étape par étape, avec des exemples.</p>
+    </div>
+    <div class="role-box">
+      <h3>Entraide</h3>
+      <p>Les membres du comité plus à l'aise s'entraident. Un groupe de messagerie peut être créé pour les questions pratiques.</p>
+    </div>
+    <div class="role-box accent">
+      <h3>Responsable technique</h3>
+      <p>Pour les questions non résolues, contact direct par email ou téléphone. Délai de réponse habituel sous 24 heures.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE I2 — Principes -->
+<section>
+  <h2>Quelques principes à retenir</h2>
+  <ul style="margin-top: 40px; font-size: 1.05em;">
+    <li><span class="highlight">Rien n'est définitif</span> : un article peut être dépublié, un événement modifié, un membre mis à jour</li>
+    <li><span class="highlight">Les erreurs sont tracées</span> : le journal d'activité permet de retrouver et corriger</li>
+    <li><span class="highlight">En cas de doute, demander</span> : un message au responsable technique évite d'aggraver un problème</li>
+    <li><span class="highlight">Prendre son temps</span> : pas d'urgence à tout maîtriser le premier jour, la découverte se fait progressivement</li>
+  </ul>
+</section>
+
+<!-- ================================================== -->
+<!-- QUESTIONS -->
+<section class="section-divider">
+  <p class="section-num">PARTIE 10</p>
+  <h2>Questions et retours</h2>
+</section>
+
+<section class="title-slide">
+  <h2 style="color: var(--primary); margin-bottom: 40px;">Place aux questions</h2>
+  <p style="font-size: 1.1em; color: var(--soft);">Le mode d'emploi imprimé reste à disposition.<br>Les coordonnées du responsable technique y figurent.</p>
+  <p class="meta">Merci pour l'attention.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    controls: true,
+    progress: true,
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.04,
+    minScale: 0.2,
+    maxScale: 2.0
+  });
+</script>
+
+</body>
+</html>
