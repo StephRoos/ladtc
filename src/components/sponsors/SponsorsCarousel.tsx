@@ -30,7 +30,7 @@ export function SponsorsCarousel({
   autoplay = true,
   scrollSpeed = 40,
 }: SponsorsCarouselProps): React.ReactNode {
-  const [isHovered, setIsHovered] = useState(false);
+
 
   // Group sponsors by tier for display
   const sponsorsByTier: Record<string, Sponsor[]> = {
@@ -50,9 +50,9 @@ export function SponsorsCarousel({
     sponsorsByTier[tier].sort((a, b) => a.order - b.order);
   });
 
-  // Auto-scroll logic - improved smooth scrolling with seamless looping
+  // Auto-scroll logic - ultra-smooth scrolling with mouse interaction handling
   useEffect(() => {
-    if (!autoplay || isHovered || sponsors.length <= 1) return;
+    if (!autoplay || sponsors.length <= 1) return;
 
     const carousel = document.getElementById("sponsors-carousel");
     if (!carousel) return;
@@ -62,6 +62,7 @@ export function SponsorsCarousel({
     let lastTimestamp = 0;
     let accumulatedTime = 0;
     let lastScrollPosition = 0;
+    let isUserInteracting = false;
     
     // Get initial card width
     const getCardWidth = () => {
@@ -84,38 +85,65 @@ export function SponsorsCarousel({
       cardWidth = getCardWidth();
     };
     
-    window.addEventListener('resize', handleResize);
+    // Handle mouse interactions
+    const handleMouseEnter = () => {
+      isUserInteracting = true;
+    };
     
-    // Smooth easing function for more natural movement
-    const easeOutQuad = (t: number): number => {
-      return t * (2 - t);
+    const handleMouseLeave = () => {
+      isUserInteracting = false;
+    };
+    
+    // Add smooth scroll behavior to prevent jumps
+    const applySmoothScroll = () => {
+      carousel.style.scrollBehavior = 'smooth';
+    };
+    
+    window.addEventListener('resize', handleResize);
+    carousel.addEventListener('mouseenter', handleMouseEnter);
+    carousel.addEventListener('mouseleave', handleMouseLeave);
+    
+    // Enhanced easing function for ultra-smooth movement
+    const smoothEase = (t: number): number => {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     };
     
     const animateScroll = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
+      
+      // Skip animation if user is interacting
+      if (isUserInteracting) {
+        animationId = requestAnimationFrame(animateScroll);
+        return;
+      }
       
       // Calculate delta time for consistent speed across different frame rates
       const deltaTime = timestamp - lastTimestamp;
       lastTimestamp = timestamp;
       accumulatedTime += deltaTime;
       
-      // Only update scroll position every 16ms (~60fps) for performance
-      if (accumulatedTime >= 16) {
+      // Use smaller time slices for ultra-smooth animation (8ms ~120fps)
+      if (accumulatedTime >= 8) {
         const elapsed = timestamp - startTime;
         
-        // Calculate scroll progress with easing for smoother start/stop
+        // Calculate scroll progress with enhanced easing
         const rawProgress = (elapsed * responsiveSpeed() / 1000) % totalWidth;
-        const easedProgress = rawProgress * easeOutQuad(Math.min(elapsed / 2000, 1));
+        const easedProgress = rawProgress * smoothEase(Math.min(elapsed / 3000, 1));
         
-        // Seamless looping: when we reach the end, jump to beginning
-        // but do it when the card is mostly out of view for smooth transition
+        // Ultra-smooth seamless looping
         const scrollPosition = easedProgress % totalWidth;
         
         // Only reset if we're at a natural breaking point (between cards)
+        // Use CSS transform for smoother reset when needed
         if (scrollPosition < cardWithGap && lastScrollPosition >= totalWidth - cardWithGap) {
-          carousel.scrollTo({ left: 0, behavior: 'auto' });
+          // Use requestAnimationFrame for the reset to prevent visual glitches
+          requestAnimationFrame(() => {
+            carousel.scrollTo({ left: 0, behavior: 'auto' });
+          });
         } else {
-          carousel.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+          // Apply smooth scroll behavior
+          applySmoothScroll();
+          carousel.scrollLeft = scrollPosition;
         }
         
         lastScrollPosition = scrollPosition;
@@ -130,19 +158,17 @@ export function SponsorsCarousel({
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener('resize', handleResize);
+      carousel.removeEventListener('mouseenter', handleMouseEnter);
+      carousel.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [autoplay, isHovered, sponsors.length, scrollSpeed]);
+  }, [autoplay, sponsors.length, scrollSpeed]);
 
   if (sponsors.length === 0) {
     return null;
   }
 
   return (
-    <section
-      className="relative py-16 overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <section className="relative py-16 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4">
         {/* Title */}
         <div className="mb-8 text-center">
@@ -154,16 +180,18 @@ export function SponsorsCarousel({
 
         {/* Carousel container */}
         <div className="relative">
-          {/* Sponsors grid - shows all sponsors, carousel effect via CSS */}
+          {/* Sponsors grid - optimized for smooth scrolling */}
           <div
             id="sponsors-carousel"
-            className="flex gap-4 overflow-x-auto pb-4 scroll-smooth "
-            
+            className="flex gap-4 overflow-x-auto pb-4 scroll-smooth will-change-transform"
+            // Disable browser's native scroll snap for smoother custom scrolling
+            style={{ scrollSnapType: 'none' }}
           >
             {sponsors.map((sponsor) => (
               <div
                 key={sponsor.id}
-                className="flex-shrink-0 snap-center w-72 md:w-80 lg:w-96"
+                className="flex-shrink-0 w-72 md:w-80 lg:w-96"
+                // Remove snap-center to prevent jumping
               >
                 <SponsorCard sponsor={sponsor} />
               </div>
