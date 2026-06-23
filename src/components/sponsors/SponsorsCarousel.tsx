@@ -50,41 +50,77 @@ export function SponsorsCarousel({
     sponsorsByTier[tier].sort((a, b) => a.order - b.order);
   });
 
-  // Auto-scroll logic - continuous smooth scrolling
+  // Auto-scroll logic - improved smooth scrolling with seamless looping
   useEffect(() => {
-    if (!autoplay || isHovered) return;
+    if (!autoplay || isHovered || sponsors.length <= 1) return;
 
     const carousel = document.getElementById("sponsors-carousel");
     if (!carousel) return;
 
     let animationId: number;
     let startTime: number | null = null;
+    let lastTimestamp = 0;
+    let accumulatedTime = 0;
     let lastScrollPosition = 0;
     
-    // Get card width and total width
-    const firstCard = carousel.querySelector('.flex-shrink-0');
-    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
+    // Get initial card width
+    const getCardWidth = () => {
+      const firstCard = carousel.querySelector('.flex-shrink-0');
+      return firstCard ? firstCard.getBoundingClientRect().width : 320;
+    };
+    
+    let cardWidth = getCardWidth();
     const cardWithGap = cardWidth + 16; // 16px for gap-4
     const totalWidth = cardWithGap * sponsors.length;
     
-    // Continuous scrolling speed (pixels per second)
-    const effectiveScrollSpeed = scrollSpeed;
+    // Responsive speed - faster on larger screens
+    const baseSpeed = scrollSpeed;
+    const responsiveSpeed = () => {
+      return baseSpeed * (window.innerWidth > 1200 ? 1.2 : window.innerWidth > 768 ? 1.1 : 0.9);
+    };
+    
+    // Handle window resize
+    const handleResize = () => {
+      cardWidth = getCardWidth();
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Smooth easing function for more natural movement
+    const easeOutQuad = (t: number): number => {
+      return t * (2 - t);
+    };
     
     const animateScroll = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
       
-      // Calculate new scroll position with wrap-around
-      const scrollProgress = (elapsed * effectiveScrollSpeed / 1000) % totalWidth;
+      // Calculate delta time for consistent speed across different frame rates
+      const deltaTime = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+      accumulatedTime += deltaTime;
       
-      // Create seamless loop by resetting when we reach the end
-      if (scrollProgress < lastScrollPosition) {
-        // We've wrapped around, reset without visible jump
-        carousel.scrollTo({ left: 0, behavior: 'auto' });
+      // Only update scroll position every 16ms (~60fps) for performance
+      if (accumulatedTime >= 16) {
+        const elapsed = timestamp - startTime;
+        
+        // Calculate scroll progress with easing for smoother start/stop
+        const rawProgress = (elapsed * responsiveSpeed() / 1000) % totalWidth;
+        const easedProgress = rawProgress * easeOutQuad(Math.min(elapsed / 2000, 1));
+        
+        // Seamless looping: when we reach the end, jump to beginning
+        // but do it when the card is mostly out of view for smooth transition
+        const scrollPosition = easedProgress % totalWidth;
+        
+        // Only reset if we're at a natural breaking point (between cards)
+        if (scrollPosition < cardWithGap && lastScrollPosition >= totalWidth - cardWithGap) {
+          carousel.scrollTo({ left: 0, behavior: 'auto' });
+        } else {
+          carousel.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+        }
+        
+        lastScrollPosition = scrollPosition;
+        accumulatedTime = 0;
       }
-      
-      carousel.scrollTo({ left: scrollProgress, behavior: 'auto' });
-      lastScrollPosition = scrollProgress;
       
       animationId = requestAnimationFrame(animateScroll);
     };
@@ -93,6 +129,7 @@ export function SponsorsCarousel({
     
     return () => {
       cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', handleResize);
     };
   }, [autoplay, isHovered, sponsors.length, scrollSpeed]);
 
