@@ -12,6 +12,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/config/site";
 import { UtcBanner } from "./UtcBanner";
+import { UtcSponsorsSection } from "./UtcSponsorsSection";
 
 const utc = siteConfig.utc;
 
@@ -68,6 +69,9 @@ const formats = [
  * Content is driven by `siteConfig.utc` and validated by the committee
  * (meeting of 2026-06-12).
  */
+
+
+
 export default function UtcPage(): React.ReactNode {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
@@ -205,14 +209,7 @@ export default function UtcPage(): React.ReactNode {
       <section className="mb-16">
 
       {/* Nos Sponsors */}
-      <section className="mb-16">
-        <SponsorsCarousel
-          sponsors={[]} // Will be filled dynamically
-          title="Nos sponsors"
-          autoplay={true}
-          scrollSpeed={40}
-        />
-      </section>
+      <UtcSponsorsSection />
 
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <h2 className="text-2xl font-bold">Devenir sponsor</h2>
