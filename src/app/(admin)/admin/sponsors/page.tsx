@@ -352,7 +352,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
           <div className="space-y-4">
             {sponsorToDelete && (
               <p>
-                Êtes-vous sûr de vouloir supprimer le sponsor "{sponsorToDelete.name}" ?
+                Êtes-vous sûr de vouloir supprimer le sponsor &quot;{sponsorToDelete.name}&quot; ?
                 Cette action est irréversible.
               </p>
             )}
