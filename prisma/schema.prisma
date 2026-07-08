@@ -276,6 +276,7 @@ model Event {
   type            EventType
   difficulty      String?
   maxParticipants Int?
+  price           Float?              // Optional event registration fee (EUR)
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
   registrations   EventRegistration[]
@@ -285,13 +286,16 @@ model Event {
 }
 
 model EventRegistration {
-  id        String             @id @default(cuid())
-  userId    String
-  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  eventId   String
-  event     Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  status    RegistrationStatus @default(REGISTERED)
-  createdAt DateTime           @default(now())
+  id              String             @id @default(cuid())
+  userId          String
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId         String
+  event           Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  status          RegistrationStatus @default(REGISTERED)
+  paidAt          DateTime?
+  stripeSessionId String?            @unique
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 
   @@unique([userId, eventId])
   @@index([eventId])

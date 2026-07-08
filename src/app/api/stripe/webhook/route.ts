@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
-import { sendPaymentConfirmation, sendMembershipPaymentConfirmation } from "@/lib/email";
+import { sendPaymentConfirmation, sendMembershipPaymentConfirmation, sendEmail } from "@/lib/email";
 import type Stripe from "stripe";
 
 /**
@@ -38,6 +38,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       await handleEquipmentOrder(session);
     } else if (metadataType === "membership_dues") {
       await handleMembershipDues(session);
+    } else if (metadataType === "event_registration") {
+      await handleEventRegistration(session);
     }
   }
 
@@ -126,5 +128,48 @@ async function handleMembershipDues(session: Stripe.Checkout.Session): Promise<v
     );
   } catch (err) {
     console.error("[Stripe Webhook] Failed to send membership confirmation email:", err);
+  }
+}
+
+async function handleEventRegistration(session: Stripe.Checkout.Session): Promise<void> {
+  const registrationId = session.metadata?.registrationId;
+  if (!registrationId) {
+    console.error("[Stripe Webhook] Missing registrationId in metadata");
+    return;
+  }
+
+  const registration = await prisma.eventRegistration.findUnique({
+    where: { id: registrationId },
+    include: { user: true, event: true },
+  });
+
+  if (!registration) {
+    console.error("[Stripe Webhook] Event registration not found:", registrationId);
+    return;
+  }
+
+  // Idempotent: skip if already paid
+  if (registration.paidAt) {
+    return;
+  }
+
+  await prisma.eventRegistration.update({
+    where: { id: registrationId },
+    data: {
+      paidAt: new Date(),
+      stripeSessionId: null,
+    },
+  });
+
+  try {
+    await sendEmail(
+      registration.user.email,
+      `Inscription confirmée — ${registration.event.title}`,
+      `<p>Bonjour ${registration.user.name ?? registration.user.email},</p>
+       <p>Votre inscription à <strong>${registration.event.title}</strong> a bien été confirmée.</p>
+       <p>Merci et à bientôt !</p>`,
+    );
+  } catch (err) {
+    console.error("[Stripe Webhook] Failed to send event registration confirmation email:", err);
   }
 }

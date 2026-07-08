@@ -20,11 +20,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const checkoutSession = await getStripe().checkout.sessions.retrieve(sessionId);
 
-    const orderId = checkoutSession.metadata?.orderId ?? null;
+    const metadata = checkoutSession.metadata ?? {};
+    const type = metadata.type ?? null;
+    const orderId = metadata.orderId ?? null;
+    const membershipId = metadata.membershipId ?? null;
     const paid = checkoutSession.payment_status === "paid";
 
     return NextResponse.json({
+      type,
       orderId,
+      membershipId,
       status: checkoutSession.status,
       paid,
     });

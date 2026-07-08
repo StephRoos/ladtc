@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -22,8 +23,8 @@ import { registerSchema, type RegisterFormData } from "@/lib/schemas";
  * Registration form component with name, email, password, and confirm password fields
  */
 export function RegisterForm(): React.ReactNode {
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -35,7 +36,6 @@ export function RegisterForm(): React.ReactNode {
 
   async function onSubmit(data: RegisterFormData): Promise<void> {
     setServerError(null);
-    setSuccessMessage(null);
 
     const result = await signUp.email({
       name: data.name,
@@ -51,9 +51,10 @@ export function RegisterForm(): React.ReactNode {
       return;
     }
 
-    setSuccessMessage(
-      "Un email de vérification a été envoyé à votre adresse. Vérifiez votre boîte de réception."
-    );
+    // Redirect to email verification page. Email verification is now required
+    // before the user can log in or pay for membership.
+    router.push(`/auth/verify-email?email=${encodeURIComponent(data.email)}`);
+    return;
   }
 
   return (
@@ -67,23 +68,15 @@ export function RegisterForm(): React.ReactNode {
       </CardHeader>
 
       <CardContent>
-        {successMessage ? (
-          <div
-            role="status"
-            className="rounded-md bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400"
-          >
-            {successMessage}
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {serverError && (
-              <div
-                role="alert"
-                className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive"
-              >
-                {serverError}
-              </div>
-            )}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {serverError && (
+            <div
+              role="alert"
+              className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            >
+              {serverError}
+            </div>
+          )}
 
             <div className="space-y-2">
               <Label htmlFor="name">Nom complet</Label>
@@ -150,11 +143,10 @@ export function RegisterForm(): React.ReactNode {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Inscription en cours..." : "S'inscrire"}
-            </Button>
-          </form>
-        )}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Inscription en cours..." : "S'inscrire"}
+          </Button>
+        </form>
       </CardContent>
 
       <CardFooter className="flex-col gap-2">

@@ -306,6 +306,11 @@ export const eventSchema = z.object({
     .positive("Le nombre de places doit être positif")
     .optional()
     .nullable(),
+  price: z
+    .number()
+    .nonnegative("Le prix doit être positif")
+    .optional()
+    .nullable(),
   image: z.union([
     z.string().url("URL d'image invalide"),
     z.string().startsWith("/images/", "Chemin d'image invalide"),

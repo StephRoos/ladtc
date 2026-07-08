@@ -21,6 +21,7 @@ export async function GET(
           id: true,
           userId: true,
           user: { select: { id: true, name: true } },
+          paidAt: true,
           createdAt: true,
         },
       },

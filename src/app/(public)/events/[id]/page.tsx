@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { use } from "react";
+import { use, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -53,19 +54,40 @@ export default function EventDetailPage({
   const { data: session } = useSession();
   const registerEvent = useRegisterEvent();
   const unregisterEvent = useUnregisterEvent();
+  const searchParams = useSearchParams();
+  const [paymentNotice, setPaymentNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    const payment = searchParams.get("payment");
+    if (payment === "success") {
+      window.setTimeout(
+        () => setPaymentNotice("Votre inscription est confirmée. Merci !"),
+        0
+      );
+    } else if (payment === "cancelled") {
+      window.setTimeout(
+        () =>
+          setPaymentNotice(
+            "Paiement annulé. Votre inscription n'est pas finalisée."
+          ),
+        0
+      );
+    }
+  }, [searchParams]);
 
   const event = data?.event;
   const isLoggedIn = !!session?.user;
   const userId = session?.user?.id;
 
   const isRegistered =
-    event?.registrations.some((r) => r.userId === userId) ?? false;
+    event?.registrations.some((r) => r.userId === userId && r.paidAt) ?? false;
 
   const spotsLeft = event?.maxParticipants
     ? event.maxParticipants - event._count.registrations
     : null;
   const isFull = spotsLeft !== null && spotsLeft <= 0;
   const isPast = event ? new Date(event.date) < new Date() : false;
+  const isPaidEvent = event ? (event.price ?? 0) > 0 : false;
 
   async function handleRegister(): Promise<void> {
     await registerEvent.mutateAsync(id);
@@ -152,6 +174,24 @@ export default function EventDetailPage({
             <div className="mb-8 rounded-lg border border-border bg-card p-6">
               <h2 className="mb-4 text-xl font-bold">Inscription</h2>
 
+              {paymentNotice && (
+                <div
+                  className={`mb-4 rounded-md px-4 py-3 text-sm ${
+                    paymentNotice.includes("confirmée")
+                      ? "bg-green-500/10 text-green-400"
+                      : "bg-amber-500/10 text-amber-400"
+                  }`}
+                >
+                  {paymentNotice}
+                </div>
+              )}
+
+              {isPaidEvent && event && (
+                <p className="mb-3 text-lg font-semibold">
+                  Prix : {event.price?.toFixed(2)} €
+                </p>
+              )}
+
               {!isLoggedIn ? (
                 <div>
                   <p className="mb-3 text-sm text-muted-foreground">
@@ -166,7 +206,7 @@ export default function EventDetailPage({
               ) : isRegistered ? (
                 <div>
                   <p className="mb-3 text-sm text-green-400">
-                    Vous êtes inscrit à cet événement.
+                    Vous êtes inscrit et votre paiement est confirmé.
                   </p>
                   <Button
                     variant="outline"
@@ -189,7 +229,9 @@ export default function EventDetailPage({
                 >
                   {registerEvent.isPending
                     ? "Inscription..."
-                    : "S'inscrire"}
+                    : isPaidEvent
+                      ? `S'inscrire et payer ${event?.price?.toFixed(2)} €`
+                      : "S'inscrire"}
                 </Button>
               )}
 

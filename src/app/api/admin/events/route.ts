@@ -56,6 +56,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         type: parsed.data.type,
         difficulty: parsed.data.difficulty ?? null,
         maxParticipants: parsed.data.maxParticipants ?? null,
+        price: parsed.data.price ?? null,
       },
       include: {
         _count: { select: { registrations: { where: { status: "REGISTERED" } } } },

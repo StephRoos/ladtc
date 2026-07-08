@@ -17,6 +17,7 @@ interface EventWithCount {
   type: "TRAINING" | "RACE" | "CAMP" | "SOCIAL";
   difficulty: string | null;
   maxParticipants: number | null;
+  price: number | null;
   createdAt: string;
   updatedAt: string;
   _count: { registrations: number };
@@ -30,6 +31,7 @@ interface EventWithRegistrations extends EventWithCount {
     id: string;
     userId: string;
     user: { id: string; name: string | null };
+    paidAt: string | null;
     createdAt: string;
   }>;
 }
@@ -159,11 +161,13 @@ async function deleteEvent(id: string): Promise<{ success: boolean }> {
 }
 
 /**
- * Register for an event
+ * Register for an event.
+ * Returns either a registration object (free event) or a Stripe checkout URL
+ * (paid event). Callers must redirect when a URL is returned.
  */
 async function registerEvent(
   eventId: string
-): Promise<{ registration: { id: string } }> {
+): Promise<{ registration?: { id: string }; url?: string }> {
   const res = await fetch(`/api/events/${eventId}/register`, {
     method: "POST",
   });
@@ -171,7 +175,7 @@ async function registerEvent(
     const err = (await res.json()) as { error?: string };
     throw new Error(err.error ?? "Impossible de s'inscrire");
   }
-  return res.json() as Promise<{ registration: { id: string } }>;
+  return res.json() as Promise<{ registration?: { id: string }; url?: string }>;
 }
 
 /**
@@ -286,9 +290,13 @@ export function useDeleteEvent() {
  */
 export function useRegisterEvent() {
   const queryClient = useQueryClient();
-  return useMutation<{ registration: { id: string } }, Error, string>({
+  return useMutation<{ registration?: { id: string }; url?: string }, Error, string>({
     mutationFn: registerEvent,
-    onSuccess: (_, eventId) => {
+    onSuccess: (data, eventId) => {
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
       queryClient.invalidateQueries({ queryKey: ["event", eventId] });
       queryClient.invalidateQueries({ queryKey: ["events"] });
     },

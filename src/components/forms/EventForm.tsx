@@ -195,6 +195,23 @@ export function EventForm({
             </p>
           )}
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="price">Prix d&apos;inscription en € (optionnel)</Label>
+          <Input
+            id="price"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="Gratuit si vide"
+            {...register("price", {
+              setValueAs: (v: string) => (v === "" ? null : parseFloat(v)),
+            })}
+          />
+          {errors.price && (
+            <p className="text-sm text-destructive">{errors.price.message}</p>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">
