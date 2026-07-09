@@ -17,7 +17,7 @@ export function useVerifyEmailForm(initialEmail: string) {
     try {
       const result = await authClient.sendVerificationEmail({
         email,
-        callbackURL: "/",
+        callbackURL: "/membership/pay",
       });
 
       if (result.error) {

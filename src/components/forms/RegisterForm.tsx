@@ -41,6 +41,7 @@ export function RegisterForm(): React.ReactNode {
       name: data.name,
       email: data.email,
       password: data.password,
+      callbackURL: "/membership/pay",
     });
 
     if (result.error) {

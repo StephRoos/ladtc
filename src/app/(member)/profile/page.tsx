@@ -102,20 +102,6 @@ export default function ProfilePage(): React.ReactNode {
 
       {/* Membership status card */}
       <MembershipCard membership={membership} />
-
-      {/* Actions */}
-      {membership?.status === "ACTIVE" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="flex gap-3">
-            <Button variant="outline" disabled>
-              Télécharger le certificat (bientôt disponible)
-            </Button>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

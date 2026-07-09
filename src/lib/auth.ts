@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import { sendEmail } from "./email";
+import { sendEmail, sendWelcomeEmail } from "./email";
 import {
   passwordResetTemplate,
   emailVerificationTemplate,
@@ -38,6 +38,7 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendOnSignUp: true,
+    autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
       const name = user.name || user.email;
       await sendEmail(
@@ -45,6 +46,13 @@ export const auth = betterAuth({
         "Vérifiez votre email — la dtc",
         emailVerificationTemplate(name, url),
       );
+    },
+    afterEmailVerification: async (user) => {
+      try {
+        await sendWelcomeEmail({ name: user.name, email: user.email });
+      } catch (err) {
+        console.error("[Auth] Failed to send welcome email:", err);
+      }
     },
   },
 });

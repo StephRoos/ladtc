@@ -41,6 +41,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     } else if (metadataType === "event_registration") {
       await handleEventRegistration(session);
     }
+  } else if (event.type === "checkout.session.expired") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    await handleSessionExpired(session);
+  } else if (event.type === "payment_intent.payment_failed") {
+    const paymentIntent = event.data.object as Stripe.PaymentIntent;
+    console.warn("[Stripe Webhook] Payment failed:", {
+      id: paymentIntent.id,
+      amount: paymentIntent.amount,
+      lastPaymentError: paymentIntent.last_payment_error?.message,
+    });
   }
 
   return NextResponse.json({ received: true });
@@ -171,5 +181,34 @@ async function handleEventRegistration(session: Stripe.Checkout.Session): Promis
     );
   } catch (err) {
     console.error("[Stripe Webhook] Failed to send event registration confirmation email:", err);
+  }
+}
+
+/**
+ * Handles a expired Stripe Checkout session.
+ * Clears the pending stripeSessionId on event registrations so the member can retry.
+ * Orders and memberships keep their pending state (admin can manually follow up).
+ */
+async function handleSessionExpired(session: Stripe.Checkout.Session): Promise<void> {
+  const metadataType = session.metadata?.type;
+  console.warn("[Stripe Webhook] Checkout session expired:", {
+    id: session.id,
+    metadataType,
+  });
+
+  if (metadataType === "event_registration") {
+    const registrationId = session.metadata?.registrationId;
+    if (!registrationId) return;
+
+    const registration = await prisma.eventRegistration.findUnique({
+      where: { id: registrationId },
+    });
+
+    if (registration && !registration.paidAt && registration.stripeSessionId === session.id) {
+      await prisma.eventRegistration.update({
+        where: { id: registrationId },
+        data: { stripeSessionId: null },
+      });
+    }
   }
 }
