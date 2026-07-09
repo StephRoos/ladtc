@@ -15,6 +15,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    # Published on loopback so the nocodb backoffice (separate Coolify project)
+    # can reach the LADTC DB via host.docker.internal:5433, read-only via the
+    # nocodb_reader role. No 0.0.0.0 bind: stays off the LAN. Stable across
+    # redeploys (fixed host port). Phase 1 of the Plan Souveraineté.
+    ports:
+      - "127.0.0.1:5433:5432"
     restart: unless-stopped
 
   app:
