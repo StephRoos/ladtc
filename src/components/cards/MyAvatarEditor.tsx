@@ -82,7 +82,7 @@ export function MyAvatarEditor({
         <DialogHeader>
           <DialogTitle>Ma photo de profil</DialogTitle>
         </DialogHeader>
-        <ImagePicker onSelect={handleSelect} />
+        <ImagePicker onSelect={handleSelect} uploadEndpoint="/api/members/me/upload" />
         {currentImage && (
           <div className="flex justify-end pt-2">
             <Button

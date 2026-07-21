@@ -12,6 +12,12 @@ interface ImagePickerProps {
   value?: string;
   onSelect: (url: string) => void;
   onClear?: () => void;
+  /**
+   * Override the upload endpoint. Defaults to "/api/upload" (committee-only).
+   * Self-service callers (e.g. MyAvatarEditor on /profile) pass their own
+   * member-scoped endpoint so a non-committee user can upload their avatar.
+   */
+  uploadEndpoint?: string;
 }
 
 /**
@@ -22,6 +28,7 @@ export function ImagePicker({
   value,
   onSelect,
   onClear,
+  uploadEndpoint = "/api/upload",
 }: ImagePickerProps): React.ReactNode {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -52,11 +59,11 @@ export function ImagePicker({
     const formData = new FormData();
     formData.append("file", file);
 
-    try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      try {
+        const res = await fetch(uploadEndpoint, {
+          method: "POST",
+          body: formData,
+        });
       const data = await res.json();
       if (!res.ok) {
         setUploadError(data.error || "Erreur lors de l'upload");
