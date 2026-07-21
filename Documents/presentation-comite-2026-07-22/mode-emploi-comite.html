@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>LADTC — Mode d'emploi du site pour le comité</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #1a1a1a; line-height: 1.55; font-size: 11pt; max-width: 180mm; margin: 0 auto; padding: 12mm 0; }
+  h1 { font-size: 26pt; margin: 0 0 4pt 0; border-bottom: 3px solid #EA580C; padding-bottom: 6pt; page-break-after: avoid; }
+  h2 { font-size: 17pt; margin-top: 24pt; color: #C2410C; border-bottom: 1px solid #cbd5e1; padding-bottom: 4pt; page-break-after: avoid; }
+  h3 { font-size: 13pt; margin-top: 16pt; color: #7C2D12; page-break-after: avoid; }
+  h4 { font-size: 11pt; margin-top: 12pt; color: #1e293b; page-break-after: avoid; }
+  p { margin: 6pt 0; text-align: justify; }
+  ol, ul { margin: 6pt 0 8pt 0; padding-left: 22pt; }
+  li { margin: 3pt 0; }
+  ol li { padding-left: 4pt; }
+  code { font-family: Menlo, Consolas, monospace; background: #FFF7ED; padding: 1pt 4pt; border-radius: 3px; font-size: 10pt; }
+  .lead { font-size: 12pt; color: #475569; margin: 8pt 0 18pt 0; }
+  .box { background: #FFF7ED; border-left: 4px solid #EA580C; padding: 10pt 14pt; margin: 12pt 0; border-radius: 4px; page-break-inside: avoid; }
+  .box-warn { background: #FEF3C7; border-left: 4px solid #D97706; padding: 10pt 14pt; margin: 12pt 0; border-radius: 4px; page-break-inside: avoid; }
+  .box-new { background: #ECFDF5; border-left: 4px solid #059669; padding: 10pt 14pt; margin: 12pt 0; border-radius: 4px; page-break-inside: avoid; }
+  .box h4 { margin-top: 0; color: #7C2D12; }
+  .box-warn h4 { margin-top: 0; color: #92400E; }
+  .box-new h4 { margin-top: 0; color: #065F46; }
+  .step { background: #fff; border: 1px solid #e2e8f0; padding: 10pt 14pt; margin: 10pt 0; border-radius: 4px; page-break-inside: avoid; }
+  .step-number { display: inline-block; background: #EA580C; color: white; width: 22pt; height: 22pt; border-radius: 50%; text-align: center; line-height: 22pt; font-weight: bold; margin-right: 8pt; font-size: 11pt; }
+  table { width: 100%; border-collapse: collapse; margin: 10pt 0; font-size: 10pt; page-break-inside: avoid; }
+  th { background: #C2410C; color: white; padding: 6pt 8pt; text-align: left; font-weight: 600; }
+  td { padding: 5pt 8pt; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #FFFBF5; }
+  .toc { background: #FFFBF5; padding: 14pt 18pt; border-radius: 4px; margin: 18pt 0 24pt 0; }
+  .toc h2 { margin-top: 0; border: none; color: #7C2D12; }
+  .toc ol { margin: 4pt 0; }
+  .toc a { color: #C2410C; text-decoration: none; }
+  .footer { margin-top: 40pt; padding-top: 10pt; border-top: 1px solid #cbd5e1; font-size: 9pt; color: #64748b; text-align: center; }
+  .role-card { display: inline-block; background: #FFF7ED; border: 1px solid #FDBA74; border-radius: 4px; padding: 2pt 8pt; font-size: 9pt; color: #C2410C; margin-right: 4pt; font-weight: 600; }
+  .page-break { page-break-before: always; }
+  .new-tag { display: inline-block; background: #059669; color: white; font-size: 8pt; padding: 1pt 6pt; border-radius: 3px; margin-left: 6pt; vertical-align: middle; font-weight: 700; letter-spacing: 0.03em; }
+  @media print { body { padding: 0; } .no-print { display: none; } }
+</style>
+</head>
+<body>
+
+<h1>Mode d'emploi du site LADTC</h1>
+<p class="lead">Manuel destiné aux membres du comité · version du 20 juillet 2026</p>
+
+<div class="box">
+<h4>À qui s'adresse ce document</h4>
+<p>Ce document s'adresse aux membres du comité du LADTC qui utilisent le site <code>ladtc.be</code> pour gérer le club au quotidien. Il décrit toutes les tâches administratives prévues, étape par étape. Aucune connaissance technique n'est requise. Cette version intègre les nouveautés déployées en juillet 2026 (vérification d'email, paiement des inscriptions aux événements, webhook Stripe étendu).</p>
+</div>
+
+<div class="box-new">
+<h4>Nouveautés depuis la version d'avril <span class="new-tag">JUILLET 2026</span></h4>
+<ul>
+<li><strong>Vérification d'email obligatoire</strong> à l'inscription : un lien de confirmation est envoyé, sans lequel le compte ne fonctionne pas.</li>
+<li><strong>Connexion automatique</strong> après vérification, avec redirection vers la page de cotisation.</li>
+<li><strong>Email de bienvenue</strong> envoyé automatiquement après vérification.</li>
+<li><strong>Inscriptions aux événements payantes</strong> : un événement peut avoir un prix, payé en ligne via Stripe.</li>
+<li><strong>Robustesse des paiements</strong> : les abandons et échecs de paiement sont gérés (libération automatique des inscriptions en attente).</li>
+</ul>
+</div>
+
+<div class="toc">
+<h2>Table des matières</h2>
+<ol>
+<li><a href="#concept">Le concept du site</a></li>
+<li><a href="#roles">Les quatre rôles et ce qu'ils permettent</a></li>
+<li><a href="#connexion">Se connecter la première fois</a></li>
+<li><a href="#inscription">Inscription d'un nouveau membre (le parcours complet)</a></li>
+<li><a href="#tableau-bord">Le tableau de bord du comité</a></li>
+<li><a href="#membres">Gérer les membres du club</a></li>
+<li><a href="#cotisations">Suivre les cotisations</a></li>
+<li><a href="#evenements">Créer et gérer les événements</a></li>
+<li><a href="#utc">La page UTC 4 — la course du club</a></li>
+<li><a href="#blog">Publier un article de blog</a></li>
+<li><a href="#galerie">Ajouter des photos à la galerie</a></li>
+<li><a href="#equipement">Gérer l'équipement et les commandes</a></li>
+<li><a href="#journal">Le journal d'activité</a></li>
+<li><a href="#statistiques">Statistiques (rôle ADMIN)</a></li>
+<li><a href="#depannage">Problèmes fréquents et solutions</a></li>
+<li><a href="#lexique">Lexique</a></li>
+</ol>
+</div>
+
+<!-- ============== SECTION 1 ============== -->
+<h2 id="concept">1. Le concept du site</h2>
+
+<p>Le site <strong>ladtc.be</strong> est l'outil unique du club. Il combine trois fonctions en une seule adresse.</p>
+
+<h3>1.1 Une vitrine pour les futurs membres</h3>
+<p>Toute personne qui visite <code>ladtc.be</code> sans être connectée accède aux pages publiques : présentation du club, blog, calendrier des événements, galerie photo, équipe, contact, et la page de la course UTC 4. L'objectif est de donner envie de rejoindre le club et de faciliter la prise de contact.</p>
+
+<h3>1.2 Un espace pour les membres</h3>
+<p>Les personnes inscrites disposent d'un espace personnel : profil, statut de cotisation, inscription aux événements, commande d'équipement, historique des commandes. Le paiement de la cotisation annuelle et des inscriptions se fait en ligne par carte bancaire ou Bancontact, de manière sécurisée.</p>
+
+<h3>1.3 Un tableau de bord pour le comité</h3>
+<p>Le comité dispose d'un tableau de bord qui permet de gérer tous les contenus du site (articles, événements, photos, équipement) ainsi que les membres (inscriptions, cotisations, rôles) sans aucune intervention technique extérieure. C'est la partie que ce document détaille.</p>
+
+<div class="box">
+<h4>En résumé</h4>
+<p>Un site public pour attirer, un espace membre pour fidéliser, un tableau de bord pour piloter. Tout est centralisé sur <code>ladtc.be</code>.</p>
+</div>
+
+<!-- ============== SECTION 2 ============== -->
+<h2 id="roles">2. Les quatre rôles et ce qu'ils permettent</h2>
+
+<p>Chaque personne inscrite sur le site se voit attribuer un rôle qui détermine ce qu'elle peut faire. Les rôles sont attribués par un administrateur.</p>
+
+<table>
+<thead>
+<tr><th>Rôle</th><th>Qui</th><th>Ce qui est permis</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="role-card">MEMBRE</span></td>
+<td>Tout membre inscrit au club</td>
+<td>Gérer son profil, payer sa cotisation, s'inscrire à des événements (gratuits ou payants), commander de l'équipement, consulter l'historique de ses commandes</td>
+</tr>
+<tr>
+<td><span class="role-card">COACH</span></td>
+<td>Les coachs du club</td>
+<td>Tout ce que fait un membre, plus la création et la modification des entraînements, et la consultation des inscrits à ses séances</td>
+</tr>
+<tr>
+<td><span class="role-card">COMITÉ</span></td>
+<td>Les membres du comité (président, secrétaire, trésorier, responsables…)</td>
+<td>Gestion complète du site : articles, événements, photos, équipement, commandes, membres, cotisations, documents internes, journal d'activité</td>
+</tr>
+<tr>
+<td><span class="role-card">ADMIN</span></td>
+<td>Le responsable technique du site (un ou deux maximum)</td>
+<td>Tout ce que fait le comité, plus la gestion des rôles et l'accès aux statistiques avancées</td>
+</tr>
+</tbody>
+</table>
+
+<h3>2.1 La fonction au sein du comité</h3>
+<p>En plus du rôle technique, chaque membre du comité peut afficher sa fonction précise (président, trésorier, secrétaire, responsable course…). Cette fonction apparaît sur la page <strong>Équipe</strong> du site. Elle est modifiable à tout moment par un administrateur.</p>
+
+<div class="box-warn">
+<h4>Point d'attention juillet 2026</h4>
+<p>Sur la page Équipe, les noms doivent être renseignés correctement (prénom puis nom, avec les majuscules) et la fonction doit être précisée. Voir la section « Gérer les membres » pour la marche à suivre.</p>
+</div>
+
+<h3>2.2 Pourquoi quatre rôles plutôt qu'un seul</h3>
+<p>La séparation des rôles évite les erreurs. Un coach gère ses entraînements sans toucher aux cotisations. Un membre du comité gère le contenu sans pouvoir changer les rôles. L'administrateur garde la main sur les réglages sensibles (attribution des rôles, configuration).</p>
+
+<div class="page-break"></div>
+
+<!-- ============== SECTION 3 ============== -->
+<h2 id="connexion">3. Se connecter la première fois</h2>
+
+<p>Les huit membres du comité ont déjà leur compte en production (rôle COMMITTEE). La première connexion se fait en deux minutes.</p>
+
+<div class="step">
+<p><span class="step-number">1</span><strong>Aller sur le site.</strong> Ouvrir <code>https://ladtc.be</code> dans un navigateur (Chrome, Safari, Firefox). Le site fonctionne aussi sur téléphone.</p>
+</div>
+<div class="step">
+<p><span class="step-number">2</span><strong>Cliquer « Se connecter ».</strong> Le lien se trouve en haut à droite (ou dans le menu sur mobile).</p>
+</div>
+<div class="step">
+<p><span class="step-number">3</span><strong>Saisir l'email et le mot de passe.</strong> Utiliser l'email communiqué au club. Si le mot de passe est oublié, cliquer « Mot de passe oublié » : un email de réinitialisation est envoyé.</p>
+</div>
+<div class="step">
+<p><span class="step-number">4</span><strong>Accéder au tableau de bord.</strong> Une fois connecté, le menu « Admin » apparaît en haut. C'est l'accès au tableau de bord du comité.</p>
+</div>
+
+<div class="box">
+<h4>Bon à savoir</h4>
+<p>La session reste active sur cet appareil. On peut se déconnecter via le menu utilisateur (en haut à droite). Sur un appareil partagé, penser à se déconnecter après usage.</p>
+</div>
+
+<!-- ============== SECTION 4 ============== -->
+<h2 id="inscription">4. Inscription d'un nouveau membre (le parcours complet)</h2>
+
+<p>Le parcours d'adhésion est désormais <strong>entièrement en ligne et vérifié</strong>. Voici ce que vit un nouveau membre, étape par étape — pour savoir quoi répondre quand on vous pose la question.</p>
+
+<div class="step">
+<p><span class="step-number">1</span><strong>Le visiteur clique « Devenir membre »</strong> sur le site (page Contact ou page d'accueil) et remplit le formulaire d'inscription : nom complet, email, mot de passe.</p>
+</div>
+<div class="step">
+<p><span class="step-number">2</span><strong>Un email de vérification est envoyé</strong> <span class="new-tag">NOUVEAU</span>. Le nouveau membre doit cliquer sur le lien qu'il reçoit. Sans cette vérification, le compte ne permet pas de se connecter. C'est une protection contre les inscriptions frauduleuses.</p>
+</div>
+<div class="step">
+<p><span class="step-number">3</span><strong>Connexion automatique et redirection</strong> <span class="new-tag">NOUVEAU</span>. Après le clic sur le lien de vérification, le membre est connecté automatiquement et <strong>redirigé vers la page de cotisation</strong> (<code>/membership/pay</code>). Il sait immédiatement quoi faire.</p>
+</div>
+<div class="step">
+<p><span class="step-number">4</span><strong>Email de bienvenue envoyé</strong> <span class="new-tag">NOUVEAU</span>. Un message de bienvenue part automatiquement après la vérification de l'email.</p>
+</div>
+<div class="step">
+<p><span class="step-number">5</span><strong>Le membre paie sa cotisation</strong> par carte ou Bancontact (montant défini par le comité, 50 € par défaut). La carte de membre s'active automatiquement.</p>
+</div>
+
+<div class="box-warn">
+<h4>Deux modèles possibles — à trancher au comité</h4>
+<p><strong>Modèle A (actuel)</strong> : un membre du comité crée manuellement la fiche cotisation de chaque nouvel inscrit (permet d'ajuster le montant au cas par cas : famille, demi-saison…). Le nouveau membre attend la validation.</p>
+<p><strong>Modèle B</strong> : la fiche cotisation est créée automatiquement à l'inscription, avec un montant par défaut. Le membre paie immédiatement, sans attente. Idéal pour un lancement. Requiert un petit développement.</p>
+</div>
+
+<!-- ============== SECTION 5 ============== -->
+<h2 id="tableau-bord">5. Le tableau de bord du comité</h2>
+
+<p>Le tableau de bord est la page d'accueil de l'administration. Il donne une vue d'ensemble en un coup d'œil.</p>
+
+<h3>5.1 Accéder au tableau de bord</h3>
+<p>Une fois connecté en rôle COMMITTEE ou ADMIN, cliquer sur « Admin » dans le menu principal. La page <code>/admin/dashboard</code> s'ouvre.</p>
+
+<h3>5.2 Ce qu'on y trouve</h3>
+<table>
+<thead><tr><th>Bloc</th><th>Contenu</th></tr></thead>
+<tbody>
+<tr><td>Indicateurs clés</td><td>Nombre de membres, cotisations actives, commandes en cours, revenus récents</td></tr>
+<tr><td>Activité récente</td><td>Liste des dernières actions : inscriptions, paiements, commandes, publications</td></tr>
+<tr><td>Raccourcis</td><td>Accès direct aux sections : membres, événements, blog, galerie, équipement</td></tr>
+</tbody>
+</table>
+
+<div class="box">
+<h4>Usage typique</h4>
+<p>Un coup d'œil au tableau de bord chaque semaine suffit à voir si des inscriptions sont en attente de validation, si des commandes sont à expédier, ou si un paiement a échoué.</p>
+</div>
+
+<!-- ============== SECTION 6 ============== -->
+<h2 id="membres">6. Gérer les membres du club</h2>
+
+<p>Section <code>/members</code> (ou via le menu Admin → Membres). Accessible en rôle COMMITTEE et ADMIN.</p>
+
+<h3>6.1 Consulter la liste</h3>
+<p>La liste affiche tous les membres avec leur nom, email, statut de cotisation et rôle. Un champ de recherche et des filtres permettent de retrouver un membre rapidement.</p>
+
+<h3>6.2 Créer un membre manuellement</h3>
+<p>Bouton « Nouveau membre » : utile pour ajouter une personne qui ne s'est pas inscrite en ligne (par exemple un membre historique qui préfère qu'on l'ajoute).</p>
+<div class="step"><p><span class="step-number">1</span>Cliquer « Nouveau membre ».</p></div>
+<div class="step"><p><span class="step-number">2</span>Renseigner nom, email, éventuellement un mot de passe temporaire.</p></div>
+<div class="step"><p><span class="step-number">3</span>Valider. Le membre reçoit un email lui permettant de définir son accès.</p></div>
+
+<h3>6.3 Modifier un membre</h3>
+<p>Cliquer sur un membre pour ouvrir sa fiche. On peut y modifier : le statut de cotisation, le rôle (ADMIN uniquement), la fonction au sein du comité, et envoyer un rappel de cotisation par email.</p>
+
+<h3>6.4 Corriger un nom ou une fonction (page Équipe)</h3>
+<div class="box-warn">
+<h4>Tâche urgente de juillet 2026</h4>
+<p>Plusieurs noms du comité sont mal formatés sur la page Équipe (ordre inversé, minuscules, coquilles). Pour corriger :</p>
+<ol>
+<li>Aller dans Membres → rechercher la personne.</li>
+<li>Modifier le champ « Nom » au format « Prénom Nom » (avec majuscules).</li>
+<li>Renseigner la fonction (Président, Trésorier, Secrétaire, Responsable course, Coach…).</li>
+<li>Enregistrer.</li>
+</ol>
+</div>
+
+<h3>6.5 Exporter la liste</h3>
+<p>Bouton « Exporter CSV » : télécharge un fichier tableur avec tous les membres. Utile pour le secrétariat ou la gestion des cotisations hors ligne.</p>
+
+<!-- ============== SECTION 7 ============== -->
+<h2 id="cotisations">7. Suivre les cotisations</h2>
+
+<p>La cotisation annuelle (50 € par défaut) est payée en ligne. Le comité peut créer une fiche cotisation pour un membre, ajuster le montant, et envoyer des rappels.</p>
+
+<h3>7.1 Créer une fiche cotisation (modèle A)</h3>
+<div class="step"><p><span class="step-number">1</span>Ouvrir la fiche du membre (Membres → cliquer sur le nom).</p></div>
+<div class="step"><p><span class="step-number">2</span>Section « Cotisation » → « Créer une cotisation ».</p></div>
+<div class="step"><p><span class="step-number">3</span>Indiquer le montant (par défaut 50 €, ajustable : famille, demi-saison…).</p></div>
+<div class="step"><p><span class="step-number">4</span>Valider. La fiche passe en statut « En attente ». Le membre est notifié et peut payer en ligne.</p></div>
+<div class="step"><p><span class="step-number">5</span>Après paiement, la cotisation passe automatiquement en « Active » (via le webhook Stripe). La carte de membre s'active, l'email de confirmation part.</p></div>
+
+<h3>7.2 Statuts d'une cotisation</h3>
+<table>
+<thead><tr><th>Statut</th><th>Signification</th></tr></thead>
+<tbody>
+<tr><td>En attente</td><td>La fiche est créée, le paiement n'est pas encore reçu</td></tr>
+<tr><td>Active</td><td>Cotisation payée, membre à jour pour l'année en cours</td></tr>
+<tr><td>Expirée</td><td>La date de renouvellement est dépassée</td></tr>
+<tr><td>Inactive</td><td>Pause volontaire (membre en arrêt)</td></tr>
+</tbody>
+</table>
+
+<h3>7.3 Envoyer un rappel</h3>
+<p>Sur la fiche d'un membre dont la cotisation est en attente ou expirée, bouton « Envoyer un rappel » : un email est parti automatiquement avec le lien de paiement.</p>
+
+<h3>7.4 Frais Stripe (pour répondre aux questions)</h3>
+<p>Stripe prélève sa commission avant versement (~1,4 % + 0,25 € par transaction Bancontact). Le tableau de bord Stripe affiche le montant net.</p>
+<table>
+<thead><tr><th>Montant payé</th><th>Commission ≈</th><th>Net pour le club</th></tr></thead>
+<tbody>
+<tr><td>50 € (cotisation)</td><td>~0,95 €</td><td>~49,05 €</td></tr>
+<tr><td>25 € (inscription binôme)</td><td>~0,60 €</td><td>~24,40 €</td></tr>
+<tr><td>1 € (test)</td><td>0,27 €</td><td>0,73 €</td></tr>
+</tbody>
+</table>
+<p>Soit environ 2 % par transaction, en échange de : zéro manipulation de liquide, traçabilité complète, activation automatique.</p>
+
+<!-- ============== SECTION 8 ============== -->
+<h2 id="evenements">8. Créer et gérer les événements</h2>
+
+<p>Section <code>/admin/events</code>. Les événements peuvent être de quatre types : Entraînement, Course, Stage, Social. <strong>Depuis juillet, un événement peut être payant.</strong> <span class="new-tag">NOUVEAU</span></p>
+
+<h3>8.1 Créer un événement</h3>
+<div class="step"><p><span class="step-number">1</span>Admin → Événements → « Nouvel événement ».</p></div>
+<div class="step"><p><span class="step-number">2</span>Renseigner le titre, la date, l'heure, le lieu, le type.</p></div>
+<div class="step"><p><span class="step-number">3</span><strong>Fixer un prix (optionnel)</strong> <span class="new-tag">NOUVEAU</span>. Champ « Prix d'inscription en € ». Laisser vide ou 0 pour un événement gratuit. Pour un événement payant, le membre paie via Stripe au moment de l'inscription.</p></div>
+<div class="step"><p><span class="step-number">4</span>Ajouter une description, une image si besoin.</p></div>
+<div class="step"><p><span class="step-number">5</span>Publier. L'événement apparaît sur la page <code>/events</code>.</p></div>
+
+<h3>8.2 Inscriptions</h3>
+<p>Sur la fiche d'un événement, on voit la liste des inscrits et le statut de paiement (payé / en attente). Si un membre abandonne une session Stripe (page fermée sans payer), l'inscription en attente est <strong>libérée automatiquement</strong> <span class="new-tag">NOUVEAU</span> — la place redevient disponible.</p>
+
+<h3>8.3 Événement UTC 4 — cas particulier</h3>
+<p>La course UTC 4 a sa page dédiée <code>/utc</code> (voir section 9). L'événement doit aussi être créé dans le module événements pour apparaître dans le calendrier <code>/events</code>. Inscription de la course elle-même : via Ultratiming (lien à venir), pas via le site. Le site sert de vitrine.</p>
+
+<div class="box">
+<h4>Recommandation</h4>
+<p>Créer l'événement « UTC 4 — Urbanbayern Trail des Collines » dans le module événements (date 24/10/2026, type Course, gratuit côté site, renvoyant vers la page /utc pour les détails). Cela alimentera la page /events actuellement vide.</p>
+</div>
+
+<!-- ============== SECTION 9 ============== -->
+<h2 id="utc">9. La page UTC 4 — la course du club</h2>
+
+<p>La page <code>https://ladtc.be/utc</code> est la vitrine de la course. C'est la page la plus complète du site. Le contenu est centralisé dans <code>src/config/site.ts</code> (bloc <code>utc</code>) — une modification des valeurs (date, lieu, lien d'inscription) met la page à jour en quelques minutes après déploiement.</p>
+
+<h3>9.1 Ce qui est déjà en ligne</h3>
+<ul>
+<li>Date : samedi 24 octobre 2026, en nocturne.</li>
+<li>Lieu : Salle CACS, Ellezelles.</li>
+<li>Deux parcours en binôme : 9 km (15 €) et 18 km (25 €).</li>
+<li>Grand Prix « Bellezellesbutte » (segment montagne chronométré).</li>
+<li>Limite : 150 équipes par distance.</li>
+<li>Paliers sponsoring : 1000 / 500 / 250 / 100 / 50 €, IBAN <code>BE71 0019 4925 1069</code>.</li>
+</ul>
+
+<h3>9.2 Ce qui reste à finaliser</h3>
+<table>
+<thead><tr><th>Élément</th><th>Statut</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td>Lien d'inscription Ultratiming</td><td>En attente</td><td>Renseigner <code>registrationUrl</code> dès réception → déploiement</td></tr>
+<tr><td>Règlement officiel</td><td>Placeholder</td><td>Valider les 9 articles, publier sur <code>/utc/reglement</code></td></tr>
+<tr><td>Sponsors (carousel)</td><td>« Chargement… »</td><td>Alimenter le carousel sponsors ou masquer la section</td></tr>
+<tr><td>Nouveau tracé</td><td>En préparation</td><td>À envoyer à la commune début septembre</td></tr>
+</tbody>
+</table>
+
+<h3>9.3 Modifier le contenu de la page</h3>
+<p>Les valeurs (date, lieu, tarifs, lien) ne se changent pas dans l'interface admin mais dans le fichier de configuration, puis redéployées. Demander au responsable technique. Les modifications sont traçées (historique git).</p>
+
+<!-- ============== SECTION 10 ============== -->
+<h2 id="blog">10. Publier un article de blog</h2>
+
+<p>Section <code>/admin/blog</code>. Le blog est intégré au site (pas de CMS externe).</p>
+
+<h3>10.1 Créer un article</h3>
+<div class="step"><p><span class="step-number">1</span>Admin → Blog → « Nouvel article ».</p></div>
+<div class="step"><p><span class="step-number">2</span>Renseigner le titre, le contenu en Markdown (mise en forme simple : <code>**gras**</code>, <code>*italique*</code>, <code># titre</code>), une image de couverture.</p></div>
+<div class="step"><p><span class="step-number">3</span>Choisir le statut : Brouillon (invisible publiquement) ou Publié.</p></div>
+<div class="step"><p><span class="step-number">4</span>Enregistrer. Un article publié apparaît immédiatement sur <code>/blog</code>.</p></div>
+
+<h3>10.2 Modifier ou dépublier</h3>
+<p>Sur la liste des articles, cliquer pour éditer. Revenir en brouillon pour masquer sans supprimer. Supprimer définitivement possible.</p>
+
+<div class="box">
+<h4>Premier article recommandé</h4>
+<p>La page <code>/blog</code> est actuellement vide. Publier un article de rentrée / bienvenue avant le lancement public du site donne vie à la section. Exemple : « Bienvenue sur le nouveau site du club ».</p>
+</div>
+
+<!-- ============== SECTION 11 ============== -->
+<h2 id="galerie">11. Ajouter des photos à la galerie</h2>
+
+<p>Section <code>/admin/gallery</code>. Les photos sont organisées par catégorie.</p>
+
+<h3>11.1 Ajouter des photos</h3>
+<div class="step"><p><span class="step-number">1</span>Admin → Galerie → « Ajouter des photos ».</p></div>
+<div class="step"><p><span class="step-number">2</span>Choisir une catégorie (ou en créer une, par exemple « UTC 3 », « Entraînements », « Course 2025 »).</p></div>
+<div class="step"><p><span class="step-number">3</span>Sélectionner les fichiers (format JPG ou PNG, éviter les fichiers trop lourds).</p></div>
+<div class="step"><p><span class="step-number">4</span>Valider l'upload. Les photos apparaissent sur <code>/gallery</code>.</p></div>
+
+<div class="box-warn">
+<h4>Droit à l'image</h4>
+<p>Ne publier que des photos de membres ayant donné leur accord. Pour les courses publiques, l'affichage sur place vaut acceptation ; pour les entraînements privés, demander l'autorisation. Une page « Droit à l'image » est prévue dans la future page mentions légales.</p>
+</div>
+
+<h3>11.2 Catégorie spéciale UTC</h3>
+<p>La page <code>/utc</code> affiche automatiquement les photos de la catégorie <code>urbanbayern</code> dans sa section « En images ». Pour alimenter cette section, créer/utiliser la catégorie <code>urbanbayern</code> (sensible à la casse).</p>
+
+<!-- ============== SECTION 12 ============== -->
+<h2 id="equipement">12. Gérer l'équipement et les commandes</h2>
+
+<p>Section <code>/admin/products</code> pour le catalogue, <code>/admin/orders</code> pour les commandes.</p>
+
+<h3>12.1 Créer un produit</h3>
+<div class="step"><p><span class="step-number">1</span>Admin → Produits → « Nouveau produit ».</p></div>
+<div class="step"><p><span class="step-number">2</span>Renseigner nom, description, prix, image, tailles disponibles.</p></div>
+<div class="step"><p><span class="step-number">3</span>Publier. Le produit apparaît dans la boutique <code>/equipment</code>.</p></div>
+
+<h3>12.2 Principe des commandes groupées</h3>
+<p>Le club fonctionne par commandes groupées : les membres commandent et paient en ligne, le club récolte les commandes puis passe un seul ordre d'achat au fournisseur à la réception du lot. Le paiement est différé jusqu'à réception. Avantage : pas de stock à gérer, pas de frais avancés.</p>
+
+<h3>12.3 Suivre les commandes</h3>
+<p>Admin → Commandes. Pour chaque commande : statut (En attente → Confirmée → Expédiée → Livrée), montant, détails. Bouton « Marquer comme expédiée » : envoie un email automatique au membre. Export CSV disponible pour préparer la commande fournisseur.</p>
+
+<table>
+<thead><tr><th>Statut</th><th>Signification</th></tr></thead>
+<tbody>
+<tr><td>En attente</td><td>Commande passée, paiement en cours</td></tr>
+<tr><td>Confirmée</td><td>Paiement reçu (webhook Stripe)</td></tr>
+<tr><td>Expédiée</td><td>Commande remise au membre (email envoyé)</td></tr>
+<tr><td>Livrée</td><td>Commande clôturée</td></tr>
+<tr><td>Annulée</td><td>Commande annulée</td></tr>
+</tbody>
+</table>
+
+<!-- ============== SECTION 13 ============== -->
+<h2 id="journal">13. Le journal d'activité</h2>
+
+<p>Section <code>/admin/activity-logs</code>. Le journal enregistre automatiquement toutes les actions administratives : création de membre, changement de statut, publication d'article, modification de commande, etc.</p>
+
+<p>Usage : en cas de doute (« qui a modifié cette cotisation ? »), le journal répond. Lecture seule, non modifiable.</p>
+
+<!-- ============== SECTION 14 ============== -->
+<h2 id="statistiques">14. Statistiques (rôle ADMIN)</h2>
+
+<p>Section <code>/admin/statistics</code>, accessible uniquement au rôle ADMIN. Tendances : évolution du nombre de membres, revenus, produits les plus vendus, graphiques.</p>
+
+<!-- ============== SECTION 15 ============== -->
+<h2 id="depannage">15. Problèmes fréquents et solutions</h2>
+
+<table>
+<thead><tr><th>Symptôme</th><th>Solution</th></tr></thead>
+<tbody>
+<tr><td>« Je n'arrive pas à me connecter »</td><td>Vérifier l'email saisi. Si mot de passe oublié : « Mot de passe oublié » sur la page de connexion. Vérifier la boîte de spam.</td></tr>
+<tr><td>« Un nouveau membre n'a pas reçu l'email de vérification »</td><td>Vérifier l'email saisi à l'inscription (une faute de frappe = email perdu sans erreur visible). Lui demander de vérifier les spams. Si besoin, renvoyer l'email depuis la fiche membre.</td></tr>
+<tr><td>« Un membre dit avoir payé mais sa cotisation reste en attente »</td><td>Vérifier dans le tableau de bord Stripe que le paiement est reçu. Si oui et la cotisation n'est pas active, le webhook a pu échouer — contacter le responsable technique.</td></tr>
+<tr><td>« La page Événements est vide »</td><td>Aucun événement n'est créé. Créer un événement dans Admin → Événements.</td></tr>
+<tr><td>« La page UTC affiche "Chargement…" pour les sponsors »</td><td>Aucun sponsor n'est en base. Masquer la section ou ajouter des sponsors dans Admin → Sponsors.</td></tr>
+<tr><td>« J'ai fait une erreur, tout est cassé ? »</td><td>Non. Rien n'est définitif, tout est tracé dans le journal d'activité, tout peut être corrigé. En cas de doute, contacter le responsable technique.</td></tr>
+</tbody>
+</table>
+
+<div class="box">
+<h4>Le réflexe anti-panique</h4>
+<p>Le site est conçu pour être réversible. Une mauvaise manipulation se corrige. Le journal d'activité permet de retrouver qui a fait quoi et quand. Mieux vaut une action qui se corrige qu'une inaction qui bloque.</p>
+</div>
+
+<!-- ============== SECTION 16 ============== -->
+<h2 id="lexique">16. Lexique</h2>
+
+<table>
+<thead><tr><th>Terme</th><th>Définition</th></tr></thead>
+<tbody>
+<tr><td>Webhook Stripe</td><td>Message automatique envoyé par Stripe au site quand un paiement aboutit. C'est lui qui active la cotisation ou confirme la commande, sans intervention manuelle.</td></tr>
+<tr><td>Bancontact</td><td>Moyen de paiement belge utilisé pour les paiements en ligne. Stripe le gère comme une carte bancaire.</td></tr>
+<tr><td>Markdown</td><td>Mise en forme simple du texte (gras, italique, titres) utilisée pour les articles de blog.</td></tr>
+<tr><td>CSV</td><td>Format de fichier tableur (ouvrable dans Excel, Numbers, LibreOffice) utilisé pour les exports.</td></tr>
+<tr><td>Ultratiming</td><td>Plateforme externe de chronométrage et d'inscription utilisée pour la course UTC 4.</td></tr>
+<tr><td>CDN / Cloudflare</td><td>Service qui accélère le site et le protège. Transparent pour le comité.</td></tr>
+<tr><td>Prerender</td><td>Les pages sont préparées à l'avance pour s'afficher plus vite.</td></tr>
+</tbody>
+</table>
+
+<div class="footer">
+Mode d'emploi LADTC — version du 20 juillet 2026 · à jour après le déploiement des nouveautés de juillet (vérification email, paiement événements, webhook Stripe étendu)<br>
+À adapter après chaque réunion de comité. Pour toute question non couverte par ce document : formulaire de contact du site ou responsable technique.
+</div>
+
+</body>
+</html>
