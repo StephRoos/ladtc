@@ -2,85 +2,45 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>LADTC — Réunion de comité 22 juillet 2026</title>
+<title>LADTC — 22 juillet 2026</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" id="theme">
 <style>
-  :root {
-    --primary: #0E7490;
-    --accent: #FF8C00;
-    --ink: #0F172A;
-    --soft: #64748B;
-    --bg-soft: #F1F5F9;
-    --danger: #DC2626;
-    --ok: #059669;
-  }
-  .reveal { font-family: -apple-system, "Segoe UI", Helvetica, sans-serif; color: var(--ink); font-size: 32px; }
-  .reveal .slides section { height: 100%; }
-  .reveal h1, .reveal h2, .reveal h3 { font-weight: 700; color: var(--ink); text-transform: none; letter-spacing: -0.01em; }
-  .reveal h1 { font-size: 2.8em; margin-bottom: 0.3em; }
-  .reveal h2 { font-size: 1.8em; margin-bottom: 0.4em; color: var(--primary); }
-  .reveal h3 { font-size: 1.25em; margin-bottom: 0.5em; }
-  .reveal p { line-height: 1.4; }
-  .reveal .lead { color: var(--soft); font-size: 0.9em; margin-top: 0; }
-  .reveal ul, .reveal ol { margin-left: 1em; }
-  .reveal li { margin: 0.25em 0; }
-  .reveal section { font-size: 0.95em; }
-  .reveal .section-divider { padding: 60px 40px; }
-  .reveal .section-divider h2 { font-size: 2.4em !important; }
-  .reveal .tag { display: inline-block; border-radius: 4px; padding: 4px 12px; font-size: 0.5em; font-weight: 700; margin-right: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
-  .reveal .tag.ok { background: #ECFDF5; border: 1px solid #6EE7B7; color: var(--ok); }
-  .reveal .tag.warn { background: #FEF3C7; border: 1px solid #FCD34D; color: #B45309; }
-  .reveal .tag.new { background: #FFF7ED; border: 1px solid #FDBA74; color: #C2410C; }
-  .reveal .big-number { font-size: 5em; font-weight: 800; color: var(--primary); line-height: 1; }
-  .reveal .section-label { display: inline-block; background: var(--primary); color: white; padding: 6px 20px; border-radius: 4px; font-size: 0.45em; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px; }
-  .reveal .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; text-align: left; }
-  .reveal .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; text-align: left; }
-  .reveal .card { background: var(--bg-soft); padding: 24px; border-radius: 8px; border-left: 4px solid var(--primary); }
-  .reveal .card.accent { border-left-color: var(--accent); }
-  .reveal .card.danger { border-left-color: var(--danger); }
-  .reveal .card.ok { border-left-color: var(--ok); }
-  .reveal .card h3 { color: var(--primary); margin-top: 0; }
-  .reveal .card.accent h3 { color: var(--accent); }
-  .reveal .card.danger h3 { color: var(--danger); }
-  .reveal .card.ok h3 { color: var(--ok); }
-  .reveal .card ul { font-size: 0.75em; margin-top: 10px; }
-  .reveal .step-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; text-align: center; margin-top: 30px; }
-  .reveal .step-card { background: var(--bg-soft); padding: 18px; border-radius: 8px; }
-  .reveal .step-number { font-size: 2em; font-weight: 800; color: var(--accent); }
-  .reveal .step-card h4 { margin: 10px 0 6px 0; font-size: 0.85em; color: var(--primary); }
-  .reveal .step-card p { font-size: 0.6em; color: var(--soft); margin: 0; }
-  .reveal .highlight { color: var(--accent); font-weight: 700; }
-  .reveal .danger { color: var(--danger); font-weight: 700; }
-  .reveal .ok { color: var(--ok); font-weight: 700; }
-  .reveal .footer-tag { position: fixed; bottom: 20px; right: 40px; font-size: 14px; color: var(--soft); }
-  .reveal pre code { font-size: 0.65em; }
-  .reveal .title-slide { text-align: center; }
-  .reveal .title-slide h1 { font-size: 4em; margin-bottom: 0.1em; }
-  .reveal .title-slide .subtitle { font-size: 1.4em; color: var(--soft); margin-top: 0; }
-  .reveal .title-slide .meta { font-size: 0.8em; color: var(--soft); margin-top: 60px; }
-  .reveal .agenda { text-align: left; font-size: 1.05em; max-width: 720px; margin: 0 auto; }
-  .reveal .agenda li { padding: 8px 0; border-bottom: 1px solid #E2E8F0; }
-  .reveal .check { color: var(--ok); font-weight: 700; margin-right: 8px; }
-  .reveal .cross { color: var(--danger); font-weight: 700; margin-right: 8px; }
-  .reveal .section-divider { background: linear-gradient(135deg, var(--primary) 0%, #164E63 100%); color: white; padding: 80px 40px; text-align: center; }
-  .reveal .section-divider h2 { color: white; font-size: 3em; }
-  .reveal .section-divider .section-num { font-size: 1em; opacity: 0.6; letter-spacing: 0.2em; }
-  .reveal .metric-row { display: flex; justify-content: space-around; margin-top: 40px; }
-  .reveal .metric { text-align: center; }
-  .reveal .metric-label { font-size: 0.8em; color: var(--soft); margin-top: 10px; }
-  .reveal table { font-size: 0.7em; border-collapse: collapse; width: 100%; margin-top: 16px; }
-  .reveal th { background: var(--primary); color: white; padding: 8px 12px; text-align: left; }
-  .reveal td { padding: 8px 12px; border-bottom: 1px solid #E2E8F0; vertical-align: top; }
-  .reveal tr:nth-child(even) td { background: #F8FAFC; }
-  .reveal .decision { background: #FEF3C7; border-left: 5px solid #D97706; padding: 20px 28px; border-radius: 6px; margin-top: 24px; }
-  .reveal .decision h3 { color: #92400E; margin-top: 0; }
-  .reveal .decision ol { font-size: 0.8em; margin-top: 8px; }
-  .reveal .quote { font-size: 1.3em; font-style: italic; color: var(--primary); text-align: center; padding: 60px 40px; }
-  .reveal .small { font-size: 0.7em; color: var(--soft); }
-  .reveal .kbd { background: #fff; border: 1px solid #cbd5e1; border-bottom-width: 2px; border-radius: 4px; padding: 2px 8px; font-size: 0.7em; font-family: Menlo, monospace; }
+  :root { --primary:#0E7490; --accent:#FF8C00; --ink:#0F172A; --soft:#64748B; --bg:#F1F5F9; --ok:#059669; --danger:#DC2626; }
+  .reveal { font-family:-apple-system,"Segoe UI",Helvetica,sans-serif; color:var(--ink); font-size:32px; }
+  .reveal .slides section { height:100%; }
+  .reveal h1,.reveal h2,.reveal h3 { font-weight:700; text-transform:none; letter-spacing:-0.01em; }
+  .reveal h1 { font-size:2.8em; margin-bottom:0.3em; }
+  .reveal h2 { font-size:1.8em; margin-bottom:0.4em; color:var(--primary); }
+  .reveal h3 { font-size:1.25em; margin-bottom:0.5em; }
+  .reveal p { line-height:1.4; }
+  .reveal .small { font-size:0.7em; color:var(--soft); }
+  .reveal ul, .reveal ol { margin-left:1em; }
+  .reveal li { margin:0.3em 0; }
+  .reveal .ok { color:var(--ok); font-weight:700; }
+  .reveal .danger { color:var(--danger); font-weight:700; }
+  .reveal .accent { color:var(--accent); font-weight:700; }
+  .reveal table { font-size:0.75em; border-collapse:collapse; width:100%; margin-top:16px; }
+  .reveal th { background:var(--primary); color:white; padding:8px 12px; text-align:left; }
+  .reveal td { padding:8px 12px; border-bottom:1px solid #E2E8F0; vertical-align:top; }
+  .reveal tr:nth-child(even) td { background:#F8FAFC; }
+  .reveal .card { background:var(--bg); padding:20px; border-radius:8px; border-left:4px solid var(--primary); }
+  .reveal .card.ok { border-left-color:var(--ok); }
+  .reveal .card.danger { border-left-color:var(--danger); }
+  .reveal .card h3 { margin-top:0; }
+  .reveal .card ul { font-size:0.8em; margin-top:8px; }
+  .reveal .two-col { display:grid; grid-template-columns:1fr 1fr; gap:30px; }
+  .reveal .section-divider { background:linear-gradient(135deg,var(--primary) 0%,#164E63 100%); color:white; padding:80px 40px; text-align:center; }
+  .reveal .section-divider h2 { color:white; font-size:2.6em; }
+  .reveal .title-slide { text-align:center; }
+  .reveal .title-slide h1 { font-size:3.5em; margin-bottom:0.1em; }
+  .reveal .title-slide .subtitle { font-size:1.3em; color:var(--soft); margin-top:0; }
+  .reveal .title-slide .meta { font-size:0.8em; color:var(--soft); margin-top:50px; }
+  .reveal .decision { background:#FEF3C7; border-left:5px solid #D97706; padding:18px 26px; border-radius:6px; margin-top:24px; }
+  .reveal .decision h3 { color:#92400E; margin-top:0; }
+  .reveal .decision ol { font-size:0.85em; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -88,531 +48,207 @@
 <div class="reveal">
 <div class="slides">
 
-<!-- ================================================== -->
-<!-- SLIDE 1 — TITRE -->
 <section class="title-slide">
   <h1>ladtc.be</h1>
-  <p class="subtitle">Bilan, nouveautés et décisions</p>
-  <p class="meta">Réunion de comité · Ellezelles · mercredi 22 juillet 2026</p>
+  <p class="subtitle">État du site</p>
+  <p class="meta">22 juillet 2026</p>
 </section>
 
-<!-- SLIDE 2 — Ordre du jour -->
 <section>
-  <h2>Au programme</h2>
-  <ol class="agenda">
-    <li>Où en est le site</li>
-    <li>Les nouveautés depuis avril</li>
-    <li>Démonstration en direct</li>
-    <li>Audit du 20 juillet : ce qui reste</li>
-    <li>Décisions à prendre ce soir</li>
-    <li>Plan d'action et questions</li>
-  </ol>
-  <p class="small" style="margin-top:30px;">Un mode d'emploi imprimé est remis à chacun. Le détail technique vit dans le repo du projet.</p>
-</section>
-
-<!-- SLIDE 3 — Cadre -->
-<section>
-  <h2>Comment se déroule la séance</h2>
-  <div class="three-col" style="margin-top: 40px;">
-    <div class="step-card">
-      <div class="step-number">1</div>
-      <h4>Tour d'horizon</h4>
-      <p>Bilan et nouveautés, environ quinze minutes.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-number">2</div>
-      <h4>Démonstration</h4>
-      <p>Navigation en direct sur le site en production.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-number">3</div>
-      <h4>Décisions</h4>
-      <p>Choix à arbitrager, plan d'action, questions.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ================================================== -->
-<!-- SECTION A — ÉTAT DES LIEUX -->
-<section class="section-divider">
-  <p class="section-num">PARTIE 1</p>
-  <h2>Où en est le site</h2>
-</section>
-
-<!-- SLIDE —État global -->
-<section>
-  <h2>État global</h2>
-  <div class="two-col" style="margin-top: 30px;">
+  <h2>Le site aujourd'hui</h2>
+  <div class="two-col" style="margin-top:30px;">
     <div class="card ok">
-      <h3>Ça fonctionne</h3>
+      <h3>Fonctionnel</h3>
       <ul>
-        <li>Site en production, réponse &lt; 60 ms</li>
+        <li>En production, réponse &lt; 60 ms</li>
         <li>319 tests automatisés passent</li>
-        <li>Sécurité : headers solides, CDN Cloudflare</li>
-        <li>Paiements Stripe actifs (cotisation, équipement)</li>
-        <li>Les 9 membres du comité ont leur compte + fonction</li>
+        <li>Paiements Stripe actifs</li>
+        <li>Sécurité : CSP, CDN, headers</li>
+        <li>Page UTC 4 complète</li>
       </ul>
     </div>
     <div class="card danger">
-      <h3>Ça manque de contenu</h3>
+      <h3>Inachevé</h3>
       <ul>
         <li>Blog, galerie, événements, boutique : vides</li>
         <li>Règlement UTC 4 non publié</li>
-        <li>Aucune page mentions légales</li>
-      </ul>
-    </div>
-  </div>
-  <p class="small" style="margin-top:24px;">Techniquement sain. Cohérence et SEO résolus. Reste le contenu éditorial — décision du comité ce soir.</p>
-</section>
-
-<!-- SLIDE — Ce qui a été fait depuis avril -->
-<section>
-  <h2>Ce qui a été fait depuis avril</h2>
-  <div class="two-col" style="margin-top: 24px;">
-    <div>
-      <h3 style="color:var(--ok);">Côté fonctionnalités</h3>
-      <ul style="font-size:0.8em;">
-        <li class="ok">Rubrique UTC 4 en ligne</li>
-        <li class="ok">Paiement des cotisations</li>
-        <li class="ok">Boutique équipement + panier</li>
-        <li class="ok">Galerie, blog, événements (modules prêts)</li>
-        <li class="ok">Profil membre : photo, prénom/nom, cotisation</li>
-      </ul>
-    </div>
-    <div>
-      <h3 style="color:var(--ok);">Côté robustesse (juillet)</h3>
-      <ul style="font-size:0.8em;">
-        <li class="ok">3 bloquants corrigés (audit 09/07)</li>
-        <li class="ok">Vérification d'email + email de bienvenue</li>
-        <li class="ok">Paiement des inscriptions événements</li>
-        <li class="ok">Webhook Stripe étendu (échecs, abandons)</li>
-        <li class="ok">8 items d'audit résolus (audit 20/07)</li>
+        <li>Pas de page mentions légales</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- SLIDE — Audit 09/07 rappel -->
-<section>
-  <h2>Audit du 9 juillet — rappel</h2>
-  <div class="metric-row">
-    <div class="metric">
-      <div class="big-number" style="color:var(--ok);">3</div>
-      <div class="metric-label">Bloquants — corrigés</div>
-    </div>
-    <div class="metric">
-      <div class="big-number" style="color:var(--accent);">4</div>
-      <div class="metric-label">Majeurs — en cours</div>
-    </div>
-    <div class="metric">
-      <div class="big-number" style="color:var(--soft);">6</div>
-      <div class="metric-label">Mineurs — à nettoyer</div>
-    </div>
-  </div>
-  <p class="small" style="margin-top:30px;">Cet audit portait sur le code et les parcours. L'audit du 20 juillet (présenté ce soir) porte sur le <strong>contenu visible en production</strong> — 8 de ses 15 items ont été résolus en autonomie.</p>
-</section>
-
-<!-- ================================================== -->
-<!-- SECTION B — NOUVEAUTÉS -->
 <section class="section-divider">
-  <p class="section-num">PARTIE 2</p>
-  <h2>Les nouveautés depuis avril</h2>
+  <h2>Ce qui a été fait</h2>
 </section>
 
-<!-- SLIDE — 5 nouveautés -->
 <section>
-  <h2>Cinq nouveautés déployées en juillet</h2>
-  <div class="step-grid" style="grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 36px;">
-    <div class="step-card">
-      <div class="step-number">1</div>
-      <h4>Email vérifié</h4>
-      <p>Lien de confirmation obligatoire à l'inscription.</p>
+  <h2>Fait depuis avril</h2>
+  <div class="two-col" style="margin-top:24px;">
+    <div>
+      <h3 class="ok">Fonctionnalités</h3>
+      <ul style="font-size:0.8em;">
+        <li>Page UTC 4 en ligne</li>
+        <li>Paiement des cotisations</li>
+        <li>Boutique équipement</li>
+        <li>Profil membre : photo, prénom/nom</li>
+      </ul>
     </div>
-    <div class="step-card">
-      <div class="step-number">2</div>
-      <h4>Auto-connexion</h4>
-      <p>Connexion + redirection vers la cotisation.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-number">3</div>
-      <h4>Email bienvenue</h4>
-      <p>Message automatique après vérification.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-number">4</div>
-      <h4>Événements payants</h4>
-      <p>Prix d'inscription, paiement en ligne.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-number">5</div>
-      <h4>Paiements robustes</h4>
-      <p>Abandons et échecs gérés automatiquement.</p>
+    <div>
+      <h3 class="ok">Robustesse</h3>
+      <ul style="font-size:0.8em;">
+        <li>Vérification email obligatoire</li>
+        <li>Email de bienvenue automatique</li>
+        <li>Événements payants</li>
+        <li>Webhook Stripe étendu</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- SLIDE — Pourquoi la vérification email -->
 <section>
-  <h2>Pourquoi vérifier les emails</h2>
+  <h2>Fait cette semaine</h2>
+  <div class="two-col" style="margin-top:24px;">
+    <div>
+      <h3 class="ok">Cohérence</h3>
+      <ul style="font-size:0.8em;">
+        <li>Horaires clarifiés (rdv + départ)</li>
+        <li>Noms corrigés, fonctions affichées</li>
+        <li>Sponsors UTC masqués si vide</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="ok">SEO & navigation</h3>
+      <ul style="font-size:0.8em;">
+        <li>/events au menu + footer</li>
+        <li>Sitemap : /utc ajouté</li>
+        <li>JSON-LD SportsEvent + Organization</li>
+        <li>Canonical + OG image</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-divider">
+  <h2>Ce qui reste</h2>
+</section>
+
+<section>
+  <h2>Pages vides</h2>
   <div class="two-col" style="margin-top:30px;">
     <div class="card">
-      <h3>Avant</h3>
-      <ul style="font-size:0.8em;">
-        <li>N'importe qui pouvait créer un compte avec n'importe quel email</li>
-        <li>Risque d'inscriptions frauduleuses, de spam, de comptes orphelins</li>
-        <li>Le membre devait retrouver la page de connexion lui-même</li>
-      </ul>
-    </div>
-    <div class="card ok">
-      <h3>Maintenant</h3>
-      <ul style="font-size:0.8em;">
-        <li>L'email doit être valide pour activer le compte</li>
-        <li>Le membre est connecté et guidé vers la cotisation</li>
-        <li>Un email de bienvenue part automatiquement</li>
-      </ul>
-    </div>
-  </div>
-  <p class="small" style="margin-top:24px;">Le seul point d'attention : un email mal saisi à l'inscription = email de vérification perdu, sans message d'erreur. À signaler aux nouveaux.</p>
-</section>
-
-<!-- SLIDE — Événements payants -->
-<section>
-  <h2>Événements payants — nouveauté</h2>
-  <div class="card accent" style="margin-top:30px;">
-    <h3>Avant</h3>
-    <p style="font-size:0.85em;">Les inscriptions aux événements étaient gratuites. Aucun moyen d'organiser une sortie, un stage ou un repas payant via le site.</p>
-  </div>
-  <div class="card ok" style="margin-top:20px;">
-    <h3>Maintenant</h3>
-    <ul style="font-size:0.85em;">
-      <li>Un événement peut avoir un prix (champ « Prix d'inscription »)</li>
-      <li>Le membre paie en ligne au moment de s'inscrire</li>
-      <li>Si la session de paiement expire, la place est libérée automatiquement</li>
-      <li>Email de confirmation envoyé au membre</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ================================================== -->
-<!-- SECTION C — DÉMONSTRATION -->
-<section class="section-divider">
-  <p class="section-num">PARTIE 3</p>
-  <h2>Démonstration en direct</h2>
-</section>
-
-<!-- SLIDE — Démo plan -->
-<section>
-  <h2>La démo en cinq étapes</h2>
-  <ol style="font-size:0.9em; max-width:700px; margin:0 auto;">
-    <li><strong>Tour du site public</strong> — onglet navigation privée (3 min)</li>
-    <li><strong>Inscription d'un nouveau membre</strong> — email de vérification, auto-connexion, redirection cotisation (5 min)</li>
-    <li><strong>Côté comité</strong> — tableau de bord, création de la fiche cotisation, logs (3 min)</li>
-    <li><strong>Paiement réel</strong> — cotisation à 1 € en Bancontact, activation automatique (3 min)</li>
-    <li><strong>Inscription à un événement payant</strong> — 5 €, paiement, confirmation (5 min)</li>
-  </ol>
-  <p class="small" style="margin-top:30px;">Adresse démo : <code>stephaneroos+demo@gmail.com</code> — à supprimer via Admin → Utilisateurs après la séance.</p>
-</section>
-
-<!-- SLIDE — Démo mise en place -->
-<section>
-  <h2>Mise en place</h2>
-  <div class="two-col" style="margin-top:30px;">
-    <div class="card">
-      <h3>Onglet A — visiteur</h3>
-      <ul style="font-size:0.8em;">
-        <li>Navigation privée</li>
-        <li>Représente un nouveau membre</li>
-        <li>Sert pour les étapes 1, 2, 4, 5</li>
-      </ul>
-    </div>
-    <div class="card accent">
-      <h3>Onglet B — comité</h3>
-      <ul style="font-size:0.8em;">
-        <li>Connecté en COMMITTEE / ADMIN</li>
-        <li><code>stephaneroos@gmail.com</code></li>
-        <li>Sert pour les étapes 3 et préparation</li>
-      </ul>
-    </div>
-  </div>
-  <p class="small" style="margin-top:24px;">Téléphone prêt : compte Bancontact + boîte mail (alias Gmail). Le paiement de test (1 €) est réel : l'argent arrive sur le compte du club.</p>
-</section>
-
-<!-- ================================================== -->
-<!-- SECTION D — AUDIT 20/07 -->
-<section class="section-divider">
-  <p class="section-num">PARTIE 4</p>
-  <h2>Audit du 20 juillet</h2>
-</section>
-
-<!-- SLIDE — Méthode audit -->
-<section>
-  <h2>Méthode de l'audit</h2>
-  <div class="card" style="margin-top:30px;">
-    <p style="font-size:0.9em;">Parcours complet du site <strong>en production</strong> le 20/07, en visiteur anonyme. Lecture des en-têtes HTTP, du sitemap, du robots.txt, des meta-tags, et du code source (<code>site.ts</code>, page d'accueil).</p>
-    <p style="font-size:0.9em; margin-top:10px;"><strong>Complémentaire</strong> de l'audit du 09/07 (qui portait sur le code, les tests et la sécurité des paiements). Celui-ci porte sur le <strong>contenu visible</strong> et la <strong>cohérence</strong>.</p>
-  </div>
-  <div class="decision" style="margin-top:30px;">
-    <h3>Verdict au 21/07</h3>
-    <p style="font-size:0.9em; margin:6px 0;">8 items sur 15 résolus en autonomie. Reste 4 décisions du comité (contenu + mentions légales) et 3 actions techniques post-comité. Le site est prêt pour la démo.</p>
-  </div>
-</section>
-
-<!-- SLIDE — Ce qui marche -->
-<section>
-  <h2>Ce qui marche bien — à conserver</h2>
-  <ul style="font-size:0.9em;">
-    <li><span class="check">✓</span> Performance : 57 ms, cache CDN, prerender Next.js</li>
-    <li><span class="check">✓</span> Sécurité technique : CSP, X-Frame-Options, Permissions-Policy</li>
-    <li><span class="check">✓</span> Page <code>/utc</code> — la mieux structurée du site, modèle à reproduire</li>
-    <li><span class="check">✓</span> Parcours d'inscription clair, distinction contact / adhésion</li>
-    <li><span class="check">✓</span> SEO : meta description, Open Graph, JSON-LD, sitemap, canonical</li>
-    <li><span class="check">✓</span> Page Équipe : noms corrigés + fonctions affichées</li>
-    <li><span class="check">✓</span> Horaires : « Rdv 18:45, départ 19:00 » partout cohérent</li>
-  </ul>
-</section>
-
-<!-- SLIDE — Résolu en autonomie -->
-<section>
-  <h2>Résolu en autonomie (8 items)</h2>
-  <div class="two-col" style="margin-top:30px;">
-    <div class="card ok">
-      <h3>Cohérence & contenu</h3>
-      <ul style="font-size:0.8em;">
-        <li class="ok">Horaires mercredi/dimanche clarifiés</li>
-        <li class="ok">Noms du comité corrigés + fonctions</li>
-        <li class="ok">Sponsors UTC masqués si vide</li>
-      </ul>
-    </div>
-    <div class="card ok">
-      <h3>SEO & navigation</h3>
-      <ul style="font-size:0.8em;">
-        <li class="ok">/events ajouté au menu + footer</li>
-        <li class="ok">Sitemap : /utc + /utc/reglement</li>
-        <li class="ok">JSON-LD SportsEvent + SportsOrganization</li>
-        <li class="ok">Balise canonical</li>
-        <li class="ok">OG image (stopgap → hero-bg.jpg)</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- SLIDE — P1 pages vides -->
-<section>
-  <h2>Reste n°1 — pages vides</h2>
-  <div class="step-grid" style="grid-template-columns: repeat(4,1fr); margin-top:30px;">
-    <div class="step-card">
-      <div class="step-number" style="color:var(--danger);">∅</div>
-      <h4>Blog</h4>
-      <p>0 article publié</p>
-    </div>
-    <div class="step-card">
-      <div class="step-number" style="color:var(--danger);">∅</div>
-      <h4>Galerie</h4>
-      <p>0 photo</p>
-    </div>
-    <div class="step-card">
-      <div class="step-number" style="color:var(--danger);">∅</div>
-      <h4>Événements</h4>
-      <p>0 événement</p>
-    </div>
-    <div class="step-card">
-      <div class="step-number" style="color:var(--danger);">∅</div>
-      <h4>Boutique</h4>
-      <p>0 produit</p>
-    </div>
-  </div>
-  <p class="small" style="margin-top:24px;">L'accueil pousse vers ces pages, qui tombent sur du vide. Effet « site en construction ».</p>
-  <div class="decision">
-    <h3>Stratégie à choisir</h3>
-    <p style="font-size:0.85em;">Alimenter un minimum (article de rentrée, galerie UTC 3, événement UTC 4, maillots) ou masquer les entrées de menu tant que le contenu n'existe pas ?</p>
-  </div>
-</section>
-
-<!-- SLIDE — P2 synthèse -->
-<section>
-  <h2>Reste — autres points (décision comité)</h2>
-  <ul style="font-size:0.85em;">
-    <li><span class="tag warn">Comité</span> Règlement UTC 4 — page placeholder, à rédiger</li>
-    <li><span class="tag warn">Comité</span> Aucune page mentions légales / confidentialité (RGPD)</li>
-    <li><span class="tag warn">Comité</span> robots.txt — garder le blocage des crawlers IA ou ouvrir ?</li>
-    <li><span class="tag warn">Tech</span> Meta description par page (30 min, post-comité)</li>
-    <li><span class="tag warn">Tech</span> HSTS — config Cloudflare (5 min)</li>
-    <li><span class="tag warn">Tech</span> OG image dédiée 1200×630 (stopgap en place)</li>
-  </ul>
-  <p class="small" style="margin-top:24px;">Détail, matrices de priorité et plan d'action dans le document d'audit (<code>audit-site-2026-07-20.md</code>).</p>
-</section>
-
-<!-- ================================================== -->
-<!-- SECTION E — UTC 4 -->
-<section class="section-divider">
-  <p class="section-num">PARTIE 5</p>
-  <h2>UTC 4 — la course</h2>
-</section>
-
-<!-- SLIDE — UTC 4 état -->
-<section>
-  <h2>UTC 4 — où en est-on</h2>
-  <div class="two-col" style="margin-top:30px;">
-    <div class="card ok">
-      <h3>En ligne et correct</h3>
-      <ul style="font-size:0.8em;">
-        <li>Date : samedi 24 octobre 2026 (nocturne)</li>
-        <li>Lieu : Salle CACS, Ellezelles</li>
-        <li>Parcours 9 km (15 €) / 18 km (25 €), en binôme</li>
-        <li>Grand Prix Bellezellesbutte chronométré</li>
-        <li>Limite 150 équipes par distance</li>
-        <li>Paliers sponsoring et IBAN affichés</li>
+      <h3>État actuel</h3>
+      <ul>
+        <li>Blog : 0 article</li>
+        <li>Galerie : 0 photo</li>
+        <li>Événements : 0 événement</li>
+        <li>Boutique : 0 produit</li>
       </ul>
     </div>
     <div class="card danger">
-      <h3>À finaliser</h3>
-      <ul style="font-size:0.8em;">
-        <li>Lien d'inscription Ultratiming (ouverture ~début septembre)</li>
-        <li>Règlement officiel (page placeholder)</li>
-        <li>Nouveau tracé (envoi commune début septembre)</li>
-        <li>Événement à créer dans le module events</li>
-      </ul>
+      <h3>Problème</h3>
+      <p style="font-size:0.85em;">L'accueil pousse vers ces pages. Un visiteur arrive sur du vide.</p>
     </div>
+  </div>
+  <div class="decision">
+    <h3>Décision</h3>
+    <p style="font-size:0.85em;">Alimenter un minimum ou masquer les entrées de menu ?</p>
   </div>
 </section>
 
-<!-- SLIDE — UTC 4 rétroplanning -->
+<section>
+  <h2>UTC 4 — à finaliser</h2>
+  <table>
+    <thead><tr><th>Élément</th><th>Statut</th></tr></thead>
+    <tbody>
+      <tr><td>Date, lieu, parcours, prix</td><td class="ok">En ligne</td></tr>
+      <tr><td>Sponsoring (paliers, IBAN)</td><td class="ok">Affiché</td></tr>
+      <tr><td>Lien d'inscription Ultratiming</td><td class="danger">En attente</td></tr>
+      <tr><td>Règlement officiel</td><td class="danger">Placeholder</td></tr>
+      <tr><td>Nouveau tracé</td><td class="danger">À envoyer à la commune</td></tr>
+      <tr><td>Événement dans le calendrier</td><td class="danger">À créer</td></tr>
+    </tbody>
+  </table>
+</section>
+
 <section>
   <h2>UTC 4 — rétroplanning</h2>
   <table>
     <thead><tr><th>Échéance</th><th>Action</th></tr></thead>
     <tbody>
-      <tr><td>Fin août</td><td>Démarches sponsors bouclées (sinon absents du flyer)</td></tr>
-      <tr><td>Début septembre</td><td>Circuit envoyé à la commune pour validation</td></tr>
+      <tr><td>Fin août</td><td>Démarches sponsors bouclées</td></tr>
+      <tr><td>Début septembre</td><td>Circuit envoyé à la commune</td></tr>
       <tr><td>~7 septembre</td><td>Flyers imprimés (500 ex.)</td></tr>
-      <tr><td>1re semaine septembre</td><td>Ouverture inscriptions Ultratiming</td></tr>
-      <tr><td>1 semaine avant course</td><td>Infos pratiques aux inscrits (parking, frontale)</td></tr>
+      <tr><td>1re semaine septembre</td><td>Ouverture inscriptions</td></tr>
       <tr><td>24 octobre</td><td>Course</td></tr>
     </tbody>
   </table>
 </section>
 
-<!-- SLIDE — UTC 4 décisions -->
-<section>
-  <h2>UTC 4 — décisions à prendre</h2>
-  <div class="decision" style="margin-top:30px;">
-    <h3>À arbitrer ce soir</h3>
-    <ol style="font-size:0.9em;">
-      <li>Confirmer les tarifs : 15 € / 25 € par binôme ?</li>
-      <li>Règlement : valider les 9 articles ou désigner un rédacteur + délai ?</li>
-      <li>Date d'ouverture des inscriptions Ultratiming ?</li>
-      <li>Sponsoring : statut des démarches, validation des paliers affichés ?</li>
-    </ol>
-  </div>
-</section>
-
-<!-- ================================================== -->
-<!-- SECTION F — DÉCISIONS -->
 <section class="section-divider">
-  <p class="section-num">PARTIE 6</p>
-  <h2>Décisions et plan d'action</h2>
+  <h2>Décisions</h2>
 </section>
 
-<!-- SLIDE — Décisions synthèse -->
 <section>
-  <h2>Quatre décisions à prendre ce soir</h2>
-  <ol style="font-size:0.95em; max-width:720px; margin:0 auto;">
-    <li><strong>Stratégie de contenu</strong> : alimenter ou masquer les pages vides (blog, galerie, événements, boutique) ?</li>
-    <li><strong>Règlement UTC 4</strong> : qui rédige et pour quand ? (rétroplanning flyers)</li>
-    <li><strong>Page mentions légales</strong> : qui rédige le texte de base (modèle ASBL sportive) ?</li>
-    <li><strong>Crawlers IA</strong> : garder le blocage actuel (ClaudeBot, GPTBot…) ou ouvrir à l'indexation générative ?</li>
+  <h2>Quatre décisions</h2>
+  <ol style="font-size:0.95em; max-width:700px; margin:0 auto;">
+    <li><strong>Pages vides</strong> : alimenter ou masquer ?</li>
+    <li><strong>Règlement UTC 4</strong> : qui rédige, pour quand ?</li>
+    <li><strong>Mentions légales</strong> : qui rédige le texte ?</li>
+    <li><strong>Crawlers IA</strong> : garder le blocage ou ouvrir ?</li>
   </ol>
-  <p class="small" style="margin-top:24px;">Les horaires et les fonctions du comité ont été résolus en autonomie. Les décisions ne portent plus que sur le contenu et un choix éditorial.</p>
 </section>
 
-<!-- SLIDE — Plan d'action -->
 <section>
-  <h2>Plan d'action avant le lancement public</h2>
+  <h2>Après cette soirée</h2>
   <div class="two-col" style="margin-top:30px;">
-    <div class="card ok">
-      <h3>Fait en autonomie (cette semaine)</h3>
-      <ul style="font-size:0.8em;">
-        <li class="ok">Horaires mercredi/dimanche clarifiés</li>
-        <li class="ok">Noms du comité corrigés + fonctions</li>
-        <li class="ok">Sponsors UTC masqués si vide</li>
-        <li class="ok">/events au menu + footer</li>
-        <li class="ok">Sitemap /utc + /utc/reglement</li>
-        <li class="ok">JSON-LD SportsEvent + Organization</li>
-        <li class="ok">Canonical + OG image (stopgap)</li>
+    <div class="card">
+      <h3>Technique (post-comité)</h3>
+      <ul>
+        <li>Meta description par page (30 min)</li>
+        <li>HSTS côté Cloudflare (5 min)</li>
+        <li>OG image dédiée 1200×630</li>
       </ul>
     </div>
-    <div class="card accent">
-      <h3>Après validation ce soir</h3>
-      <ul style="font-size:0.8em;">
-        <li>Alimenter les pages vides (selon décision)</li>
+    <div class="card">
+      <h3>Contenu (selon décisions)</h3>
+      <ul>
+        <li>Alimenter ou masquer les pages</li>
         <li>Publier le règlement UTC 4</li>
-        <li>Créer la page mentions légales / confidentialité</li>
-        <li>Créer l'événement UTC 4 dans le calendrier</li>
-        <li>Activer HSTS côté Cloudflare (5 min)</li>
-        <li>Meta description par page (30 min)</li>
-        <li>Ouvrir les inscriptions Ultratiming → renseigner le lien</li>
+        <li>Créer la page mentions légales</li>
+        <li>Créer l'événement UTC 4</li>
+        <li>Ouvrir inscriptions Ultratiming</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- SLIDE — Frais Stripe -->
 <section>
-  <h2>Frais Stripe — si la question vient</h2>
+  <h2>Démonstration</h2>
+  <ol style="font-size:0.9em; max-width:650px; margin:0 auto;">
+    <li>Tour du site public (3 min)</li>
+    <li>Inscription d'un nouveau membre (5 min)</li>
+    <li>Côté admin : tableau de bord, cotisation (3 min)</li>
+    <li>Paiement réel : 1 € Bancontact (3 min)</li>
+    <li>Inscription à un événement payant : 5 € (5 min)</li>
+  </ol>
+  <p class="small" style="margin-top:30px;">Compte démo : <code>stephaneroos+demo@gmail.com</code> — à supprimer après la séance.</p>
+</section>
+
+<section>
+  <h2>Frais Stripe</h2>
   <table>
-    <thead><tr><th>Montant payé</th><th>Commission ≈</th><th>Net pour le club</th></tr></thead>
+    <thead><tr><th>Montant</th><th>Commission</th><th>Net club</th></tr></thead>
     <tbody>
-      <tr><td>50 € (cotisation)</td><td>~0,95 €</td><td>~49,05 €</td></tr>
-      <tr><td>25 € (binôme UTC)</td><td>~0,60 €</td><td>~24,40 €</td></tr>
-      <tr><td>1 € (test)</td><td>0,27 €</td><td>0,73 €</td></tr>
+      <tr><td>50 €</td><td>~0,95 €</td><td>~49,05 €</td></tr>
+      <tr><td>25 €</td><td>~0,60 €</td><td>~24,40 €</td></tr>
     </tbody>
   </table>
-  <p class="small" style="margin-top:30px;">Environ <strong>2 % par transaction</strong>. En échange : zéro manipulation de liquide, traçabilité complète, activation automatique. Versements sur l'IBAN du club sous 2 à 7 jours.</p>
+  <p class="small" style="margin-top:20px;">~2 % par transaction. Zéro liquide, traçabilité complète, activation automatique.</p>
 </section>
 
-<!-- SLIDE — Anti-panique -->
-<section class="quote">
-  « Rien n'est définitif, tout est tracé, tout peut être corrigé. »
-  <p class="small" style="margin-top:40px;">Le journal d'activité enregistre chaque action. Une erreur se répare. Mieux vaut une action qui se corrige qu'une inaction qui bloque.</p>
-</section>
-
-<!-- SLIDE — Avant la prochaine séance -->
-<section>
-  <h2>Avant la prochaine séance — checklist</h2>
-  <ul style="font-size:0.85em;">
-    <li>Vérifier <code>https://ladtc.be</code> sur téléphone (affichage mobile)</li>
-    <li>Vérifier la connexion ADMIN avec <code>stephaneroos@gmail.com</code></li>
-    <li>Passer la prod en revue : aucun contenu de test visible</li>
-    <li>Préparer l'événement de test (ou le créer en direct)</li>
-    <li>Ouvrir avant 19h30 : site en prod + le mode d'emploi + téléphone (Bancontact + mail)</li>
-  </ul>
-  <p class="small" style="margin-top:24px;">Après la séance : supprimer le compte démo, supprimer l'événement de test, reporter les décisions dans la config du site, push master.</p>
-</section>
-
-<!-- SLIDE — Références -->
-<section>
-  <h2>Documents de référence</h2>
-  <table>
-    <thead><tr><th>Document</th><th>Usage</th></tr></thead>
-    <tbody>
-      <tr><td><code>mode-emploi-comite.html</code></td><td>Manuel imprimé distribué ce soir (ce dossier)</td></tr>
-      <tr><td><code>audit-site-2026-07-20.md</code></td><td>Audit complet du 20/07 (repo, dossier Documents)</td></tr>
-      <tr><td><code>Audit Parcours Utilisateur 2026-07-09</code></td><td>Audit code du 09/07 (vault SecondBrain)</td></tr>
-      <tr><td><code>demo-comite-2026-07-23.md</code></td><td>Script de démo détaillé (repo, dossier Documents)</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- SLIDE — Questions -->
-<section class="section-divider">
-  <h2>Questions &amp; retours</h2>
-  <p style="font-size:0.9em; margin-top:30px;">Le mode d'emploi imprimé est à disposition pour aller plus loin.</p>
-</section>
-
-<!-- SLIDE FIN -->
 <section class="title-slide">
-  <p class="subtitle" style="margin-top:40px;">Merci.</p>
-  <p class="meta">la dtc · Ellezelles · Pays des Collines</p>
+  <p class="subtitle" style="margin-top:40px;">Questions</p>
   <p class="small" style="margin-top:30px;">https://ladtc.be</p>
 </section>
 
@@ -621,15 +257,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
 <script>
-  Reveal.initialize({
-    hash: true,
-    slideNumber: 'c/t',
-    transition: 'slide',
-    transitionSpeed: 'default',
-    width: 1280,
-    height: 720,
-    margin: 0.08
-  });
+  Reveal.initialize({ hash:true, slideNumber:'c/t', transition:'slide', width:1280, height:720, margin:0.08 });
 </script>
 
 </body>
