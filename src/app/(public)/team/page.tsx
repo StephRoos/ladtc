@@ -47,7 +47,7 @@ interface TeamMemberData {
 }
 
 function TeamMemberCard({ member }: { member: TeamMemberData }): React.ReactNode {
-  const displayRole = member.committeeRole ?? "Comité";
+  const displayRole = member.committeeRole ?? "Membre du comité";
 
   return (
     <Card className="border-border bg-card">
