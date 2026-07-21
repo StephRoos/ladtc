@@ -48,7 +48,8 @@ describe("loginSchema", () => {
 describe("registerSchema", () => {
   it("accepts valid registration data", () => {
     const result = registerSchema.safeParse({
-      name: "Jean Dupont",
+      firstName: "Jean",
+      lastName: "Dupont",
       email: "jean@example.com",
       password: "password123",
       confirmPassword: "password123",
@@ -56,19 +57,39 @@ describe("registerSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("rejects name shorter than 2 characters", () => {
+  it("rejects firstName shorter than 2 characters", () => {
     const result = registerSchema.safeParse({
-      name: "J",
+      firstName: "J",
+      lastName: "Dupont",
       email: "jean@example.com",
       password: "password123",
       confirmPassword: "password123",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const nameError = result.error.issues.find(
-        (i) => i.path[0] === "name"
+      const firstNameError = result.error.issues.find(
+        (i) => i.path[0] === "firstName"
       );
-      expect(nameError?.message).toBe(
+      expect(firstNameError?.message).toBe(
+        "Le prénom doit contenir au moins 2 caractères"
+      );
+    }
+  });
+
+  it("rejects lastName shorter than 2 characters", () => {
+    const result = registerSchema.safeParse({
+      firstName: "Jean",
+      lastName: "D",
+      email: "jean@example.com",
+      password: "password123",
+      confirmPassword: "password123",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const lastNameError = result.error.issues.find(
+        (i) => i.path[0] === "lastName"
+      );
+      expect(lastNameError?.message).toBe(
         "Le nom doit contenir au moins 2 caractères"
       );
     }
@@ -76,7 +97,8 @@ describe("registerSchema", () => {
 
   it("rejects invalid email format", () => {
     const result = registerSchema.safeParse({
-      name: "Jean Dupont",
+      firstName: "Jean",
+      lastName: "Dupont",
       email: "invalid",
       password: "password123",
       confirmPassword: "password123",
@@ -92,7 +114,8 @@ describe("registerSchema", () => {
 
   it("rejects password shorter than 8 characters", () => {
     const result = registerSchema.safeParse({
-      name: "Jean Dupont",
+      firstName: "Jean",
+      lastName: "Dupont",
       email: "jean@example.com",
       password: "short",
       confirmPassword: "short",
@@ -110,7 +133,8 @@ describe("registerSchema", () => {
 
   it("rejects mismatched passwords", () => {
     const result = registerSchema.safeParse({
-      name: "Jean Dupont",
+      firstName: "Jean",
+      lastName: "Dupont",
       email: "jean@example.com",
       password: "password123",
       confirmPassword: "differentpassword",
@@ -128,7 +152,8 @@ describe("registerSchema", () => {
 
   it("accepts matching passwords at minimum length", () => {
     const result = registerSchema.safeParse({
-      name: "Ab",
+      firstName: "Ab",
+      lastName: "Cd",
       email: "ab@example.com",
       password: "12345678",
       confirmPassword: "12345678",

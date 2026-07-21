@@ -37,8 +37,15 @@ export function RegisterForm(): React.ReactNode {
   async function onSubmit(data: RegisterFormData): Promise<void> {
     setServerError(null);
 
+    // Concatenate first and last name into a single "name" string stored by
+    // BetterAuth. Splitting the input into two fields prevents the first/last
+    // name ordering ambiguity that previously produced malformed entries on
+    // the /team page (e.g. "Carton-Delcourt Bruno" instead of "Bruno
+    // Carton-Delcourt").
+    const fullName = `${data.firstName} ${data.lastName}`.trim();
+
     const result = await signUp.email({
-      name: data.name,
+      name: fullName,
       email: data.email,
       password: data.password,
       callbackURL: "/membership/pay",
@@ -79,18 +86,38 @@ export function RegisterForm(): React.ReactNode {
             </div>
           )}
 
-            <div className="space-y-2">
-              <Label htmlFor="name">Nom complet</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Jean Dupont"
-                autoComplete="name"
-                {...register("name")}
-              />
-              {errors.name && (
-                <p className="text-sm text-destructive">{errors.name.message}</p>
-              )}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">Prénom</Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  placeholder="Jean"
+                  autoComplete="given-name"
+                  {...register("firstName")}
+                />
+                {errors.firstName && (
+                  <p className="text-sm text-destructive">
+                    {errors.firstName.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Nom</Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  placeholder="Dupont"
+                  autoComplete="family-name"
+                  {...register("lastName")}
+                />
+                {errors.lastName && (
+                  <p className="text-sm text-destructive">
+                    {errors.lastName.message}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="space-y-2">
