@@ -134,17 +134,13 @@ export default function AdminUsersPage(): React.ReactNode {
                       )}
                   </TableCell>
                   <TableCell>
-                    {u.id !== user?.id ? (
-                      <RoleSelect
-                        userId={u.id}
-                        currentRole={u.role as UserRole}
-                        currentCommitteeRole={u.committeeRole}
-                        onRoleChange={handleRoleChange}
-                        isLoading={updateRole.isPending}
-                      />
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">Votre compte</span>
-                    )}
+                    <RoleSelect
+                      userId={u.id}
+                      currentRole={u.role as UserRole}
+                      currentCommitteeRole={u.committeeRole}
+                      onRoleChange={handleRoleChange}
+                      isLoading={updateRole.isPending}
+                    />
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
                     {new Date(u.createdAt).toLocaleDateString("fr-BE")}
