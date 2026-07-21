@@ -14,6 +14,29 @@ export const BLOG_CATEGORIES = [
   "Social",
 ] as const;
 
+/**
+ * Validates a user-provided image reference. Accepts either:
+ *   - an absolute URL (https://…) — e.g. an externally hosted avatar
+ *   - a site-relative path starting with "/" — e.g. "/uploads/avatars/xxx.jpg"
+ *     returned by the local upload routes
+ * `null` is allowed to clear the image.
+ *
+ * Using `z.string().url()` alone rejected the relative paths returned by the
+ * local upload routes, causing a 400 "URL d'image invalide" right after a
+ * successful upload.
+ */
+export const imageRefSchema = z
+  .string()
+  .nullable()
+  .refine(
+    (value) =>
+      value === null ||
+      /^https?:\/\//i.test(value) ||
+      value.startsWith("/"),
+    "URL d'image invalide",
+  );
+
+
 export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
 
 /**

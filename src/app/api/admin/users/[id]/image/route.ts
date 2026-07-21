@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/activity-log";
-
-const imageUpdateSchema = z.object({
-  image: z.string().url("URL d'image invalide").nullable(),
-});
+import { imageRefSchema } from "@/lib/schemas";
 
 /**
  * PATCH /api/admin/users/[id]/image
@@ -28,13 +24,14 @@ export async function PATCH(
     return NextResponse.json({ error: "Corps de requête invalide" }, { status: 400 });
   }
 
-  const parsed = imageUpdateSchema.safeParse(body);
+  const parsed = imageRefSchema.safeParse(body);
   if (!parsed.success) {
     const msg = parsed.error.errors[0]?.message ?? "Image invalide";
     return NextResponse.json({ error: msg }, { status: 400 });
   }
 
-  const { image } = parsed.data;
+  // imageRefSchema returns string | null (the whole value), unwrap it.
+  const image = parsed.data;
 
   const target = await prisma.user.findUnique({ where: { id } });
   if (!target) {
