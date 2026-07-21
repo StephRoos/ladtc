@@ -55,7 +55,7 @@ sur le contenu (pages à alimenter, règlement, mentions légales) et un choix
 |---|---|---|---|
 | 2.1 | Horaires 18:45 vs 19:00 | ✅ Résolu | Homepage : « Rdv 18:45, départ 19:00 » (mercredi) / « Rdv 08:45, départ 09:00 » (dimanche). Footer/contact : 19:00 / 09:00. Commit c57647f + 2105ae1. |
 | 2.2 | Noms comité mal formatés | ✅ Résolu | Tous les noms corrigés en admin + fonctions renseignées : Matthieu Deramée (Président), Bruno Carton-Delcourt (Vice-Président), François Van Rechem (Trésorier), Benoit Carton-Delcourt (Secrétaire), Maxime Legas (Communication), Stéphane Roos (Site Web), Joachim Vanoppens, Andy Buidin, David Lux (Membres du comité). |
-| 2.3 | Pages blog/gallery/events/equipment vides | ⏠ Comité | Décision : alimenter ou masquer |
+| 2.3 | Pages blog/gallery/events/equipment vides | ✅ Non vide | Blog : 3 articles · Galerie : 6 photos · Événements : 1 · Équipement : 1 produit. (Audit initial faux : le fetch ne rendait pas le JS client.) |
 | 2.4 | Sponsors UTC « Chargement… » | ✅ Résolu | Section masquée tant qu'aucun sponsor. Commit f032b06. |
 | 2.5 | Règlement UTC 4 | ⏠ Comité | Décision : qui rédige + délai |
 | 2.6 | /events orpheline dans le menu | ✅ Résolu | « Événements » ajouté au menu + footer. Commit f032b06. |
