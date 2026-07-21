@@ -79,7 +79,11 @@ export default function EventDetailPage({
   const isLoggedIn = !!session?.user;
   const userId = session?.user?.id;
 
+  // A registration exists whether or not it's been paid. The "Se désinscrire"
+  // button must show for free events (paidAt null) too, not just paid ones.
   const isRegistered =
+    event?.registrations.some((r) => r.userId === userId) ?? false;
+  const isPaidRegistration =
     event?.registrations.some((r) => r.userId === userId && r.paidAt) ?? false;
 
   const spotsLeft = event?.maxParticipants
@@ -206,7 +210,9 @@ export default function EventDetailPage({
               ) : isRegistered ? (
                 <div>
                   <p className="mb-3 text-sm text-green-400">
-                    Vous êtes inscrit et votre paiement est confirmé.
+                    {isPaidRegistration
+                      ? "Vous êtes inscrit et votre paiement est confirmé."
+                      : "Vous êtes inscrit à cet événement."}
                   </p>
                   <Button
                     variant="outline"
