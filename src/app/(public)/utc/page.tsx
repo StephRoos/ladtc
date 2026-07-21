@@ -294,6 +294,57 @@ export default function UtcPage(): React.ReactNode {
           </>
         )}
       </section>
+
+      {/* Structured data for the race — improves Google indexing and rich
+          results for "trail Ellezelles". Inline JSON-LD is the recommended
+          pattern for Next.js server components. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SportsEvent",
+            name: `L'${utc.name} — ${utc.shortName}`,
+            description: `Course folklorique en binôme et en nocturne organisée par la dtc sur les sentiers du Pays des Collines, dans l'ambiance de l'Oberbayern.`,
+            startDate: "2026-10-24",
+            eventStatus: "https://schema.org/EventScheduled",
+            eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+            location: {
+              "@type": "Place",
+              name: utc.location,
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Ellezelles",
+                addressRegion: "Hainaut",
+                addressCountry: "BE",
+              },
+            },
+            organizer: {
+              "@type": "SportsOrganization",
+              name: siteConfig.fullName,
+              url: siteConfig.url,
+            },
+            offers: [
+              {
+                "@type": "Offer",
+                name: "Parcours 9 km (binôme)",
+                price: "15.00",
+                priceCurrency: "EUR",
+                availability: "https://schema.org/PreOrder",
+                url: utc.registrationUrl ?? `${siteConfig.url}/utc`,
+              },
+              {
+                "@type": "Offer",
+                name: "Parcours 18 km (binôme)",
+                price: "25.00",
+                priceCurrency: "EUR",
+                availability: "https://schema.org/PreOrder",
+                url: utc.registrationUrl ?? `${siteConfig.url}/utc`,
+              },
+            ],
+          }),
+        }}
+      />
     </div>
   );
 }

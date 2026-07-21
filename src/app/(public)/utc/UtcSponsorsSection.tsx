@@ -4,31 +4,20 @@ import { SponsorsCarousel } from "@/components/sponsors/SponsorsCarousel";
 import { usePublicSponsors } from "@/hooks/use-sponsors";
 
 /**
- * Sponsors section for UTC page - client component that fetches and displays sponsors
+ * Sponsors section for UTC page - client component that fetches and displays sponsors.
+ * Hidden entirely (null) while loading and when there are no sponsors — showing
+ * a "Chargement..." placeholder forever was worse than showing nothing, especially
+ * before the first sponsor is signed up (audit 2026-07-20 §2.4).
  */
 export function UtcSponsorsSection(): React.ReactNode {
   const { data, isLoading, isError } = usePublicSponsors();
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <section className="mb-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold">Nos sponsors</h2>
-            <p className="mt-2 text-muted-foreground">Chargement...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Error state or no sponsors
-  if (isError || !data?.sponsors || data.sponsors.length === 0) {
+  // Loading or no sponsors: render nothing. The section only appears once
+  // sponsors are actually loaded and the list is non-empty.
+  if (isLoading || isError || !data?.sponsors || data.sponsors.length === 0) {
     return null;
   }
 
-  // Success - show sponsors carousel
   return (
     <section className="mb-16">
       <SponsorsCarousel

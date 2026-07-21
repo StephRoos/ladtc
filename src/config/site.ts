@@ -7,7 +7,10 @@ export const siteConfig = {
   fullName: "la dtc",
   description: "Club de trail running à Ellezelles, Pays des Collines, Belgique",
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  ogImage: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/og.png`,
+  // OG image for social sharing. Stopgap: reuses the hero background until a
+  // dedicated 1200×630 OG image is designed. A proper OG image should embed the
+  // logo and a short tagline for better social preview (audit 2026-07-20 §2.15).
+  ogImage: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/images/hero-bg.jpg`,
   links: {
     facebookPublic: "https://www.facebook.com/groups/1577873296894853/",
     facebookMembers: "https://www.facebook.com/groups/1355264578348185",
