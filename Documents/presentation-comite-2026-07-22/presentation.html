@@ -11,35 +11,26 @@
   :root { --primary:#0E7490; --accent:#FF8C00; --ink:#0F172A; --soft:#64748B; --bg:#F1F5F9; --ok:#059669; --danger:#DC2626; }
   .reveal { font-family:-apple-system,"Segoe UI",Helvetica,sans-serif; color:var(--ink); font-size:32px; }
   .reveal .slides section { height:100%; }
-  .reveal h1,.reveal h2,.reveal h3 { font-weight:700; text-transform:none; letter-spacing:-0.01em; }
-  .reveal h1 { font-size:2.8em; margin-bottom:0.3em; }
+  .reveal h1,.reveal h2 { font-weight:700; text-transform:none; letter-spacing:-0.01em; }
+  .reveal h1 { font-size:3em; margin-bottom:0.3em; }
   .reveal h2 { font-size:1.8em; margin-bottom:0.4em; color:var(--primary); }
-  .reveal h3 { font-size:1.25em; margin-bottom:0.5em; }
   .reveal p { line-height:1.4; }
   .reveal .small { font-size:0.7em; color:var(--soft); }
-  .reveal ul, .reveal ol { margin-left:1em; }
+  .reveal ul { margin-left:1em; }
   .reveal li { margin:0.3em 0; }
   .reveal .ok { color:var(--ok); font-weight:700; }
   .reveal .danger { color:var(--danger); font-weight:700; }
-  .reveal .accent { color:var(--accent); font-weight:700; }
-  .reveal table { font-size:0.75em; border-collapse:collapse; width:100%; margin-top:16px; }
-  .reveal th { background:var(--primary); color:white; padding:8px 12px; text-align:left; }
-  .reveal td { padding:8px 12px; border-bottom:1px solid #E2E8F0; vertical-align:top; }
-  .reveal tr:nth-child(even) td { background:#F8FAFC; }
+  .reveal .two-col { display:grid; grid-template-columns:1fr 1fr; gap:30px; }
   .reveal .card { background:var(--bg); padding:20px; border-radius:8px; border-left:4px solid var(--primary); }
   .reveal .card.ok { border-left-color:var(--ok); }
   .reveal .card.danger { border-left-color:var(--danger); }
-  .reveal .card h3 { margin-top:0; }
+  .reveal .card h3 { font-size:1.1em; margin-top:0; }
   .reveal .card ul { font-size:0.8em; margin-top:8px; }
-  .reveal .two-col { display:grid; grid-template-columns:1fr 1fr; gap:30px; }
-  .reveal .section-divider { background:linear-gradient(135deg,var(--primary) 0%,#164E63 100%); color:white; padding:80px 40px; text-align:center; }
-  .reveal .section-divider h2 { color:white; font-size:2.6em; }
   .reveal .title-slide { text-align:center; }
   .reveal .title-slide h1 { font-size:3.5em; margin-bottom:0.1em; }
   .reveal .title-slide .subtitle { font-size:1.3em; color:var(--soft); margin-top:0; }
   .reveal .title-slide .meta { font-size:0.8em; color:var(--soft); margin-top:50px; }
-  .reveal .decision { background:#FEF3C7; border-left:5px solid #D97706; padding:18px 26px; border-radius:6px; margin-top:24px; }
-  .reveal .decision h3 { color:#92400E; margin-top:0; }
+  .reveal .decision { background:#FEF3C7; border-left:5px solid #D97706; padding:18px 26px; border-radius:6px; margin-top:20px; }
   .reveal .decision ol { font-size:0.85em; margin-top:8px; }
 </style>
 </head>
@@ -60,47 +51,18 @@
     <div class="card ok">
       <h3>Fonctionnel</h3>
       <ul>
-        <li>En production, réponse &lt; 60 ms</li>
-        <li>319 tests automatisés passent</li>
+        <li>En production, &lt; 60 ms</li>
+        <li>319 tests, sécurité solide</li>
         <li>Paiements Stripe actifs</li>
-        <li>Sécurité : CSP, CDN, headers</li>
         <li>Page UTC 4 complète</li>
       </ul>
     </div>
     <div class="card danger">
       <h3>Inachevé</h3>
       <ul>
-        <li>Blog, galerie, événements, boutique : vides</li>
+        <li>Blog, galerie, events, boutique vides</li>
         <li>Règlement UTC 4 non publié</li>
-        <li>Pas de page mentions légales</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="section-divider">
-  <h2>Ce qui a été fait</h2>
-</section>
-
-<section>
-  <h2>Fait depuis avril</h2>
-  <div class="two-col" style="margin-top:24px;">
-    <div>
-      <h3 class="ok">Fonctionnalités</h3>
-      <ul style="font-size:0.8em;">
-        <li>Page UTC 4 en ligne</li>
-        <li>Paiement des cotisations</li>
-        <li>Boutique équipement</li>
-        <li>Profil membre : photo, prénom/nom</li>
-      </ul>
-    </div>
-    <div>
-      <h3 class="ok">Robustesse</h3>
-      <ul style="font-size:0.8em;">
-        <li>Vérification email obligatoire</li>
-        <li>Email de bienvenue automatique</li>
-        <li>Événements payants</li>
-        <li>Webhook Stripe étendu</li>
+        <li>Pas de mentions légales</li>
       </ul>
     </div>
   </div>
@@ -108,148 +70,35 @@
 
 <section>
   <h2>Fait cette semaine</h2>
-  <div class="two-col" style="margin-top:24px;">
-    <div>
-      <h3 class="ok">Cohérence</h3>
-      <ul style="font-size:0.8em;">
-        <li>Horaires clarifiés (rdv + départ)</li>
-        <li>Noms corrigés, fonctions affichées</li>
-        <li>Sponsors UTC masqués si vide</li>
-      </ul>
-    </div>
-    <div>
-      <h3 class="ok">SEO & navigation</h3>
-      <ul style="font-size:0.8em;">
-        <li>/events au menu + footer</li>
-        <li>Sitemap : /utc ajouté</li>
-        <li>JSON-LD SportsEvent + Organization</li>
-        <li>Canonical + OG image</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="section-divider">
-  <h2>Ce qui reste</h2>
-</section>
-
-<section>
-  <h2>Pages vides</h2>
-  <div class="two-col" style="margin-top:30px;">
-    <div class="card">
-      <h3>État actuel</h3>
-      <ul>
-        <li>Blog : 0 article</li>
-        <li>Galerie : 0 photo</li>
-        <li>Événements : 0 événement</li>
-        <li>Boutique : 0 produit</li>
-      </ul>
-    </div>
-    <div class="card danger">
-      <h3>Problème</h3>
-      <p style="font-size:0.85em;">L'accueil pousse vers ces pages. Un visiteur arrive sur du vide.</p>
-    </div>
-  </div>
-  <div class="decision">
-    <h3>Décision</h3>
-    <p style="font-size:0.85em;">Alimenter un minimum ou masquer les entrées de menu ?</p>
-  </div>
-</section>
-
-<section>
-  <h2>UTC 4 — à finaliser</h2>
-  <table>
-    <thead><tr><th>Élément</th><th>Statut</th></tr></thead>
-    <tbody>
-      <tr><td>Date, lieu, parcours, prix</td><td class="ok">En ligne</td></tr>
-      <tr><td>Sponsoring (paliers, IBAN)</td><td class="ok">Affiché</td></tr>
-      <tr><td>Lien d'inscription Ultratiming</td><td class="danger">En attente</td></tr>
-      <tr><td>Règlement officiel</td><td class="danger">Placeholder</td></tr>
-      <tr><td>Nouveau tracé</td><td class="danger">À envoyer à la commune</td></tr>
-      <tr><td>Événement dans le calendrier</td><td class="danger">À créer</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<section>
-  <h2>UTC 4 — rétroplanning</h2>
-  <table>
-    <thead><tr><th>Échéance</th><th>Action</th></tr></thead>
-    <tbody>
-      <tr><td>Fin août</td><td>Démarches sponsors bouclées</td></tr>
-      <tr><td>Début septembre</td><td>Circuit envoyé à la commune</td></tr>
-      <tr><td>~7 septembre</td><td>Flyers imprimés (500 ex.)</td></tr>
-      <tr><td>1re semaine septembre</td><td>Ouverture inscriptions</td></tr>
-      <tr><td>24 octobre</td><td>Course</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<section class="section-divider">
-  <h2>Décisions</h2>
+  <ul style="font-size:0.85em;">
+    <li class="ok">Horaires clarifiés, noms corrigés, fonctions affichées</li>
+    <li class="ok">Sponsors UTC masqués si vide, /events au menu</li>
+    <li class="ok">Sitemap /utc, JSON-LD, canonical, OG image</li>
+    <li class="ok">Profil membre : photo, prénom/nom séparés</li>
+  </ul>
 </section>
 
 <section>
   <h2>Quatre décisions</h2>
-  <ol style="font-size:0.95em; max-width:700px; margin:0 auto;">
-    <li><strong>Pages vides</strong> : alimenter ou masquer ?</li>
-    <li><strong>Règlement UTC 4</strong> : qui rédige, pour quand ?</li>
-    <li><strong>Mentions légales</strong> : qui rédige le texte ?</li>
-    <li><strong>Crawlers IA</strong> : garder le blocage ou ouvrir ?</li>
-  </ol>
-</section>
-
-<section>
-  <h2>Après cette soirée</h2>
-  <div class="two-col" style="margin-top:30px;">
-    <div class="card">
-      <h3>Technique (post-comité)</h3>
-      <ul>
-        <li>Meta description par page (30 min)</li>
-        <li>HSTS côté Cloudflare (5 min)</li>
-        <li>OG image dédiée 1200×630</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Contenu (selon décisions)</h3>
-      <ul>
-        <li>Alimenter ou masquer les pages</li>
-        <li>Publier le règlement UTC 4</li>
-        <li>Créer la page mentions légales</li>
-        <li>Créer l'événement UTC 4</li>
-        <li>Ouvrir inscriptions Ultratiming</li>
-      </ul>
-    </div>
+  <div class="decision">
+    <ol>
+      <li>Pages vides : alimenter ou masquer ?</li>
+      <li>Règlement UTC 4 : qui rédige, pour quand ?</li>
+      <li>Mentions légales : qui rédige ?</li>
+      <li>Crawlers IA : bloquer ou ouvrir ?</li>
+    </ol>
   </div>
 </section>
 
 <section>
   <h2>Démonstration</h2>
-  <ol style="font-size:0.9em; max-width:650px; margin:0 auto;">
+  <ol style="font-size:0.9em; max-width:600px; margin:0 auto;">
     <li>Tour du site public (3 min)</li>
-    <li>Inscription d'un nouveau membre (5 min)</li>
-    <li>Côté admin : tableau de bord, cotisation (3 min)</li>
-    <li>Paiement réel : 1 € Bancontact (3 min)</li>
-    <li>Inscription à un événement payant : 5 € (5 min)</li>
+    <li>Inscription membre + vérification email (5 min)</li>
+    <li>Paiement cotisation : 1 € Bancontact (3 min)</li>
+    <li>Événement payant : 5 € (5 min)</li>
   </ol>
-  <p class="small" style="margin-top:30px;">Compte démo : <code>stephaneroos+demo@gmail.com</code> — à supprimer après la séance.</p>
-</section>
-
-<section>
-  <h2>Frais Stripe</h2>
-  <table>
-    <thead><tr><th>Montant</th><th>Commission</th><th>Net club</th></tr></thead>
-    <tbody>
-      <tr><td>50 €</td><td>~0,95 €</td><td>~49,05 €</td></tr>
-      <tr><td>25 €</td><td>~0,60 €</td><td>~24,40 €</td></tr>
-    </tbody>
-  </table>
-  <p class="small" style="margin-top:20px;">~2 % par transaction. Zéro liquide, traçabilité complète, activation automatique.</p>
-</section>
-
-<section class="title-slide">
-  <p class="subtitle" style="margin-top:40px;">Questions</p>
-  <p class="small" style="margin-top:30px;">https://ladtc.be</p>
+  <p class="small" style="margin-top:30px;">Compte démo : <code>stephaneroos+demo@gmail.com</code></p>
 </section>
 
 </div>
