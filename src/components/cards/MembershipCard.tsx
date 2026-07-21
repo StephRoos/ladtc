@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { getCurrentSeason, isSeasonCurrent, formatSeason } from "@/lib/membership";
+import { getCurrentSeason, isSeasonCurrent } from "@/lib/membership";
 import type { Membership, MembershipStatus } from "@/types";
 
 interface StatusConfig {
@@ -78,7 +78,7 @@ export function MembershipCard({ membership }: MembershipCardProps): React.React
           <div>
             <p className="text-muted-foreground">Saison</p>
             <p className="font-medium">
-              {membership.season ? formatSeason(membership.season) : "Aucune"}
+              {membership.season ?? "Aucune"}
             </p>
           </div>
           <div>
@@ -89,7 +89,7 @@ export function MembershipCard({ membership }: MembershipCardProps): React.React
 
         {paidForCurrentSeason && (
           <div className="rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-400">
-            Cotisation à jour pour la {currentSeason}
+            Cotisation à jour pour la saison {currentSeason}
           </div>
         )}
         {!paidForCurrentSeason && membership.status !== "INACTIVE" && (
