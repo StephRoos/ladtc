@@ -76,10 +76,6 @@ export function MembershipCard({ membership }: MembershipCardProps): React.React
             </p>
           </div>
           <div>
-            <p className="text-muted-foreground">Saison en cours</p>
-            <p className="font-medium">{currentSeason}</p>
-          </div>
-          <div>
             <p className="text-muted-foreground">Saison</p>
             <p className="font-medium">
               {membership.season ? formatSeason(membership.season) : "Aucune"}
