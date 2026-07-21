@@ -53,16 +53,20 @@ export const auth = betterAuth({
         // Create an ACTIVE membership for the 2025-2026 season: the 100 existing
         // club members being invited are already paid up for this season. The
         // 2025-2026 fee was 50 EUR (no online processing fee back then — Stripe
-        // was not yet in use). The hook assumes the sign-up comes from an
-        // invitation email sent to existing members. When the 2026-2027 season
-        // opens (September), this hook must be updated: either to PENDING for
-        // new members, or to drive the status from a query param / role check
-        // rather than hardcoding it.
+        // was not yet in use). joinedAt is set to September 1, 2025 (start of
+        // the 2025-2026 season) rather than the digital sign-up date: those
+        // members joined the club at the start of the season even if they only
+        // register on the website months later. The hook assumes the sign-up
+        // comes from an invitation email sent to existing members. When the
+        // 2026-2027 season opens (September), this hook must be updated: either
+        // to PENDING for new members, or to drive the status from a query param
+        // / role check rather than hardcoding it.
         await prisma.membership.create({
           data: {
             userId: user.id,
             status: "ACTIVE",
             season: "2025-2026",
+            joinedAt: new Date("2025-09-01"),
             paidAt: new Date(),
             amount: 50,
           },

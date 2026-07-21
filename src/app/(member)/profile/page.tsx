@@ -14,6 +14,17 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { UserRole } from "@/types";
+
+/**
+ * French labels for user roles, displayed on the profile page.
+ * Used instead of the raw enum value ("MEMBER" → "Membre").
+ */
+const ROLE_LABELS: Record<UserRole, string> = {
+  MEMBER: "Membre",
+  COMMITTEE: "Membre du comité",
+  ADMIN: "Administrateur",
+};
 
 /**
  * Member profile page — displays user info, membership status, and edit form.
@@ -93,7 +104,9 @@ export default function ProfilePage(): React.ReactNode {
               </div>
               <div>
                 <dt className="text-muted-foreground">Rôle</dt>
-                <dd className="font-medium capitalize">{user.role.toLowerCase()}</dd>
+                <dd className="font-medium">
+                  {ROLE_LABELS[user.role] ?? user.role}
+                </dd>
               </div>
             </dl>
           )}
