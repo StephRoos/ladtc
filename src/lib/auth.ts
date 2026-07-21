@@ -51,18 +51,20 @@ export const auth = betterAuth({
       try {
         await sendWelcomeEmail({ name: user.name, email: user.email });
         // Create an ACTIVE membership for the 2025-2026 season: the 100 existing
-        // club members being invited are already paid up for this season. The hook
-        // assumes the sign-up comes from an invitation email sent to existing
-        // members. When the 2026-2027 season opens (September), this hook must be
-        // updated: either to PENDING for new members, or to drive the status from
-        // a query param / role check rather than hardcoding it.
+        // club members being invited are already paid up for this season. The
+        // 2025-2026 fee was 50 EUR (no online processing fee back then — Stripe
+        // was not yet in use). The hook assumes the sign-up comes from an
+        // invitation email sent to existing members. When the 2026-2027 season
+        // opens (September), this hook must be updated: either to PENDING for
+        // new members, or to drive the status from a query param / role check
+        // rather than hardcoding it.
         await prisma.membership.create({
           data: {
             userId: user.id,
             status: "ACTIVE",
             season: "2025-2026",
             paidAt: new Date(),
-            amount: 55,
+            amount: 50,
           },
         });
       } catch (err) {
