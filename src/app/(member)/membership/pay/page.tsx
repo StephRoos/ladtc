@@ -111,28 +111,32 @@ export default function MembershipPayPage(): React.ReactNode {
               <span className="text-muted-foreground">Saison</span>
               <span className="font-medium">{currentSeason}</span>
             </div>
-            <Separator />
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Cotisation</span>
               <span className="font-medium">{membership.amount.toFixed(2)} €</span>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Frais de traitement en ligne</span>
-              <span className="font-medium">{onlineFee(membership.amount).toFixed(2)} €</span>
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <span className="font-semibold">Total à payer en ligne</span>
-              <span className="text-2xl font-bold text-primary">
-                {onlineAmount(membership.amount).toFixed(2)} €
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Les frais de traitement permettent au club de percevoir
-              l&apos;intégralité de la cotisation. Le paiement en liquide auprès
-              du trésorier reste possible au tarif de{" "}
-              {membership.amount.toFixed(2)} €.
-            </p>
+            {!paidForCurrentSeason && (
+              <>
+                <Separator />
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Frais de traitement en ligne</span>
+                  <span className="font-medium">{onlineFee(membership.amount).toFixed(2)} €</span>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">Total à payer en ligne</span>
+                  <span className="text-2xl font-bold text-primary">
+                    {onlineAmount(membership.amount).toFixed(2)} €
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Les frais de traitement permettent au club de percevoir
+                  l&apos;intégralité de la cotisation. Le paiement en liquide auprès
+                  du trésorier reste possible au tarif de{" "}
+                  {membership.amount.toFixed(2)} €.
+                </p>
+              </>
+            )}
           </div>
 
           {error && (
