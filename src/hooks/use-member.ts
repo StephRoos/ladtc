@@ -50,6 +50,23 @@ export function useMember(): ReturnType<typeof useQuery<MemberProfileResponse>> 
 }
 
 /**
+ * Update the current user's avatar image via the self-service API.
+ * Sets `image` to a URL string to add/change, or null to remove.
+ */
+async function patchMyImage(image: string | null): Promise<MemberProfileResponse> {
+  const res = await fetch("/api/members/me/image", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ image }),
+  });
+  if (!res.ok) {
+    const err = (await res.json()) as { error?: string };
+    throw new Error(err.error ?? "Impossible de mettre à jour la photo");
+  }
+  return res.json() as Promise<MemberProfileResponse>;
+}
+
+/**
  * Hook to update the current user's profile.
  * Invalidates the member query on success.
  *
@@ -60,6 +77,21 @@ export function useUpdateProfile(): ReturnType<typeof useMutation<MemberProfileR
 
   return useMutation<MemberProfileResponse, Error, ProfileUpdateFormData>({
     mutationFn: patchMyProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["member", "me"] });
+    },
+  });
+}
+
+/**
+ * Hook to update the current user's avatar image (self-service).
+ * Invalidates the member query on success so the profile re-renders.
+ */
+export function useUpdateMyImage(): ReturnType<typeof useMutation<MemberProfileResponse, Error, string | null>> {
+  const queryClient = useQueryClient();
+
+  return useMutation<MemberProfileResponse, Error, string | null>({
+    mutationFn: patchMyImage,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["member", "me"] });
     },

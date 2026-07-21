@@ -14,6 +14,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MyAvatarEditor } from "@/components/cards/MyAvatarEditor";
 import type { UserRole } from "@/types";
 
 /**
@@ -64,9 +65,15 @@ export default function ProfilePage(): React.ReactNode {
       {/* User info card */}
       <Card>
         <CardHeader className="flex flex-row items-start justify-between space-y-0">
-          <div>
-            <CardTitle>{user.name ?? "Membre LADTC"}</CardTitle>
-            <CardDescription>{user.email}</CardDescription>
+          <div className="flex items-start gap-4">
+            <MyAvatarEditor
+              currentImage={user.image}
+              userName={user.name}
+            />
+            <div>
+              <CardTitle>{user.name ?? "Membre LADTC"}</CardTitle>
+              <CardDescription>{user.email}</CardDescription>
+            </div>
           </div>
           {!isEditing && (
             <Button
