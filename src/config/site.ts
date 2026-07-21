@@ -56,7 +56,7 @@ export const siteConfig = {
       },
       {
         day: "Sunday",
-        time: "08:45",
+        time: "09:00",
         location: "Ellezelles town square",
       },
     ],

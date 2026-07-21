@@ -254,7 +254,7 @@ function TrainingSection(): React.ReactNode {
                   Di
                 </span>
                 <div>
-                  <p className="font-medium">Dimanche à 08:45</p>
+                  <p className="font-medium">Dimanche : Rdv 08:45, départ 09:00</p>
                   <p className="text-sm text-muted-foreground">
                     Une sortie trail en groupe, pour toutes les allures
                   </p>
