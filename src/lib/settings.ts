@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_DTC_MEANINGS } from "@/config/site";
+import { COMMITTEE_ROLE_SUGGESTIONS } from "@/lib/schemas";
 
 /**
  * Admin-tunable key/value settings backed by the `Setting` table.
@@ -12,12 +13,15 @@ import { DEFAULT_DTC_MEANINGS } from "@/config/site";
  *     deliveryMethod = HOME_DELIVERY on an equipment order.
  *   - "site.dtcMeanings": string[] — random "la dtc" subtitles for the header.
  *   - "site.contributionUrl": string — Nextcloud file-drop link for members.
+ *   - "committee.roles": string[] — selectable committee functions
+ *     (Président, Trésorier, …) shown in the user management page.
  */
 
 export const SETTING_KEYS = {
   EQUIPMENT_SHIPPING_FEE: "equipment.shippingFee",
   SITE_DTC_MEANINGS: "site.dtcMeanings",
   SITE_CONTRIBUTION_URL: "site.contributionUrl",
+  COMMITTEE_ROLES: "committee.roles",
 } as const;
 
 /** Default shipping fee in euros when the Setting row is missing. */
@@ -72,6 +76,30 @@ export async function getDtcMeanings(): Promise<string[]> {
     // Malformed JSON — fall back to defaults below.
   }
   return DEFAULT_DTC_MEANINGS;
+}
+
+/**
+ * Reads the list of selectable committee functions (Président, Trésorier…)
+ * shown in the user management page. Falls back to the bundled suggestions
+ * when the setting is absent, malformed, or empty — the dropdown always
+ * has something to show.
+ */
+export async function getCommitteeRoles(): Promise<string[]> {
+  const raw = await getSettingRaw(SETTING_KEYS.COMMITTEE_ROLES);
+  if (raw === null) return [...COMMITTEE_ROLE_SUGGESTIONS];
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (
+      Array.isArray(parsed) &&
+      parsed.length > 0 &&
+      parsed.every((v) => typeof v === "string")
+    ) {
+      return parsed as string[];
+    }
+  } catch {
+    // Malformed JSON — fall back to defaults below.
+  }
+  return [...COMMITTEE_ROLE_SUGGESTIONS];
 }
 
 /**

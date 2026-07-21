@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DtcMeaningsSettings } from "@/components/admin/settings/DtcMeaningsSettings";
 import { ContributionUrlSettings } from "@/components/admin/settings/ContributionUrlSettings";
+import { CommitteeRolesSettings } from "@/components/admin/settings/CommitteeRolesSettings";
 
 const SHIPPING_FEE_KEY = "equipment.shippingFee";
 
@@ -118,6 +119,10 @@ export default function AdminSettingsPage(): React.ReactNode {
       </div>
 
       <ContributionUrlSettings />
+
+      <div className="mt-6">
+        <CommitteeRolesSettings />
+      </div>
     </div>
   );
 }

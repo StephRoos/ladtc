@@ -9,6 +9,7 @@ const ALLOWED_KEYS = new Set([
   "equipment.shippingFee",
   "site.dtcMeanings",
   "site.contributionUrl",
+  "committee.roles",
 ]);
 
 const updateSchema = z.object({
@@ -127,6 +128,27 @@ export async function PATCH(
       );
     }
     valueToStore = trimmed;
+  }
+
+  // Committee functions: a list of non-empty strings (trim + drop blanks).
+  // Require at least one so the user management dropdown is never empty.
+  if (key === "committee.roles") {
+    if (!Array.isArray(parsed.data.value)) {
+      return NextResponse.json(
+        { error: "Les fonctions doivent être une liste" },
+        { status: 422 }
+      );
+    }
+    const cleaned = parsed.data.value
+      .map((s) => (typeof s === "string" ? s.trim() : ""))
+      .filter((s) => s.length > 0);
+    if (cleaned.length === 0) {
+      return NextResponse.json(
+        { error: "Ajoutez au moins une fonction" },
+        { status: 422 }
+      );
+    }
+    valueToStore = cleaned;
   }
 
   await setSetting(key, valueToStore);

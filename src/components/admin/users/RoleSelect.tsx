@@ -8,9 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { COMMITTEE_ROLE_SUGGESTIONS } from "@/lib/schemas";
+import { useCommitteeRoles } from "@/hooks/use-committee-roles";
 import type { UserRole } from "@/types";
 
 const ROLE_LABELS: Record<UserRole, string> = {
@@ -36,8 +35,9 @@ interface RoleSelectProps {
 
 /**
  * Role dropdown with inline confirmation before applying the change.
- * When COMMITTEE is selected, a free-text input with suggestions appears
- * for the committee function.
+ * When COMMITTEE is selected, a second dropdown appears to pick the
+ * committee function (Président, Trésorier, …) from the admin-tunable list
+ * stored under the `committee.roles` setting.
  */
 export function RoleSelect({
   userId,
@@ -46,6 +46,7 @@ export function RoleSelect({
   onRoleChange,
   isLoading,
 }: RoleSelectProps): React.ReactNode {
+  const { data: committeeRoles } = useCommitteeRoles();
   const [selectedRole, setSelectedRole] = useState<UserRole>(currentRole);
   const [committeeRoleInput, setCommitteeRoleInput] = useState(
     currentCommitteeRole ?? "",
@@ -89,7 +90,16 @@ export function RoleSelect({
     setConfirming(false);
   }
 
-  const datalistId = `committee-roles-${userId}`;
+  // Build the list of options shown in the committee function dropdown:
+  // the configured list, plus the current value if it's not already in it
+  // (so a user whose function was removed from the list is still displayed
+  // correctly and can be kept or changed).
+  const options = committeeRoles ?? [];
+  const optionsWithCurrent =
+    currentCommitteeRole && !options.includes(currentCommitteeRole)
+      ? [currentCommitteeRole, ...options]
+      : options;
+  const noneValue = "__none__";
 
   return (
     <div className="flex flex-col gap-2">
@@ -120,24 +130,26 @@ export function RoleSelect({
       </div>
 
       {selectedRole === "COMMITTEE" && (
-        <>
-          <Input
-            list={datalistId}
-            value={committeeRoleInput}
-            onChange={(e) => {
-              setCommitteeRoleInput(e.target.value);
-              setConfirming(true);
-            }}
-            placeholder="Fonction (ex: Président, Trésorier…)"
-            className="w-56"
-            disabled={isLoading}
-          />
-          <datalist id={datalistId}>
-            {COMMITTEE_ROLE_SUGGESTIONS.map((s) => (
-              <option key={s} value={s} />
+        <Select
+          value={committeeRoleInput || noneValue}
+          onValueChange={(value) => {
+            setCommitteeRoleInput(value === noneValue ? "" : value);
+            setConfirming(true);
+          }}
+          disabled={isLoading}
+        >
+          <SelectTrigger className="w-56">
+            <SelectValue placeholder="Fonction (optionnelle)" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={noneValue}>— Aucune fonction —</SelectItem>
+            {optionsWithCurrent.map((role) => (
+              <SelectItem key={role} value={role}>
+                {role}
+              </SelectItem>
             ))}
-          </datalist>
-        </>
+          </SelectContent>
+        </Select>
       )}
     </div>
   );
