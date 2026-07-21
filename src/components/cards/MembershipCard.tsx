@@ -72,7 +72,7 @@ export function MembershipCard({ membership }: MembershipCardProps): React.React
           <div>
             <p className="text-muted-foreground">Membre depuis</p>
             <p className="font-medium">
-              {new Date(membership.joinedAt).toLocaleDateString("fr-BE")}
+              {new Date(membership.joinedAt).getFullYear()}
             </p>
           </div>
           <div>
