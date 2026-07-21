@@ -177,6 +177,7 @@ export default function AdminMemberDetailPage({
           {isEditing ? (
             <MemberForm
               memberId={user.id}
+              user={user}
               membership={membership}
               onCancel={() => setIsEditing(false)}
               onSuccess={() => setIsEditing(false)}

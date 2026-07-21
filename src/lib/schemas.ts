@@ -109,6 +109,10 @@ export const profileUpdateSchema = z.object({
  * database as `joinedAt` (a Date), normalized to January 1 of that year in
  * the PATCH handler. The profile only displays the year, so we keep the
  * input shape aligned with the display to make the form field intuitive.
+ *
+ * `name` is an optional string letting the committee fix an inverted or
+ * malformed user name (e.g. "Carton-Delcourt Bruno" → "Bruno Carton-Delcourt")
+ * without having to ask the member to do it themselves.
  */
 export const memberUpdateSchema = z.object({
   status: z.enum(["PENDING", "ACTIVE", "INACTIVE", "EXPIRED"]),
@@ -121,6 +125,10 @@ export const memberUpdateSchema = z.object({
     .int("L'année doit être un entier")
     .min(2000, "Année trop ancienne")
     .max(2100, "Année invalide")
+    .optional(),
+  name: z
+    .string()
+    .min(2, "Le nom doit contenir au moins 2 caractères")
     .optional(),
 });
 

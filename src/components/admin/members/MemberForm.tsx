@@ -16,10 +16,11 @@ import {
 import { memberUpdateSchema, type MemberUpdateFormData } from "@/lib/schemas";
 import { useUpdateMember } from "@/hooks/use-members";
 import { getCurrentSeason } from "@/lib/membership";
-import type { Membership } from "@/types";
+import type { Membership, User } from "@/types";
 
 interface MemberFormProps {
   memberId: string;
+  user: User;
   membership: Membership | null;
   onCancel?: () => void;
   onSuccess?: () => void;
@@ -30,6 +31,7 @@ interface MemberFormProps {
  */
 export function MemberForm({
   memberId,
+  user,
   membership,
   onCancel,
   onSuccess,
@@ -47,6 +49,7 @@ export function MemberForm({
   } = useForm<MemberUpdateFormData>({
     resolver: zodResolver(memberUpdateSchema),
     defaultValues: {
+      name: user.name ?? "",
       status: membership?.status ?? "PENDING",
       season: membership?.season ?? null,
       paidAt: membership?.paidAt
@@ -101,6 +104,23 @@ export function MemberForm({
           {successMessage}
         </div>
       )}
+
+      <div className="space-y-2">
+        <Label htmlFor="name">Nom complet</Label>
+        <Input
+          id="name"
+          type="text"
+          placeholder="Prénom Nom"
+          {...register("name")}
+        />
+        <p className="text-xs text-muted-foreground">
+          Format : « Prénom Nom » (dans cet ordre). Permet de corriger un nom
+          mal saisi ou inversé.
+        </p>
+        {errors.name && (
+          <p className="text-sm text-destructive">{errors.name.message}</p>
+        )}
+      </div>
 
       <div className="space-y-2">
         <Label htmlFor="status">Statut</Label>

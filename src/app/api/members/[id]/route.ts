@@ -58,7 +58,7 @@ export async function PATCH(
     );
   }
 
-  const { status, season, paidAt, amount, notes, joinedYear } = parsed.data;
+  const { status, season, paidAt, amount, notes, joinedYear, name } = parsed.data;
 
   const user = await prisma.user.findUnique({
     where: { id },
@@ -68,6 +68,19 @@ export async function PATCH(
   if (!user) {
     return NextResponse.json({ error: "Membre introuvable" }, { status: 404 });
   }
+
+  // Update the user's name if provided. Lets the committee fix inverted or
+  // malformed names (e.g. "Carton-Delcourt Bruno" → "Bruno Carton-Delcourt")
+  // without asking the member to do it themselves.
+  if (name !== undefined && name !== user.name) {
+    await prisma.user.update({ where: { id }, data: { name } });
+  }
+  // Re-fetch so the response reflects the updated name (kept separate from
+  // the membership upsert below which only returns the membership).
+  const updatedUser = await prisma.user.findUnique({
+    where: { id },
+    include: { membership: true },
+  });
 
   // Normalize the optional joinedYear (e.g. 2023) to a joinedAt Date set to
   // January 1 of that year. The profile only displays the year, so the exact
@@ -97,5 +110,5 @@ export async function PATCH(
     },
   });
 
-  return NextResponse.json({ user, membership });
+  return NextResponse.json({ user: updatedUser ?? user, membership });
 }
