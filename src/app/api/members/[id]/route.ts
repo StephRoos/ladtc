@@ -58,7 +58,7 @@ export async function PATCH(
     );
   }
 
-  const { status, season, paidAt, amount, notes } = parsed.data;
+  const { status, season, paidAt, amount, notes, joinedYear } = parsed.data;
 
   const user = await prisma.user.findUnique({
     where: { id },
@@ -69,6 +69,13 @@ export async function PATCH(
     return NextResponse.json({ error: "Membre introuvable" }, { status: 404 });
   }
 
+  // Normalize the optional joinedYear (e.g. 2023) to a joinedAt Date set to
+  // January 1 of that year. The profile only displays the year, so the exact
+  // day is irrelevant. When joinedYear is not provided, leave joinedAt
+  // unchanged (preserve the existing value on partial updates).
+  const joinedAtUpdate =
+    joinedYear !== undefined ? new Date(joinedYear, 0, 1) : undefined;
+
   const membership = await prisma.membership.upsert({
     where: { userId: id },
     create: {
@@ -78,6 +85,7 @@ export async function PATCH(
       paidAt: paidAt ? new Date(paidAt) : null,
       amount,
       notes: notes ?? null,
+      joinedAt: joinedAtUpdate ?? new Date(),
     },
     update: {
       status,
@@ -85,6 +93,7 @@ export async function PATCH(
       paidAt: paidAt ? new Date(paidAt) : null,
       amount,
       notes: notes ?? null,
+      ...(joinedAtUpdate !== undefined ? { joinedAt: joinedAtUpdate } : {}),
     },
   });
 

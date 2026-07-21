@@ -54,6 +54,9 @@ export function MemberForm({
         : null,
       amount: membership?.amount ?? 50,
       notes: membership?.notes ?? "",
+      joinedYear: membership?.joinedAt
+        ? new Date(membership.joinedAt).getFullYear()
+        : new Date().getFullYear(),
     },
   });
 
@@ -149,6 +152,25 @@ export function MemberForm({
         />
         {errors.amount && (
           <p className="text-sm text-destructive">{errors.amount.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="joinedYear">Membre depuis (année)</Label>
+        <Input
+          id="joinedYear"
+          type="number"
+          step="1"
+          min="2000"
+          max="2100"
+          placeholder="2025"
+          {...register("joinedYear", { valueAsNumber: true })}
+        />
+        <p className="text-xs text-muted-foreground">
+          Année d&apos;adhésion au club. Affichée sur le profil du membre.
+        </p>
+        {errors.joinedYear && (
+          <p className="text-sm text-destructive">{errors.joinedYear.message}</p>
         )}
       </div>
 

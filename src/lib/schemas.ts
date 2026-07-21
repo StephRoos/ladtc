@@ -104,6 +104,11 @@ export const profileUpdateSchema = z.object({
 
 /**
  * Zod validation schema for membership updates (committee/admin)
+ *
+ * `joinedYear` is an optional integer year (e.g. 2025). It is stored in the
+ * database as `joinedAt` (a Date), normalized to January 1 of that year in
+ * the PATCH handler. The profile only displays the year, so we keep the
+ * input shape aligned with the display to make the form field intuitive.
  */
 export const memberUpdateSchema = z.object({
   status: z.enum(["PENDING", "ACTIVE", "INACTIVE", "EXPIRED"]),
@@ -111,6 +116,12 @@ export const memberUpdateSchema = z.object({
   paidAt: z.string().datetime().or(z.string().date()).nullable().optional(),
   amount: z.number().positive("Le montant doit être positif"),
   notes: z.string().optional(),
+  joinedYear: z
+    .number()
+    .int("L'année doit être un entier")
+    .min(2000, "Année trop ancienne")
+    .max(2100, "Année invalide")
+    .optional(),
 });
 
 /**

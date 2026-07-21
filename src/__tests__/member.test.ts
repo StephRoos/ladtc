@@ -137,6 +137,36 @@ describe("memberUpdateSchema", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("accepts an optional joinedYear integer", () => {
+    const result = memberUpdateSchema.safeParse({
+      status: "ACTIVE",
+      season: "2025-2026",
+      amount: 50,
+      joinedYear: 2023,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a non-integer joinedYear", () => {
+    const result = memberUpdateSchema.safeParse({
+      status: "ACTIVE",
+      season: "2025-2026",
+      amount: 50,
+      joinedYear: 2023.5,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a joinedYear below 2000", () => {
+    const result = memberUpdateSchema.safeParse({
+      status: "ACTIVE",
+      season: "2025-2026",
+      amount: 50,
+      joinedYear: 1999,
+    });
+    expect(result.success).toBe(false);
+  });
 });
 
 // ─── memberCreateSchema ──────────────────────────────────────────────────────
