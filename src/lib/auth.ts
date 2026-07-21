@@ -50,8 +50,23 @@ export const auth = betterAuth({
     afterEmailVerification: async (user) => {
       try {
         await sendWelcomeEmail({ name: user.name, email: user.email });
+        // Create an ACTIVE membership for the 2025-2026 season: the 100 existing
+        // club members being invited are already paid up for this season. The hook
+        // assumes the sign-up comes from an invitation email sent to existing
+        // members. When the 2026-2027 season opens (September), this hook must be
+        // updated: either to PENDING for new members, or to drive the status from
+        // a query param / role check rather than hardcoding it.
+        await prisma.membership.create({
+          data: {
+            userId: user.id,
+            status: "ACTIVE",
+            season: "2025-2026",
+            paidAt: new Date(),
+            amount: 55,
+          },
+        });
       } catch (err) {
-        console.error("[Auth] Failed to send welcome email:", err);
+        console.error("[Auth] Failed to finalize sign-up:", err);
       }
     },
   },
