@@ -3,6 +3,7 @@ date: 2026-07-20
 tags: [ladtc, audit, site, comite, priorite]
 type: audit
 project: ladtc
+updated: 2026-07-21
 ---
 
 # Audit du site ladtc.be — 20 juillet 2026
@@ -13,6 +14,11 @@ project: ladtc
 > (`src/config/site.ts`, `src/app/(public)/page.tsx`).
 > Complémentaire à l'audit de parcours utilisateur du 09/07 (qui portait sur le
 > code, les tests et la sécurité des paiements).
+>
+> **Mise à jour 21/07** : 8 items sur 15 résolus en autonomie (commits c57647f,
+> 2105ae1, f032b06 + corrections noms par le comité). Les 7 restants attendent
+> soit une décision du comité (4), soit une action technique post-comité (3).
+> Voir la matrice §4 pour le statut détaillé de chaque item.
 
 ---
 
@@ -30,15 +36,40 @@ présente, alors que le site collecte des données membres.
 | Catégorie | Verdict |
 |---|---|
 | Performance & sécurité technique | ✅ Bon |
-| Cohérence du contenu | ⚠️ 1 contradiction bloquante, plusieurs données mal formatées |
-| Pages vides / non livrées | ⚠️ 4 pages publiques + règlement UTC + sponsors |
-| SEO & structured data | ⚠️ Bonne base, sitemap incomplet, pas de JSON-LD |
-| Conformité (RGPD, mentions) | ⚠️ Aucune page légale visible |
-| Navigation | ⚠️ /events orpheline dans le menu |
+| Cohérence du contenu | ✅ Résolu (horaires + noms comité) |
+| Pages vides / non livrées | ⚠️ 4 pages publiques + règlement UTC (décision comité) |
+| SEO & structured data | ✅ Résolu (sitemap, JSON-LD, canonical, OG) |
+| Conformité (RGPD, mentions) | ⚠️ Aucune page légale visible (décision comité) |
+| Navigation | ✅ Résolu (/events au menu) |
 
-**Verdict en une ligne** : prêt pour la démonstration des fonctionnalités, mais
-pas encore présentable comme « site officiel du club » tant que le contenu et
-les incohérences ne sont pas traités.
+**Verdict en une ligne** : prêt pour la démonstration des fonctionnalités. Les
+points techniques en autonomie sont résolus ; les décisions restantes portent
+sur le contenu (pages à alimenter, règlement, mentions légales) et un choix
+éditorial (crawlers IA).
+
+---
+
+## 0. Statut des items (mise à jour 21/07)
+
+| # | Item | Statut | Résolution |
+|---|---|---|---|
+| 2.1 | Horaires 18:45 vs 19:00 | ✅ Résolu | Homepage : « Rdv 18:45, départ 19:00 » (mercredi) / « Rdv 08:45, départ 09:00 » (dimanche). Footer/contact : 19:00 / 09:00. Commit c57647f + 2105ae1. |
+| 2.2 | Noms comité mal formatés | ✅ Résolu | Tous les noms corrigés en admin + fonctions renseignées : Matthieu Deramée (Président), Bruno Carton-Delcourt (Vice-Président), François Van Rechem (Trésorier), Benoit Carton-Delcourt (Secrétaire), Maxime Legas (Communication), Stéphane Roos (Site Web), Joachim Vanoppens, Andy Buidin, David Lux (Membres du comité). |
+| 2.3 | Pages blog/gallery/events/equipment vides | ⏠ Comité | Décision : alimenter ou masquer |
+| 2.4 | Sponsors UTC « Chargement… » | ✅ Résolu | Section masquée tant qu'aucun sponsor. Commit f032b06. |
+| 2.5 | Règlement UTC 4 | ⏠ Comité | Décision : qui rédige + délai |
+| 2.6 | /events orpheline dans le menu | ✅ Résolu | « Événements » ajouté au menu + footer. Commit f032b06. |
+| 2.7 | Page mentions légales / RGPD | ⏠ Comité | Décision : qui rédige le texte |
+| 2.8 | Sitemap incomplet (/utc) | ✅ Résolu | /utc + /utc/reglement ajoutés. Commit f032b06. |
+| 2.9 | JSON-LD SportsEvent /utc | ✅ Résolu | SportsEvent sur /utc + SportsOrganization site-wide. Commit f032b06. |
+| 2.10 | Meta description par page | 🔧 Technique | Post-comité, 30 min |
+| 2.11 | Balise canonical | ✅ Résolu | alternates.canonical dans le layout. Commit f032b06. |
+| 2.12 | HSTS | 🔧 Technique | Config Cloudflare, 5 min |
+| 2.13 | CSP unsafe-eval | 🔧 Long terme | Non bloquant |
+| 2.14 | robots.txt crawlers IA | ⏠ Comité | Choix éditorial |
+| 2.15 | og.png manquant | ✅ Résolu | Stopgap → hero-bg.jpg (OG dédiée à créer). Commit f032b06. |
+
+**Bilan** : 8 résolus ✅, 4 en attente comité ⏠, 3 techniques post-comité 🔧.
 
 ---
 
@@ -268,32 +299,44 @@ empêche aussi l'apparition du site dans les réponses génératives de recherch
 
 ## 5. Décisions à soumettre au comité (22/07)
 
-1. **Horaire officiel de l'entraînement du mercredi** : 18:45 ou 19:00 ?
-   Une fois tranché, la correction prend 10 minutes (aligner config + homepage).
+> Mise à jour 21/07 : 2 items sur 6 résolus en autonomie (horaires + fonctions
+> comité). Reste 4 décisions à prendre.
+
+1. ~~**Horaire officiel de l'entraînement du mercredi** : 18:45 ou 19:00 ?~~
+   **✅ Résolu** — « Rdv 18:45, départ 19:00 » (mercredi) / « Rdv 08:45, départ 09:00 » (dimanche).
 2. **Stratégie de contenu** : alimente-t-on les pages vides avant lancement
    public (article de rentrée, galerie UTC 3, événement UTC 4 dans le
    calendrier, maillots dans la boutique) ou masque-t-on les entrées de menu ?
 3. **Règlement UTC 4** : qui rédige et pour quand ? Lien avec le rétroplanning
    flyers (début septembre).
-4. **Fonctions du comité sur la page Équipe** : président / trésorier /
-   secrétaire / responsable course… à afficher ou pas ?
+4. ~~**Fonctions du comité sur la page Équipe** : président / trésorier /
+   secrétaire / responsable course… à afficher ou pas ?~~
+   **✅ Résolu** — Toutes les fonctions renseignées : Président, Vice-Président,
+   Trésorier, Secrétaire, Communication, Site Web, Membre du comité.
 5. **Page mentions légales / confidentialité** : qui rédige le texte de base
    (modèle type ASBL sportive) ?
 6. **Sponsoring UTC 4** : statut des démarches, validation des paliers
    (1000/500/250/100/50 €) déjà affichés.
+7. **robots.txt crawlers IA** : garder le blocage actuel (ClaudeBot, GPTBot,
+   Google-Extended…) ou ouvrir à l'indexation générative ?
 
 ---
 
 ## 6. Plan d'action avant le 22/07 (en autonomie)
 
-- [ ] Aligner l'horaire du mercredi (homepage → config) une fois la décision
-      prise, push master.
-- [ ] Corriger les noms du comité en base (ou admin → Utilisateurs).
-- [ ] Masquer la section sponsors `/utc` si aucun sponsor, ou corriger l'API.
-- [ ] Créer l'événement **UTC 4** dans le module events (date 24/10, prix 15/25 €).
-- [ ] Ajouter `/utc` au sitemap.
+> Mise à jour 21/07 : tous les items en autonomie sont résolus.
+
+- [x] Aligner l'horaire du mercredi (homepage → config) — commit c57647f + 2105ae1.
+- [x] Corriger les noms du comité en admin (action manuelle du comité).
+- [x] Masquer la section sponsors `/utc` si aucun sponsor — commit f032b06.
+- [ ] Créer l'événement **UTC 4** dans le module events (date 24/10, prix 15/25 €)
+      — en attente de la décision sur la stratégie de contenu (item 2).
+- [x] Ajouter `/utc` au sitemap — commit f032b06.
+- [x] Ajouter JSON-LD `SportsEvent` sur `/utc` + `SportsOrganization` site-wide — commit f032b06.
+- [x] Ajouter balise canonical au layout — commit f032b06.
+- [x] Corriger og.png manquant (stopgap → hero-bg.jpg) — commit f032b06.
 - [ ] Préparer un article de blog de bienvenue (brouillon, à publier après le
-      comité).
+      comité) — en attente de la décision sur la stratégie de contenu.
 
 ---
 
@@ -301,13 +344,17 @@ empêche aussi l'apparition du site dans les réponses génératives de recherch
 
 - Rédiger et publier le règlement UTC 4 (selon échéance fixée).
 - Créer la page mentions légales / confidentialité.
-- Injecter le JSON-LD `SportsEvent` sur `/utc`.
-- Activer HSTS côté Cloudflare.
-- Ajouter « Événements » au menu + footer.
+- Ajouter une meta description par page (30 min, technique).
+- Activer HSTS côté Cloudflare (5 min, config).
+- Alimenter les pages vides selon la stratégie décidée (article de rentrée,
+  galerie UTC 3, événement UTC 4, maillots).
 - Ouvrir les inscriptions UTC via Ultratiming → renseigner `registrationUrl`.
+- Concevoir une OG image dédiée 1200×630 (logo + tagline) pour remplacer le
+  stopgap hero-bg.jpg.
+- À terme : durcir la CSP (mode strict CSP + nonces) pour retirer `unsafe-eval`.
 
 ---
 
-*Audit réalisé le 20 juillet 2026 par Stéphane. Cross-référence : audit de
-parcours utilisateur du 09/07 (code, tests, paiements) — les deux sont
-complémentaires.*
+*Audit réalisé le 20 juillet 2026 par Stéphane, mis à jour le 21/07 après
+résolution des 8 items en autonomie. Cross-référence : audit de parcours
+utilisateur du 09/07 (code, tests, paiements) — les deux sont complémentaires.*

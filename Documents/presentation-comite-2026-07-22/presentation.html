@@ -147,10 +147,10 @@
       <h3>Ça fonctionne</h3>
       <ul>
         <li>Site en production, réponse &lt; 60 ms</li>
-        <li>311 tests automatisés passent</li>
+        <li>319 tests automatisés passent</li>
         <li>Sécurité : headers solides, CDN Cloudflare</li>
         <li>Paiements Stripe actifs (cotisation, équipement)</li>
-        <li>Les 8 membres du comité ont leur compte</li>
+        <li>Les 9 membres du comité ont leur compte + fonction</li>
       </ul>
     </div>
     <div class="card danger">
@@ -158,13 +158,11 @@
       <ul>
         <li>Blog, galerie, événements, boutique : vides</li>
         <li>Règlement UTC 4 non publié</li>
-        <li>Page Équipe : noms mal formatés</li>
-        <li>1 contradiction d'horaires sur l'accueil</li>
         <li>Aucune page mentions légales</li>
       </ul>
     </div>
   </div>
-  <p class="small" style="margin-top:24px;">Techniquement sain. Éditorialement inachevé. Le site n'est pas encore « présentable comme vitrine officielle ».</p>
+  <p class="small" style="margin-top:24px;">Techniquement sain. Cohérence et SEO résolus. Reste le contenu éditorial — décision du comité ce soir.</p>
 </section>
 
 <!-- SLIDE — Ce qui a été fait depuis avril -->
@@ -178,16 +176,17 @@
         <li class="ok">Paiement des cotisations</li>
         <li class="ok">Boutique équipement + panier</li>
         <li class="ok">Galerie, blog, événements (modules prêts)</li>
+        <li class="ok">Profil membre : photo, prénom/nom, cotisation</li>
       </ul>
     </div>
     <div>
       <h3 style="color:var(--ok);">Côté robustesse (juillet)</h3>
       <ul style="font-size:0.8em;">
         <li class="ok">3 bloquants corrigés (audit 09/07)</li>
-        <li class="ok">Page succès cotisation sécurisée</li>
-        <li class="ok">Vérification d'email activée</li>
+        <li class="ok">Vérification d'email + email de bienvenue</li>
         <li class="ok">Paiement des inscriptions événements</li>
         <li class="ok">Webhook Stripe étendu (échecs, abandons)</li>
+        <li class="ok">8 items d'audit résolus (audit 20/07)</li>
       </ul>
     </div>
   </div>
@@ -210,7 +209,7 @@
       <div class="metric-label">Mineurs — à nettoyer</div>
     </div>
   </div>
-  <p class="small" style="margin-top:30px;">Cet audit portait sur le code et les parcours. L'audit du 20 juillet (présenté ce soir) porte sur le <strong>contenu visible en production</strong>.</p>
+  <p class="small" style="margin-top:30px;">Cet audit portait sur le code et les parcours. L'audit du 20 juillet (présenté ce soir) porte sur le <strong>contenu visible en production</strong> — 8 de ses 15 items ont été résolus en autonomie.</p>
 </section>
 
 <!-- ================================================== -->
@@ -353,8 +352,8 @@
     <p style="font-size:0.9em; margin-top:10px;"><strong>Complémentaire</strong> de l'audit du 09/07 (qui portait sur le code, les tests et la sécurité des paiements). Celui-ci porte sur le <strong>contenu visible</strong> et la <strong>cohérence</strong>.</p>
   </div>
   <div class="decision" style="margin-top:30px;">
-    <h3>Verdict en une ligne</h3>
-    <p style="font-size:0.9em; margin:6px 0;">Prêt pour la démonstration des fonctionnalités. <strong>Pas encore présentable comme vitrine officielle</strong> tant que le contenu et les incohérences ne sont pas traités.</p>
+    <h3>Verdict au 21/07</h3>
+    <p style="font-size:0.9em; margin:6px 0;">8 items sur 15 résolus en autonomie. Reste 4 décisions du comité (contenu + mentions légales) et 3 actions techniques post-comité. Le site est prêt pour la démo.</p>
   </div>
 </section>
 
@@ -366,47 +365,40 @@
     <li><span class="check">✓</span> Sécurité technique : CSP, X-Frame-Options, Permissions-Policy</li>
     <li><span class="check">✓</span> Page <code>/utc</code> — la mieux structurée du site, modèle à reproduire</li>
     <li><span class="check">✓</span> Parcours d'inscription clair, distinction contact / adhésion</li>
-    <li><span class="check">✓</span> SEO de base : meta description, Open Graph, Twitter Card</li>
-    <li><span class="check">✓</span> Stack conforme au projet et à l'écosystème (HillsRun, RecettesApp)</li>
+    <li><span class="check">✓</span> SEO : meta description, Open Graph, JSON-LD, sitemap, canonical</li>
+    <li><span class="check">✓</span> Page Équipe : noms corrigés + fonctions affichées</li>
+    <li><span class="check">✓</span> Horaires : « Rdv 18:45, départ 19:00 » partout cohérent</li>
   </ul>
 </section>
 
-<!-- SLIDE — P1 contradiction horaires -->
+<!-- SLIDE — Résolu en autonomie -->
 <section>
-  <h2>Problème n°1 — horaires contradictoires</h2>
-  <div class="card danger" style="margin-top:30px;">
-    <h3>Sur la même page d'accueil</h3>
-    <ul style="font-size:0.85em;">
-      <li>Section « Nos entraînements » : <strong>Mercredi à 18:45</strong></li>
-      <li>Pied de page de la même page : <strong>Mercredi à 19:00</strong></li>
-      <li>Page Contact et config technique : <strong>19:00</strong></li>
-    </ul>
-    <p style="font-size:0.85em; margin-top:10px;">La valeur 18:45 est codée en dur dans le composant d'accueil, indépendante du reste.</p>
+  <h2>Résolu en autonomie (8 items)</h2>
+  <div class="two-col" style="margin-top:30px;">
+    <div class="card ok">
+      <h3>Cohérence & contenu</h3>
+      <ul style="font-size:0.8em;">
+        <li class="ok">Horaires mercredi/dimanche clarifiés</li>
+        <li class="ok">Noms du comité corrigés + fonctions</li>
+        <li class="ok">Sponsors UTC masqués si vide</li>
+      </ul>
+    </div>
+    <div class="card ok">
+      <h3>SEO & navigation</h3>
+      <ul style="font-size:0.8em;">
+        <li class="ok">/events ajouté au menu + footer</li>
+        <li class="ok">Sitemap : /utc + /utc/reglement</li>
+        <li class="ok">JSON-LD SportsEvent + SportsOrganization</li>
+        <li class="ok">Balise canonical</li>
+        <li class="ok">OG image (stopgap → hero-bg.jpg)</li>
+      </ul>
+    </div>
   </div>
-  <div class="decision">
-    <h3>Décision à prendre ce soir</h3>
-    <p style="font-size:0.85em;">L'entraînement du mercredi commence à <strong>18:45</strong> (accueil/échauffement) ou à <strong>19:00</strong> (départ) ? La correction prend 10 minutes.</p>
-  </div>
-</section>
-
-<!-- SLIDE — P1 page équipe -->
-<section>
-  <h2>Problème n°2 — page Équipe</h2>
-  <table>
-    <thead><tr><th>Affichage actuel</th><th>Anomalie</th><th>Attendu</th></tr></thead>
-    <tbody>
-      <tr><td>Carton-Delcourt Bruno</td><td>Ordre inversé</td><td>Bruno Carton-Delcourt</td></tr>
-      <tr><td>Legas Maxime</td><td>Ordre inversé</td><td>Maxime Legas</td></tr>
-      <tr><td>Vanopppens</td><td>Triple « p », prénom absent</td><td>Vanoppens + prénom</td></tr>
-      <tr><td>deramée matthieu</td><td>Minuscules, ordre inversé</td><td>Matthieu Deramée</td></tr>
-    </tbody>
-  </table>
-  <p class="small" style="margin-top:20px;">Tous affichés avec la fonction « Comité » — aucune distinction président / trésorier / secrétaire. Correction : 20 minutes en admin → Utilisateurs.</p>
 </section>
 
 <!-- SLIDE — P1 pages vides -->
 <section>
-  <h2>Problème n°3 — pages vides</h2>
+  <h2>Reste n°1 — pages vides</h2>
   <div class="step-grid" style="grid-template-columns: repeat(4,1fr); margin-top:30px;">
     <div class="step-card">
       <div class="step-number" style="color:var(--danger);">∅</div>
@@ -436,25 +428,16 @@
   </div>
 </section>
 
-<!-- SLIDE — P1 sponsors UTC -->
-<section>
-  <h2>Problème n°4 — sponsors UTC</h2>
-  <div class="card danger" style="margin-top:30px;">
-    <h3>Sur la page /utc</h3>
-    <p style="font-size:0.9em;">Le bloc « Nos sponsors » affiche <strong>« Chargement… »</strong> en permanence. Aucun sponsor n'apparaît. C'est pire que de masquer la section.</p>
-  </div>
-  <p class="small" style="margin-top:20px;">Correction : soit alimenter le carousel (Admin → Sponsors), soit masquer la section tant qu'il n'y a rien. Décision technique, pas comité.</p>
-</section>
-
 <!-- SLIDE — P2 synthèse -->
 <section>
-  <h2>Autres points (priorité 2)</h2>
+  <h2>Reste — autres points (décision comité)</h2>
   <ul style="font-size:0.85em;">
-    <li><span class="tag warn">P2</span> Règlement UTC 4 — page placeholder, à rédiger</li>
-    <li><span class="tag warn">P2</span> Page <code>/events</code> absente du menu (orpheline de navigation)</li>
-    <li><span class="tag warn">P2</span> Aucune page mentions légales / confidentialité (RGPD)</li>
-    <li><span class="tag warn">P2</span> Sitemap incomplet — <code>/utc</code> et <code>/utc/reglement</code> manquantes</li>
-    <li><span class="tag warn">P2</span> Pas de données structurées JSON-LD (SportsEvent pour la course)</li>
+    <li><span class="tag warn">Comité</span> Règlement UTC 4 — page placeholder, à rédiger</li>
+    <li><span class="tag warn">Comité</span> Aucune page mentions légales / confidentialité (RGPD)</li>
+    <li><span class="tag warn">Comité</span> robots.txt — garder le blocage des crawlers IA ou ouvrir ?</li>
+    <li><span class="tag warn">Tech</span> Meta description par page (30 min, post-comité)</li>
+    <li><span class="tag warn">Tech</span> HSTS — config Cloudflare (5 min)</li>
+    <li><span class="tag warn">Tech</span> OG image dédiée 1200×630 (stopgap en place)</li>
   </ul>
   <p class="small" style="margin-top:24px;">Détail, matrices de priorité et plan d'action dans le document d'audit (<code>audit-site-2026-07-20.md</code>).</p>
 </section>
@@ -486,7 +469,6 @@
       <ul style="font-size:0.8em;">
         <li>Lien d'inscription Ultratiming (ouverture ~début septembre)</li>
         <li>Règlement officiel (page placeholder)</li>
-        <li>Carousel sponsors (« Chargement… »)</li>
         <li>Nouveau tracé (envoi commune début septembre)</li>
         <li>Événement à créer dans le module events</li>
       </ul>
@@ -533,39 +515,41 @@
 
 <!-- SLIDE — Décisions synthèse -->
 <section>
-  <h2>Six décisions à prendre ce soir</h2>
+  <h2>Quatre décisions à prendre ce soir</h2>
   <ol style="font-size:0.95em; max-width:720px; margin:0 auto;">
-    <li><strong>Horaire du mercredi</strong> : 18:45 ou 19:00 ?</li>
-    <li><strong>Stratégie de contenu</strong> : alimenter ou masquer les pages vides ?</li>
-    <li><strong>Fonctions du comité</strong> sur la page Équipe : afficher président / trésorier / etc. ?</li>
-    <li><strong>Règlement UTC 4</strong> : qui rédige et pour quand ?</li>
-    <li><strong>Page mentions légales</strong> : qui rédige le texte de base ?</li>
-    <li><strong>Cotisation des nouveaux</strong> : modèle A (validation comité) ou B (paiement direct) ?</li>
+    <li><strong>Stratégie de contenu</strong> : alimenter ou masquer les pages vides (blog, galerie, événements, boutique) ?</li>
+    <li><strong>Règlement UTC 4</strong> : qui rédige et pour quand ? (rétroplanning flyers)</li>
+    <li><strong>Page mentions légales</strong> : qui rédige le texte de base (modèle ASBL sportive) ?</li>
+    <li><strong>Crawlers IA</strong> : garder le blocage actuel (ClaudeBot, GPTBot…) ou ouvrir à l'indexation générative ?</li>
   </ol>
+  <p class="small" style="margin-top:24px;">Les horaires et les fonctions du comité ont été résolus en autonomie. Les décisions ne portent plus que sur le contenu et un choix éditorial.</p>
 </section>
 
 <!-- SLIDE — Plan d'action -->
 <section>
   <h2>Plan d'action avant le lancement public</h2>
   <div class="two-col" style="margin-top:30px;">
-    <div class="card">
-      <h3>En autonomie (avant la prochaine séance)</h3>
+    <div class="card ok">
+      <h3>Fait en autonomie (cette semaine)</h3>
       <ul style="font-size:0.8em;">
-        <li>Aligner l'horaire mercredi (10 min)</li>
-        <li>Corriger les noms du comité (20 min)</li>
-        <li>Masquer la section sponsors UTC si vide (30 min)</li>
-        <li>Créer l'événement UTC 4 dans le calendrier</li>
-        <li>Ajouter <code>/utc</code> au sitemap</li>
+        <li class="ok">Horaires mercredi/dimanche clarifiés</li>
+        <li class="ok">Noms du comité corrigés + fonctions</li>
+        <li class="ok">Sponsors UTC masqués si vide</li>
+        <li class="ok">/events au menu + footer</li>
+        <li class="ok">Sitemap /utc + /utc/reglement</li>
+        <li class="ok">JSON-LD SportsEvent + Organization</li>
+        <li class="ok">Canonical + OG image (stopgap)</li>
       </ul>
     </div>
     <div class="card accent">
       <h3>Après validation ce soir</h3>
       <ul style="font-size:0.8em;">
+        <li>Alimenter les pages vides (selon décision)</li>
         <li>Publier le règlement UTC 4</li>
         <li>Créer la page mentions légales / confidentialité</li>
-        <li>Injecter le JSON-LD SportsEvent sur /utc</li>
-        <li>Activer HSTS côté Cloudflare</li>
-        <li>Ajouter « Événements » au menu et au footer</li>
+        <li>Créer l'événement UTC 4 dans le calendrier</li>
+        <li>Activer HSTS côté Cloudflare (5 min)</li>
+        <li>Meta description par page (30 min)</li>
         <li>Ouvrir les inscriptions Ultratiming → renseigner le lien</li>
       </ul>
     </div>
