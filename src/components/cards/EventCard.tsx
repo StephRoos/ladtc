@@ -39,12 +39,20 @@ const TYPE_COLORS: Record<string, string> = {
 
 /**
  * Event card component — displays date, location, type badge and available spots.
- * Supports both real events (links to /events/:id) and blog-events (links to /blog/:slug).
+ * Supports three link targets:
+ *   - blog-events → /blog/:slug
+ *   - UTC race event → /utc (the race has its own dedicated page with Ultratiming)
+ *   - regular events → /events/:id
  */
 export function EventCard({ event }: EventCardProps): React.ReactNode {
   const isBlogEvent = event.source === "blog-event";
-  const href =
-    isBlogEvent && event.slug ? `/blog/${event.slug}` : `/events/${event.id}`;
+  const isUtcRace =
+    event.type === "RACE" && /UTC/i.test(event.title);
+  const href = isUtcRace
+    ? "/utc"
+    : isBlogEvent && event.slug
+      ? `/blog/${event.slug}`
+      : `/events/${event.id}`;
 
   const eventDate = new Date(event.date);
   const endDate = event.endDate ? new Date(event.endDate) : null;

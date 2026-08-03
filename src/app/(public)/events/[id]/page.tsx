@@ -92,6 +92,10 @@ export default function EventDetailPage({
   const isFull = spotsLeft !== null && spotsLeft <= 0;
   const isPast = event ? new Date(event.date) < new Date() : false;
   const isPaidEvent = event ? (event.price ?? 0) > 0 : false;
+  // The UTC 4 race has its own dedicated page (/utc) with Ultratiming
+  // registrations — the event card in /events should point there instead of
+  // offering a competing registration flow.
+  const isUtcRace = event ? event.type === "RACE" && /UTC/i.test(event.title) : false;
 
   async function handleRegister(): Promise<void> {
     await registerEvent.mutateAsync(id);
@@ -196,7 +200,17 @@ export default function EventDetailPage({
                 </p>
               )}
 
-              {!isLoggedIn ? (
+              {isUtcRace ? (
+                <div>
+                  <p className="mb-4 text-sm text-muted-foreground">
+                    Cette course possède une page dédiée avec le parcours, le
+                    règlement et les inscriptions via Ultratiming.
+                  </p>
+                  <Button asChild>
+                    <Link href="/utc">Voir la page UTC 4 →</Link>
+                  </Button>
+                </div>
+              ) : !isLoggedIn ? (
                 <div>
                   <p className="mb-3 text-sm text-muted-foreground">
                     Connectez-vous pour vous inscrire à cet événement.
