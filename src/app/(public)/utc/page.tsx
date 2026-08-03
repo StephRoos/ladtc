@@ -282,16 +282,10 @@ export default function UtcPage(): React.ReactNode {
             </Button>
           </>
         ) : (
-          <>
             <p className="mx-auto mb-6 max-w-xl text-muted-foreground">
               Les inscriptions se feront via la plateforme Ultratiming. Le lien
-              sera publié ici dès l&apos;ouverture. En attendant, les questions
-              peuvent être adressées via la page contact.
+              sera publié ici dès l&apos;ouverture.
             </p>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/contact">Nous contacter</Link>
-            </Button>
-          </>
         )}
       </section>
 
