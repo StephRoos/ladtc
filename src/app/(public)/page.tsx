@@ -82,7 +82,8 @@ function HeroSection(): React.ReactNode {
       {/* Content */}
       <div className="mx-auto max-w-7xl px-4 py-12 text-center">
         <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl">
-          Bienvenue à <span className="text-primary">la DTC</span>
+          Bienvenue à<br />
+          <span className="text-primary">La DTC</span>
         </h1>
         <p className="mx-auto mb-4 text-xl font-semibold text-foreground">
           Plus qu&apos;un club, une famille
