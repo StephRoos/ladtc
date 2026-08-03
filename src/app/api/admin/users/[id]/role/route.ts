@@ -3,8 +3,6 @@ import { requireCommittee, isAuthError } from "@/lib/auth-guard";
 import { prisma } from "@/lib/prisma";
 import { roleUpdateSchema } from "@/lib/schemas";
 import { logActivity } from "@/lib/activity-log";
-import { sendEmail } from "@/lib/email";
-import { roleUpdateTemplate } from "@/lib/email-templates";
 
 /**
  * PATCH /api/admin/users/[id]/role
@@ -72,19 +70,6 @@ export async function PATCH(
     previousCommitteeRole: target.committeeRole,
     newCommitteeRole: resolvedCommitteeRole,
   });
-
-  const roleChanged =
-    target.role !== role || target.committeeRole !== resolvedCommitteeRole;
-  if (roleChanged) {
-    const name = updated.name ?? updated.email;
-    sendEmail(
-      updated.email,
-      "Votre rôle a été mis à jour — la dtc",
-      roleUpdateTemplate(name, role, resolvedCommitteeRole),
-    ).catch((err) => {
-      console.error("[role update] email send failed:", err);
-    });
-  }
 
   return NextResponse.json({ user: updated });
 }
