@@ -1,11 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import { useAuth } from "@/hooks/use-auth";
 
 /**
- * Site footer with club info, navigation links and social media links
+ * Site footer with club info, navigation links and social media links.
+ * Client component so member-only nav links (e.g. /events) can be hidden
+ * from unauthenticated visitors — mirrors the Header filtering.
  */
 export function Footer(): React.ReactNode {
   const currentYear = new Date().getFullYear();
+  const { isAuthenticated } = useAuth();
 
   return (
     <footer className="mt-16 border-t border-border bg-card">
@@ -31,12 +37,14 @@ export function Footer(): React.ReactNode {
               {[
                 { href: "/", label: "Accueil" },
                 { href: "/blog", label: "Blog" },
-                { href: "/events", label: "Événements" },
+                { href: "/events", label: "Événements", memberOnly: true },
                 { href: "/gallery", label: "Galerie" },
                 { href: "/utc", label: "UTC 4" },
                 { href: "/team", label: "Équipe" },
                 { href: "/contact", label: "Contact" },
-              ].map((link) => (
+              ]
+                .filter((link) => !("memberOnly" in link && link.memberOnly) || isAuthenticated)
+                .map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

@@ -15,13 +15,13 @@ import { signOut } from "@/lib/auth-client";
 const navLinks = [
   { href: "/", label: "Accueil" },
   { href: "/blog", label: "Blog" },
-  { href: "/events", label: "Événements" },
+  { href: "/events", label: "Événements", memberOnly: true },
   { href: "/gallery", label: "Galerie" },
   { href: "/utc", label: "UTC 4" },
   { href: "/equipment", label: "Équipement" },
   { href: "/team", label: "Équipe" },
   { href: "/contact", label: "Contact" },
-];
+] as const;
 
 /**
  * Site navigation header with mobile menu and auth state
@@ -68,7 +68,9 @@ export function Header(): React.ReactNode {
 
         {/* Desktop nav */}
         <ul className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link) => (
+          {navLinks
+            .filter((link) => !("memberOnly" in link && link.memberOnly) || isAuthenticated)
+            .map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
@@ -206,7 +208,9 @@ export function Header(): React.ReactNode {
       {menuOpen && (
         <div className="border-t border-border bg-background px-4 py-4 md:hidden">
           <ul className="flex flex-col gap-3">
-            {navLinks.map((link) => (
+            {navLinks
+              .filter((link) => !("memberOnly" in link && link.memberOnly) || isAuthenticated)
+              .map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
