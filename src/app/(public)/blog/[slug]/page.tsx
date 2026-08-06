@@ -81,7 +81,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps): React.React
             <div className="mb-4">
               <Badge
                 variant="secondary"
-                className="bg-primary/10 text-primary"
+                className="border-primary/40 bg-transparent text-primary"
               >
                 {post.category}
               </Badge>

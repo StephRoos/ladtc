@@ -11,6 +11,19 @@ import { useBlogPosts } from "@/hooks/use-blog-posts";
 import { useEvents } from "@/hooks/use-events";
 import { usePublicSponsors } from "@/hooks/use-sponsors";
 
+/**
+ * Small orange kicker displayed above section titles — reinforces the club
+ * identity (orange on blue-night) and structures the page rhythm.
+ */
+function Kicker({ children }: { children: React.ReactNode }): React.ReactNode {
+  return (
+    <p className="mb-3 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.25em] text-primary">
+      <span className="h-px w-8 bg-primary" aria-hidden="true" />
+      {children}
+    </p>
+  );
+}
+
 function LatestBlogSection(): React.ReactNode {
   const { data, isLoading, isError } = useBlogPosts(1, 3);
 
@@ -19,6 +32,7 @@ function LatestBlogSection(): React.ReactNode {
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-10 flex items-end justify-between">
           <div>
+            <Kicker>La vie du club</Kicker>
             <h2 className="text-3xl font-bold">Dernières actualités</h2>
             <p className="mt-2 text-muted-foreground">
               Retrouvez les dernières nouvelles du club
@@ -66,8 +80,8 @@ function LatestBlogSection(): React.ReactNode {
 function HeroSection(): React.ReactNode {
   return (
     <section className="relative overflow-hidden">
-      {/* Background image with gradient overlay - using standard height */}
-      <div className="relative aspect-[21/9] w-full overflow-hidden">
+      {/* Full-height hero: content overlaid on the image, bottom-left */}
+      <div className="relative h-[75vh] min-h-[520px] w-full">
         <Image
           src="/images/hero-bg.jpg"
           alt="Trail running dans le Pays des Collines"
@@ -76,34 +90,46 @@ function HeroSection(): React.ReactNode {
           priority
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/30" />
-      </div>
+        {/* Legibility gradients: fade to background at the bottom, darken the
+            left side where the text sits */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/30 to-transparent" />
 
-      {/* Content */}
-      <div className="mx-auto max-w-7xl px-4 py-12 text-center">
-        <h1 className="mb-6 text-5xl font-bold leading-tight md:text-6xl">
-          Bienvenue à<br />
-          <span className="text-primary">La DTC</span>
-        </h1>
-        <p className="mx-auto mb-4 text-xl font-semibold text-foreground">
-          Plus qu&apos;un club, une famille
-        </p>
-        <p className="mx-auto mb-8 max-w-2xl text-lg text-foreground/90">
-          Une communauté de passionnés de trail running dans le magnifique Pays
-          des Collines, en Belgique. Rejoignez-nous pour nos entraînements et
-          événements !
-        </p>
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <Button
-            asChild
-            size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            <Link href="/contact">Nous contacter</Link>
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link href="/blog">Nos actualités</Link>
-          </Button>
+        {/* Overlaid content */}
+        <div className="absolute inset-0">
+          <div className="mx-auto flex h-full max-w-7xl items-end px-4 pb-16 md:pb-20">
+            <div className="max-w-2xl">
+              <Kicker>Club de trail — Ellezelles, Pays des Collines</Kicker>
+              <h1 className="mb-4 text-5xl font-bold leading-[1.05] md:text-7xl">
+                Bienvenue à <span className="text-primary">La&nbsp;DTC</span>
+              </h1>
+              <p className="mb-2 text-xl font-semibold text-foreground">
+                Plus qu&apos;un club, une famille
+              </p>
+              <p className="mb-8 text-lg text-foreground/80">
+                Une communauté de passionnés de trail running dans le
+                magnifique Pays des Collines, en Belgique. Rejoignez-nous pour
+                nos entraînements et événements !
+              </p>
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-primary text-primary-foreground shadow-[0_0_24px_-6px] shadow-primary/60 hover:bg-primary/90"
+                >
+                  <Link href="/contact">Nous contacter</Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="border-foreground/30 bg-background/40 backdrop-blur-sm hover:bg-accent hover:text-accent-foreground"
+                >
+                  <Link href="/blog">Nos actualités</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -167,6 +193,7 @@ function UpcomingEventsSection(): React.ReactNode {
       <div className="mx-auto max-w-7xl px-4">
         <div className="mb-10 flex items-end justify-between">
           <div>
+            <Kicker>Rendez-vous</Kicker>
             <h2 className="text-3xl font-bold">Prochains événements</h2>
             <p className="mt-2 text-muted-foreground">
               Rejoignez-nous lors de nos prochains rendez-vous
@@ -229,10 +256,11 @@ function UpcomingEventsSection(): React.ReactNode {
 
 function TrainingSection(): React.ReactNode {
   return (
-    <section className="bg-gradient-to-r from-primary/10 to-accent/10 py-20">
+    <section className="border-y border-border bg-card py-20">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
           <div>
+            <Kicker>Chaque semaine</Kicker>
             <h2 className="mb-4 text-3xl font-bold">Nos entraînements</h2>
             <p className="mb-6 text-muted-foreground">
               Chaque semaine, deux rendez-vous pour courir ensemble dans les
@@ -264,6 +292,7 @@ function TrainingSection(): React.ReactNode {
             </ul>
           </div>
           <div>
+            <Kicker>Bienvenue</Kicker>
             <h2 className="mb-4 text-3xl font-bold">Nous rejoindre</h2>
             <p className="mb-6 text-muted-foreground">
               Que vous soyez débutant ou trail runner expérimenté, la dtc vous

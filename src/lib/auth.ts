@@ -27,6 +27,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    minPasswordLength: 8,
     sendResetPassword: async ({ user, url }) => {
       const name = user.name || user.email;
       await sendEmail(
@@ -74,6 +75,20 @@ export const auth = betterAuth({
       } catch (err) {
         console.error("[Auth] Failed to finalize sign-up:", err);
       }
+    },
+  },
+  // Brute-force protection on auth endpoints. In-memory storage is fine for
+  // the single-container Coolify deployment.
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 100,
+    customRules: {
+      "/sign-in/email": { window: 60, max: 5 },
+      "/sign-up/email": { window: 300, max: 5 },
+      "/forget-password": { window: 300, max: 3 },
+      "/reset-password": { window: 300, max: 5 },
+      "/send-verification-email": { window: 300, max: 3 },
     },
   },
 });

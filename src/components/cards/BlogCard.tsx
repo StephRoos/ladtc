@@ -27,7 +27,7 @@ export function BlogCard({ post }: BlogCardProps): React.ReactNode {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
+            <div className="flex h-full items-center justify-center bg-muted">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="48"
@@ -55,7 +55,7 @@ export function BlogCard({ post }: BlogCardProps): React.ReactNode {
           {post.category && (
             <Badge
               variant="secondary"
-              className="mb-2 w-fit bg-primary/10 text-primary hover:bg-primary/20"
+              className="mb-2 w-fit border-primary/40 bg-transparent text-primary hover:bg-primary/10"
             >
               {post.category}
             </Badge>

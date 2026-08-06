@@ -77,7 +77,7 @@ export function PhotoCard({ photo, onClick }: PhotoCardProps): React.ReactNode {
           {photo.category && (
             <Badge
               variant="secondary"
-              className="mt-1 bg-primary/10 text-primary hover:bg-primary/20 text-xs"
+              className="mt-1 border-primary/40 bg-transparent text-primary hover:bg-primary/10 text-xs"
             >
               {photo.category}
             </Badge>

@@ -72,7 +72,7 @@ export function MyAvatarEditor({
         >
           <Avatar className="h-20 w-20 cursor-pointer transition-opacity hover:opacity-80">
             {currentImage && <AvatarImage src={currentImage} alt={userName ?? "Avatar"} />}
-            <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
+            <AvatarFallback className="bg-muted text-primary text-xl font-bold">
               {getInitials(userName ?? "?")}
             </AvatarFallback>
           </Avatar>

@@ -1,9 +1,24 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
+import { Barlow, Exo_2 } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://ladtc.be";
+
+/** Body typeface — clean, readable, sporty without being gimmicky. */
+const bodyFont = Barlow({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
+});
+
+/** Display typeface for headings — technical, athletic, club identity. */
+const displayFont = Exo_2({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-display",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -54,7 +69,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }): React.ReactNode {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html
+      lang="fr"
+      suppressHydrationWarning
+      className={`${bodyFont.variable} ${displayFont.variable}`}
+    >
       <body>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <Providers>{children}</Providers>

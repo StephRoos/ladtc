@@ -41,7 +41,7 @@ export default function ContactPage(): React.ReactNode {
       </div>
 
       {/* CTA towards registration */}
-      <div className="mb-8 rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+      <div className="mb-8 rounded-lg border border-primary/30 bg-card p-4 text-center">
         <p className="text-sm text-muted-foreground">
           Pour devenir membre du club, ce n&apos;est pas ici.{" "}
           <Link
@@ -85,7 +85,7 @@ export default function ContactPage(): React.ReactNode {
               <ul className="space-y-3 text-sm text-muted-foreground">
                 {siteConfig.schedule.training.map((session) => (
                   <li key={session.day} className="flex items-center gap-3">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                       {session.day === "Wednesday" ? "Me" : "Di"}
                     </span>
                     <span>

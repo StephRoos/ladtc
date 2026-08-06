@@ -57,7 +57,7 @@ function TeamMemberCard({ member }: { member: TeamMemberData }): React.ReactNode
             {member.image && (
               <AvatarImage src={member.image} alt={member.name ?? "Avatar"} />
             )}
-            <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
+            <AvatarFallback className="bg-muted text-primary font-bold text-lg">
               {getInitials(member.name ?? "?")}
             </AvatarFallback>
           </Avatar>

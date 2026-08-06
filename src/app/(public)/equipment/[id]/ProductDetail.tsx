@@ -103,7 +103,7 @@ export function ProductDetail({ id }: ProductDetailProps): React.ReactNode {
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           ) : (
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
+            <div className="flex h-full items-center justify-center bg-muted">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="64"

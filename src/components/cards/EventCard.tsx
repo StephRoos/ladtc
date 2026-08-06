@@ -91,7 +91,7 @@ export function EventCard({ event }: EventCardProps): React.ReactNode {
         )}
         <CardHeader className="flex flex-row items-start gap-4 pb-2">
           {/* Date block */}
-          <div className="flex shrink-0 flex-col items-center rounded-lg bg-primary/10 px-3 py-2 text-center">
+          <div className="flex shrink-0 flex-col items-center rounded-lg border border-primary/30 bg-muted px-3 py-2 text-center">
             <span className="text-2xl font-bold leading-none text-primary">
               {endDay ? (isSameMonth ? `${day}-${endDay}` : day) : day}
             </span>

@@ -55,7 +55,7 @@ export default function CartPage(): React.ReactNode {
                       sizes="80px"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 text-xs text-muted-foreground">
+                    <div className="flex h-full items-center justify-center bg-muted text-xs text-muted-foreground">
                       —
                     </div>
                   )}
