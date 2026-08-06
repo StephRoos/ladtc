@@ -11,7 +11,9 @@ const utc = siteConfig.utc;
 export function UtcBanner(): React.ReactNode {
   return (
     <div className="mb-10 overflow-hidden rounded-lg border border-border bg-muted">
-      <div className="relative aspect-[21/9] w-full">
+      {/* 2048×1070 source image — container matches its aspect ratio so the
+          full banner is visible (no cropping from object-cover). */}
+      <div className="relative aspect-[2048/1070] w-full">
         <Image
           src="/images/utc4-banner.jpg"
           alt={`Bannière officielle de l'${utc.name} (${utc.shortName})`}
