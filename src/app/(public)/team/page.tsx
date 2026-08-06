@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "Découvrez le comité de la dtc — club de trail running à Ellezelles.",
   openGraph: {
-    title: `Notre équipe | ${siteConfig.name}`,
+  title: "Notre équipe",
     description:
       "Découvrez le comité de la dtc — club de trail running à Ellezelles.",
     url: `${siteConfig.url}/team`,

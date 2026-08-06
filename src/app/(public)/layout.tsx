@@ -4,7 +4,7 @@ import { Footer } from "@/components/common/Footer";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: `Accueil | ${siteConfig.name}`,
+  title: "Accueil",
   description: siteConfig.description,
   openGraph: {
     title: siteConfig.fullName,

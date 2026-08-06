@@ -6,6 +6,7 @@ import "./globals.css";
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://ladtc.be";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "la dtc — trail running club",
     template: "%s | la dtc",
@@ -13,11 +14,6 @@ export const metadata: Metadata = {
   description:
     "Club de trail running à Ellezelles, Pays des Collines, Belgique. Rejoignez notre communauté de passionnés.",
   keywords: ["trail running", "running club", "Belgique", "Ellezelles", "Collines", "la dtc"],
-  alternates: {
-    // Canonical URL to avoid duplicate-content issues (www vs non-www,
-    // trailing slash). Each page inherits this as its canonical.
-    canonical: SITE_URL,
-  },
   openGraph: {
     title: "la dtc — trail running club",
     description: "Club de trail running à Ellezelles, Pays des Collines, Belgique",

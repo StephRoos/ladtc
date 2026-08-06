@@ -7,7 +7,7 @@ import { siteConfig } from "@/config/site";
 const utc = siteConfig.utc;
 
 export const metadata: Metadata = {
-  title: `Règlement — L'${utc.name} | ${siteConfig.name}`,
+  title: `Règlement — L'${utc.name}`,
   description: `Règlement officiel de l'${utc.name} (${utc.shortName}).`,
 };
 

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Actualités, comptes-rendus de courses et vie du club la dtc.",
   openGraph: {
-    title: `Blog | ${siteConfig.name}`,
+  title: "Blog",
     description:
       "Actualités, comptes-rendus de courses et vie du club la dtc.",
     url: `${siteConfig.url}/blog`,

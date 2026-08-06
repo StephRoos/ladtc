@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: `Équipement | ${siteConfig.name}`,
   description: "Commandez l'équipement officiel du club LADTC.",
   openGraph: {
-    title: `Équipement | ${siteConfig.name}`,
+  title: "Équipement",
     description: "Commandez l'équipement officiel du club LADTC.",
     url: `${siteConfig.url}/equipment`,
     siteName: siteConfig.fullName,

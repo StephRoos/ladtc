@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | ${siteConfig.name}`,
       description,
       openGraph: {
-        title: `${title} | ${siteConfig.name}`,
+      title,
         description,
         url: `${siteConfig.url}/equipment/${id}`,
         siteName: siteConfig.fullName,
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   } catch {
     return {
-      title: `Produit | ${siteConfig.name}`,
+      title: "Produit",
       description: siteConfig.description,
     };
   }

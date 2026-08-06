@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: `${utc.shortName} — L'${utc.name} | ${siteConfig.name}`,
   description: `L'${utc.name}, ${utc.edition}e édition — la course folklorique en binôme organisée par la dtc à Ellezelles. Parcours, règlement et inscriptions.`,
   openGraph: {
-    title: `${utc.shortName} — L'${utc.name} | ${siteConfig.name}`,
+  title: `${utc.shortName} — L'${utc.name}`,
     description: `L'${utc.name}, ${utc.edition}e édition — parcours, règlement et inscriptions.`,
     url: `${siteConfig.url}/utc`,
     siteName: siteConfig.fullName,

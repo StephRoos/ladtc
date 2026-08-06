@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "Contactez la dtc — club de trail running à Ellezelles, Pays des Collines.",
   openGraph: {
-    title: `Contact | ${siteConfig.name}`,
+  title: "Contact",
     description:
       "Contactez la dtc — club de trail running à Ellezelles, Pays des Collines.",
     url: `${siteConfig.url}/contact`,

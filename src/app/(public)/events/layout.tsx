@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Découvrez les prochains événements du club : entraînements, courses, stages et sorties sociales.",
   openGraph: {
-    title: `Événements | ${siteConfig.name}`,
+  title: "Événements",
     description:
       "Découvrez les prochains événements du club : entraînements, courses, stages et sorties sociales.",
     url: `${siteConfig.url}/events`,

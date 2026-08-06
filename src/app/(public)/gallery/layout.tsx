@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Découvrez les photos du club la dtc : courses, entraînements, sorties et moments de convivialité.",
   openGraph: {
-    title: `Galerie photos | ${siteConfig.name}`,
+  title: "Galerie photos",
     description:
       "Découvrez les photos du club la dtc : courses, entraînements, sorties et moments de convivialité.",
     url: `${siteConfig.url}/gallery`,
