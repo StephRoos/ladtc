@@ -35,8 +35,9 @@ export const siteConfig = {
     date: "Samedi 24 octobre 2026" as string | null,
     // Venue updated by the committee (2026-06-12): Salle CACS, Ellezelles
     location: "Salle CACS, Ellezelles",
-    // Registration link not available yet (Ultratiming) — confirmed 2026-06-12
-    registrationUrl: null as string | null,
+    // Registration link (Ultratiming) — opened 2026-08-16
+    registrationUrl:
+      "https://ultratiming.ledossard.com/inscription/index.php?id=3796" as string | null,
     // Former race website (urbanbayerntrail.be) decommissioned — replaced by /utc
     externalSiteUrl: null as string | null,
     contactEmail: "admin@ladtc.be" as string | null,
