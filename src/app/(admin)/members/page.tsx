@@ -34,6 +34,7 @@ export default function AdminMembersPage(): React.ReactNode {
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("name");
   const [page, setPage] = useState(1);
+  const [rolloverLoading, setRolloverLoading] = useState(false);
 
   const { data: stats, isLoading: statsLoading } = useMemberStats();
   const { data: membersData, isLoading: membersLoading } = useMembers({
@@ -60,11 +61,42 @@ export default function AdminMembersPage(): React.ReactNode {
     }
   }
 
+  async function handleSeasonRollover(): Promise<void> {
+    if (
+      !window.confirm(
+        "Expire tous les membres actifs dont la cotisation ne correspond pas à la saison en cours. Ils passeront en statut « Expiré » et devront payer la cotisation pour la nouvelle saison. Continuer ?",
+      )
+    ) {
+      return;
+    }
+    setRolloverLoading(true);
+    try {
+      const res = await fetch("/api/admin/members/rollover", { method: "POST" });
+      const data = (await res.json()) as { message?: string; error?: string };
+      if (!res.ok) {
+        alert(data.error ?? "Erreur lors de la bascule");
+      } else {
+        alert(data.message ?? "Bascule effectuée");
+      }
+    } catch {
+      alert("Erreur de connexion");
+    } finally {
+      setRolloverLoading(false);
+    }
+  }
+
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Gestion des membres</h1>
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleSeasonRollover}
+            disabled={rolloverLoading}
+          >
+            {rolloverLoading ? "Bascule en cours..." : "Bascule saison"}
+          </Button>
           <Button variant="outline" asChild>
             <a href="/api/admin/export/members" download>Exporter CSV</a>
           </Button>
