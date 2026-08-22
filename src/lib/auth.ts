@@ -6,6 +6,7 @@ import {
   passwordResetTemplate,
   emailVerificationTemplate,
 } from "./email-templates";
+import { MEMBERSHIP_DUES_NET } from "./membership-fees";
 
 /**
  * BetterAuth configuration for LADTC
@@ -51,25 +52,19 @@ export const auth = betterAuth({
     afterEmailVerification: async (user) => {
       try {
         await sendWelcomeEmail({ name: user.name, email: user.email });
-        // Create an ACTIVE membership for the 2025-2026 season: the 100 existing
-        // club members being invited are already paid up for this season. The
-        // 2025-2026 fee was 50 EUR (no online processing fee back then — Stripe
-        // was not yet in use). joinedAt is set to January 1 of the season's
-        // start year (2025) so the profile displays "Membre depuis 2025",
-        // matching the season. The display only shows the year, so the exact
-        // day is irrelevant — January 1 is the simplest convention. The hook
-        // assumes the sign-up comes from an invitation email sent to existing
-        // members. When the 2026-2027 season opens (September), this hook must
-        // be updated: either to PENDING for new members, or to drive the
-        // status from a query param / role check rather than hardcoding it.
+        // Create a PENDING membership for new self-service registrations.
+        // The member must pay the cotisation online (or in cash to the
+        // treasurer) before gaining access to member-only features.
+        // joinedAt defaults to now() — no backdating since this is a genuine
+        // new registration, not an invitation of an existing club member.
         await prisma.membership.create({
           data: {
             userId: user.id,
-            status: "ACTIVE",
-            season: "2025-2026",
-            joinedAt: new Date("2025-01-01"),
-            paidAt: new Date(),
-            amount: 50,
+            status: "PENDING",
+            season: null,
+            joinedAt: new Date(),
+            paidAt: null,
+            amount: MEMBERSHIP_DUES_NET,
           },
         });
       } catch (err) {

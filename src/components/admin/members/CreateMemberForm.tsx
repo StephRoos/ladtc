@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { memberCreateSchema, type MemberCreateFormData } from "@/lib/schemas";
 import { getCurrentSeason } from "@/lib/membership";
+import { MEMBERSHIP_DUES_NET } from "@/lib/membership-fees";
 
 interface CreateMemberFormProps {
   onSubmit: (data: MemberCreateFormData) => Promise<void>;
@@ -45,7 +46,7 @@ export function CreateMemberForm({
       status: "PENDING",
       season: null,
       paidAt: null,
-      amount: 50,
+      amount: MEMBERSHIP_DUES_NET,
       notes: "",
     },
   });

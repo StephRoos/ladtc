@@ -16,6 +16,7 @@ import {
 import { memberUpdateSchema, type MemberUpdateFormData } from "@/lib/schemas";
 import { useUpdateMember } from "@/hooks/use-members";
 import { getCurrentSeason } from "@/lib/membership";
+import { MEMBERSHIP_DUES_NET } from "@/lib/membership-fees";
 import type { Membership, User } from "@/types";
 
 interface MemberFormProps {
@@ -55,7 +56,7 @@ export function MemberForm({
       paidAt: membership?.paidAt
         ? new Date(membership.paidAt).toISOString().split("T")[0]
         : null,
-      amount: membership?.amount ?? 50,
+      amount: membership?.amount ?? MEMBERSHIP_DUES_NET,
       notes: membership?.notes ?? "",
       joinedYear: membership?.joinedAt
         ? new Date(membership.joinedAt).getFullYear()

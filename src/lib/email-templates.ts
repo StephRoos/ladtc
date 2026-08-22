@@ -86,10 +86,10 @@ function buttonHtml(href: string, label: string): string {
 /**
  * Generates the welcome email HTML template.
  *
- * Sent automatically after email verification. With the July 2026 rollout,
- * the membership is created ACTIVE for the 2025-2026 season by the
- * afterEmailVerification hook, so the member is already paid up — the email
- * must reflect that, not suggest a pending validation.
+ * Sent automatically after email verification. New members must pay the
+ * cotisation for the current season before gaining full access — the email
+ * directs them to the payment page rather than suggesting the membership is
+ * already active.
  *
  * @param name - Member's display name
  * @returns Full HTML email string
@@ -98,12 +98,19 @@ export function welcomeEmailTemplate(name: string): string {
   const content = `
     <h2 style="margin:0 0 16px 0;color:${TEXT_COLOR};font-size:20px;">Bienvenue chez la dtc, ${name} !</h2>
     <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
-      Votre compte membre a été créé avec succès. Votre cotisation pour la
-      saison 2025-2026 est <strong style="color:${PRIMARY_COLOR};">en ordre</strong> :
-      aucune action de votre côté n'est requise pour cette saison.
+      Votre compte membre a été créé avec succès. Pour finaliser votre
+      adhésion, il reste une étape : <strong style="color:${PRIMARY_COLOR};">régler
+      votre cotisation</strong> pour la saison en cours.
     </p>
     <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
-      <p style="margin:0 0 8px 0;color:#94a3b8;font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;">Ce que vous pouvez faire sur le site</p>
+      <p style="margin:0 0 8px 0;color:#94a3b8;font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;">Comment régler votre cotisation</p>
+      <ul style="margin:0;padding-left:20px;color:#cbd5e1;line-height:1.8;">
+        <li>En ligne (carte ou Bancontact) depuis votre espace membre</li>
+        <li>En liquide auprès du trésorier lors d'une séance</li>
+      </ul>
+    </div>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
+      <p style="margin:0 0 8px 0;color:#94a3b8;font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;">Ce que vous pourrez faire une fois membre</p>
       <ul style="margin:0;padding-left:20px;color:#cbd5e1;line-height:1.8;">
         <li>Compléter votre profil (téléphone, contact d'urgence)</li>
         <li>Consulter le calendrier et vous inscrire aux entraînements et événements</li>
@@ -111,17 +118,12 @@ export function welcomeEmailTemplate(name: string): string {
         <li>Suivre l'actualité du club sur le blog et la galerie</li>
       </ul>
     </div>
-    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
-      Les cotisations pour la saison 2026-2027 ouvriront en septembre. Vous
-      pourrez alors les régler en ligne (carte ou Bancontact) depuis votre
-      espace membre.
-    </p>
     <p style="margin:0 0 8px 0;color:#cbd5e1;line-height:1.6;">
       Pour toute question, le formulaire de contact du site est à votre
       disposition, ou écrivez à
       <a href="mailto:${CLUB_EMAIL}" style="color:${PRIMARY_COLOR};">${CLUB_EMAIL}</a>.
     </p>
-    ${buttonHtml(`${CLUB_WEBSITE}/profile`, "Mon espace membre")}
+    ${buttonHtml(`${CLUB_WEBSITE}/membership/pay`, "Payer ma cotisation")}
     <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
       À bientôt sur les sentiers,<br/>
       <strong style="color:${TEXT_COLOR};">Le comité de la dtc</strong>
