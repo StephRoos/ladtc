@@ -7,6 +7,7 @@ const ADMIN_ROLES = ["COMMITTEE", "ADMIN"] as const;
 
 const ALLOWED_KEYS = new Set([
   "equipment.shippingFee",
+  "equipment.bioracerUrl",
   "site.dtcMeanings",
   "site.contributionUrl",
   "committee.roles",
@@ -124,6 +125,24 @@ export async function PATCH(
     if (trimmed && !/^https:\/\/\S+$/i.test(trimmed)) {
       return NextResponse.json(
         { error: "Le lien doit être une URL HTTPS (ou vide pour masquer le bouton)" },
+        { status: 422 }
+      );
+    }
+    valueToStore = trimmed;
+  }
+
+  // Bioracer store URL: a trimmed HTTPS URL where members order equipment.
+  if (key === "equipment.bioracerUrl") {
+    if (typeof parsed.data.value !== "string") {
+      return NextResponse.json(
+        { error: "Le lien doit être une chaîne" },
+        { status: 422 }
+      );
+    }
+    const trimmed = parsed.data.value.trim();
+    if (trimmed && !/^https:\/\/\S+$/i.test(trimmed)) {
+      return NextResponse.json(
+        { error: "Le lien doit être une URL HTTPS" },
         { status: 422 }
       );
     }

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { DtcMeaningsSettings } from "@/components/admin/settings/DtcMeaningsSettings";
 import { ContributionUrlSettings } from "@/components/admin/settings/ContributionUrlSettings";
 import { CommitteeRolesSettings } from "@/components/admin/settings/CommitteeRolesSettings";
+import { BioracerUrlSettings } from "@/components/admin/settings/BioracerUrlSettings";
 
 const SHIPPING_FEE_KEY = "equipment.shippingFee";
 
@@ -119,6 +120,8 @@ export default function AdminSettingsPage(): React.ReactNode {
       </div>
 
       <ContributionUrlSettings />
+
+      <BioracerUrlSettings />
 
       <div className="mt-6">
         <CommitteeRolesSettings />

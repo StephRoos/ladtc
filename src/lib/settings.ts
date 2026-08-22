@@ -19,6 +19,7 @@ import { COMMITTEE_ROLE_SUGGESTIONS } from "@/lib/schemas";
 
 export const SETTING_KEYS = {
   EQUIPMENT_SHIPPING_FEE: "equipment.shippingFee",
+  EQUIPMENT_BIORACER_URL: "equipment.bioracerUrl",
   SITE_DTC_MEANINGS: "site.dtcMeanings",
   SITE_CONTRIBUTION_URL: "site.contributionUrl",
   COMMITTEE_ROLES: "committee.roles",
@@ -26,6 +27,10 @@ export const SETTING_KEYS = {
 
 /** Default shipping fee in euros when the Setting row is missing. */
 const DEFAULT_SHIPPING_FEE_EUR = 0;
+
+/** Default Bioracer store URL when the Setting row is missing. */
+const DEFAULT_BIORACER_URL =
+  "https://www.bioracer.fr/fr/mybioracer/?r=KbiPYKbELY";
 
 /**
  * Reads the raw JSON-encoded value for a setting, returning null if absent.
@@ -53,6 +58,19 @@ export async function getSettingNumber(key: string, fallback: number): Promise<n
  */
 export async function getEquipmentShippingFee(): Promise<number> {
   return getSettingNumber(SETTING_KEYS.EQUIPMENT_SHIPPING_FEE, DEFAULT_SHIPPING_FEE_EUR);
+}
+
+/**
+ * Reads the Bioracer store URL members are redirected to for equipment
+ * orders. Falls back to the default URL when the setting is absent or empty.
+ */
+export async function getBioracerUrl(): Promise<string> {
+  const raw = await getSettingRaw(SETTING_KEYS.EQUIPMENT_BIORACER_URL);
+  if (raw === null) return DEFAULT_BIORACER_URL;
+  const parsed = JSON.parse(raw) as unknown;
+  return typeof parsed === "string" && parsed.length > 0
+    ? parsed
+    : DEFAULT_BIORACER_URL;
 }
 
 /**

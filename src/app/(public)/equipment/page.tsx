@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
-import { ProductCatalog } from "./ProductCatalog";
+import { EquipmentBioracerLink } from "./EquipmentBioracerLink";
 import { MembershipGate } from "@/components/equipment/MembershipGate";
+import { getBioracerUrl } from "@/lib/settings";
 import { siteConfig } from "@/config/site";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: `Équipement | ${siteConfig.name}`,
-  description: "Commandez l'équipement officiel du club LADTC.",
+  description: "Commandez l'équipement officiel du club LADTC via Bioracer.",
   openGraph: {
-  title: "Équipement",
-    description: "Commandez l'équipement officiel du club LADTC.",
+    title: "Équipement",
+    description: "Commandez l'équipement officiel du club LADTC via Bioracer.",
     url: `${siteConfig.url}/equipment`,
     siteName: siteConfig.fullName,
     type: "website",
@@ -24,9 +27,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * Public equipment catalog page showing all active products.
+ * Equipment page — redirects members to the Bioracer store.
+ * Access is gated to members in good standing (active membership for the
+ * current season) via MembershipGate.
  */
-export default function EquipmentPage(): React.ReactNode {
+export default async function EquipmentPage(): Promise<React.ReactNode> {
+  const bioracerUrl = await getBioracerUrl();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <div className="mb-8">
@@ -36,7 +43,7 @@ export default function EquipmentPage(): React.ReactNode {
         </p>
       </div>
       <MembershipGate>
-        <ProductCatalog />
+        <EquipmentBioracerLink url={bioracerUrl} />
       </MembershipGate>
     </div>
   );

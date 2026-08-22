@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { useCart } from "@/hooks/use-cart";
 import { useRandomDtcMeaning } from "@/hooks/use-dtc-meanings";
 import { signOut } from "@/lib/auth-client";
 
@@ -31,7 +30,6 @@ export function Header(): React.ReactNode {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isLoading, isAuthenticated } = useAuth();
-  const { itemCount } = useCart();
   // Random "la dtc" subtitle, fetched from the committee-editable settings list.
   // Null until the list loads on the client, so SSR and first client render
   // stay identical (no hydration mismatch — the subtitle is client-only).
@@ -104,34 +102,6 @@ export function Header(): React.ReactNode {
 
         {/* Auth buttons — desktop */}
         <div className="hidden items-center gap-2 md:flex">
-          {/* Cart icon */}
-          <Link
-            href="/equipment/cart"
-            className="relative flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:text-primary"
-            aria-label={`Panier (${itemCount} article${itemCount !== 1 ? "s" : ""})`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="9" cy="21" r="1" />
-              <circle cx="20" cy="21" r="1" />
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-            </svg>
-            {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                {itemCount > 9 ? "9+" : itemCount}
-              </span>
-            )}
-          </Link>
-
           {!isLoading && !isAuthenticated && (
             <>
               <Button variant="ghost" size="sm" asChild>

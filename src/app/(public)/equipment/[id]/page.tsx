@@ -1,61 +1,9 @@
-import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
-import { siteConfig } from "@/config/site";
-import { ProductDetail } from "./ProductDetail";
-import { MembershipGate } from "@/components/equipment/MembershipGate";
-
-interface Props {
-  params: Promise<{ id: string }>;
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  try {
-    const product = await prisma.product.findUnique({
-      where: { id },
-      select: { name: true, description: true },
-    });
-
-    const title = product?.name || "Produit";
-    const description = product?.description || siteConfig.description;
-
-    return {
-      title: `${title} | ${siteConfig.name}`,
-      description,
-      openGraph: {
-      title,
-        description,
-        url: `${siteConfig.url}/equipment/${id}`,
-        siteName: siteConfig.fullName,
-        type: "website",
-        images: [
-          {
-            url: siteConfig.ogImage,
-            width: 1200,
-            height: 630,
-            alt: title,
-          },
-        ],
-      },
-    };
-  } catch {
-    return {
-      title: "Produit",
-      description: siteConfig.description,
-    };
-  }
-}
+import { redirect } from "next/navigation";
 
 /**
- * Public product detail page with size selector, quantity, and add-to-cart button.
+ * Product detail pages are no longer used — equipment orders go through the
+ * Bioracer store. Redirect any legacy URL to the main equipment page.
  */
-export default async function ProductDetailPage({ params }: Props): Promise<React.ReactNode> {
-  const { id } = await params;
-  return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
-      <MembershipGate>
-        <ProductDetail id={id} />
-      </MembershipGate>
-    </div>
-  );
+export default function ProductDetailPage(): never {
+  redirect("/equipment");
 }
