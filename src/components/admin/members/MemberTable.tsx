@@ -20,6 +20,7 @@ type MemberRow = User & { membership: Membership | null };
 interface MemberTableProps {
   members: MemberRow[];
   onSendReminder?: (memberId: string) => void;
+  onSendAttestation?: (email: string) => void;
   isLoading?: boolean;
 }
 
@@ -30,6 +31,7 @@ interface MemberTableProps {
 export function MemberTable({
   members,
   onSendReminder,
+  onSendAttestation,
   isLoading = false,
 }: MemberTableProps): React.ReactNode {
   if (isLoading) {
@@ -132,6 +134,15 @@ export function MemberTable({
                         onClick={() => onSendReminder(member.id)}
                       >
                         Rappel
+                      </Button>
+                    )}
+                    {onSendAttestation && membership?.status === "ACTIVE" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onSendAttestation(member.email)}
+                      >
+                        Attestation
                       </Button>
                     )}
                   </div>

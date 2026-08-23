@@ -62,6 +62,23 @@ export default function AdminMembersPage(): React.ReactNode {
     }
   }
 
+  async function handleSendAttestation(email: string): Promise<void> {
+    try {
+      const res = await fetch(
+        `/api/admin/members/send-attestations?email=${encodeURIComponent(email)}`,
+        { method: "POST" },
+      );
+      const data = (await res.json()) as { message?: string; error?: string };
+      if (!res.ok) {
+        alert(data.error ?? "Erreur lors de l'envoi");
+      } else {
+        alert(data.message ?? "Attestation envoyée");
+      }
+    } catch {
+      alert("Erreur de connexion");
+    }
+  }
+
   async function handleSeasonRollover(): Promise<void> {
     if (
       !window.confirm(
@@ -247,6 +264,7 @@ export default function AdminMembersPage(): React.ReactNode {
       <MemberTable
         members={membersData?.members ?? []}
         onSendReminder={handleSendReminder}
+        onSendAttestation={handleSendAttestation}
         isLoading={membersLoading}
       />
 
