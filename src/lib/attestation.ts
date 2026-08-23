@@ -1,4 +1,6 @@
 import PDFDocument from "pdfkit";
+import fs from "fs";
+import path from "path";
 
 /**
  * Attestation d'inscription PDF generator.
@@ -21,6 +23,9 @@ const CLUB_NAME = "La DTC";
 const CLUB_TAGLINE = "Club de course à pied & trail";
 const CLUB_ADDRESS = "Rue de Renaix 41 – 7890 Ellezelles";
 const PRESIDENT_NAME = "Matthieu Deramée";
+
+/** Club brand color (orange #FF8C00). */
+const CLUB_ORANGE = "#FF8C00";
 
 const BUREAU = [
   "Président : Deramée Matthieu",
@@ -57,16 +62,27 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
 
     const pageWidth = doc.page.width;
     const margin = 72;
-  const contentWidth = pageWidth - margin * 2;
+
+    // ─── Logo (centered) ───────────────────────────────────────────────
+    const logoPath = path.join(process.cwd(), "public/images/logo.png");
+    if (fs.existsSync(logoPath)) {
+      const logoWidth = 120;
+      const logoHeight = 80;
+      const logoX = (pageWidth - logoWidth) / 2;
+      doc.image(logoPath, logoX, margin, { width: logoWidth, height: logoHeight });
+      doc.y = margin + logoHeight + 15;
+    }
 
   // ─── Header ──────────────────────────────────────────────────────────
   doc
     .font("Helvetica-Bold")
     .fontSize(14)
+    .fillColor(CLUB_ORANGE)
     .text(`${CLUB_NAME} – ${CLUB_TAGLINE}`, { align: "left" });
   doc
     .font("Helvetica")
     .fontSize(10)
+    .fillColor("black")
     .text(CLUB_ADDRESS, { align: "left" });
 
   // Separator line
@@ -74,7 +90,8 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
   doc
     .moveTo(margin, lineY)
     .lineTo(pageWidth - margin, lineY)
-    .lineWidth(0.5)
+    .lineWidth(1)
+    .strokeColor(CLUB_ORANGE)
     .stroke();
   doc.moveDown(2);
 
@@ -82,13 +99,14 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
   doc
     .font("Helvetica-Bold")
     .fontSize(13)
+    .fillColor(CLUB_ORANGE)
     .text("ATTESTATION D'INSCRIPTION À UN CLUB SPORTIF", {
       align: "center",
     });
   doc.moveDown(2);
 
   // ─── Body ───────────────────────────────────────────────────────────
-  doc.font("Helvetica").fontSize(11);
+  doc.font("Helvetica").fontSize(11).fillColor("black");
 
   doc.text(
     `Je soussigné ${PRESIDENT_NAME}, président du club ${CLUB_NAME}, certifie que :`,
@@ -129,16 +147,36 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
   doc
     .moveTo(margin, line2Y)
     .lineTo(pageWidth - margin, line2Y)
-    .lineWidth(0.5)
+    .lineWidth(1)
+    .strokeColor(CLUB_ORANGE)
     .stroke();
   doc.moveDown(1.5);
 
   // ─── Signature block ────────────────────────────────────────────────
   const today = formatDate(new Date());
-  doc.font("Helvetica").fontSize(11);
+  doc.font("Helvetica").fontSize(11).fillColor("black");
   doc.text(`Fait à Ellezelles, le ${today}`, { align: "left" });
-  doc.moveDown(2);
-  doc.font("Helvetica-Bold").text(PRESIDENT_NAME, { align: "left" });
+  doc.moveDown(1);
+
+  // Signature and stamp images, placed side by side
+  const signaturePath = path.join(process.cwd(), "public/images/signature.png");
+  const stampPath = path.join(process.cwd(), "public/images/cachet.png");
+  const sigY = doc.y;
+  let hasSignature = false;
+
+  if (fs.existsSync(signaturePath)) {
+    doc.image(signaturePath, margin, sigY, { width: 130 });
+    hasSignature = true;
+  }
+  if (fs.existsSync(stampPath)) {
+    const stampX = hasSignature ? margin + 140 : margin;
+    doc.image(stampPath, stampX, sigY, { width: 100 });
+  }
+
+  // Move below the signature/stamp block
+  doc.y = sigY + 80;
+
+  doc.font("Helvetica-Bold").fillColor(CLUB_ORANGE).text(PRESIDENT_NAME, { align: "left" });
 
   doc.moveDown(0.5);
   // Signature underline
@@ -146,14 +184,15 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
     .moveTo(margin, doc.y)
     .lineTo(margin + 150, doc.y)
     .lineWidth(0.5)
+    .strokeColor(CLUB_ORANGE)
     .stroke();
   doc.moveDown(2);
 
   // ─── Bureau ─────────────────────────────────────────────────────────
-  doc.font("Helvetica-Bold").fontSize(10);
+  doc.font("Helvetica-Bold").fontSize(10).fillColor(CLUB_ORANGE);
   doc.text("Bureau du club :", { align: "left" });
   doc.moveDown(0.5);
-  doc.font("Helvetica").fontSize(10);
+  doc.font("Helvetica").fontSize(10).fillColor("black");
   for (const line of BUREAU) {
     doc.text(line, { align: "left", lineGap: 2 });
   }
