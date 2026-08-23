@@ -130,7 +130,7 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
     ? formatMemberName(data.memberName)
     : "....................................................................";
 
-  doc.text(`Nom, prénom du membre : ${nameStr}`, { lineGap: 4 });
+  doc.text(nameStr, { lineGap: 4 });
   doc.moveDown(1);
 
   doc.text(
@@ -140,7 +140,7 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
   doc.moveDown(1);
 
   doc.text(
-    `Le montant de l'inscription s'élève à ${data.amount.toFixed(0)} €, versé à la date du : ${formatDate(data.paidAt)}.`,
+    `Le montant de l'inscription s'élève à ${data.amount.toFixed(0)} €, versé à la date du ${formatDate(data.paidAt)}.`,
     { align: "justify", lineGap: 4 },
   );
   doc.moveDown(1);
