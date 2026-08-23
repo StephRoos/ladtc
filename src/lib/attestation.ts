@@ -42,6 +42,19 @@ function formatDate(date: Date): string {
 }
 
 /**
+ * Reorders a name from "Prénom Nom" to "Nom Prénom" for the attestation.
+ * The database stores names as "Prénom Nom" (registration form concatenates
+ * firstName + lastName), but the attestation label reads "Nom, prénom".
+ * Only swaps the first and second word — multi-word names like
+ * "Jean Carton-Delcourt" stay intact.
+ */
+function formatMemberName(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length < 2) return name;
+  return `${parts.slice(1).join(" ")} ${parts[0]}`;
+}
+
+/**
  * Generates the attestation PDF as a Buffer.
  *
  * @param data - Member and payment information to fill into the template
@@ -113,7 +126,9 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
   );
   doc.moveDown(1);
 
-  const nameStr = data.memberName || "....................................................................";
+  const nameStr = data.memberName
+    ? formatMemberName(data.memberName)
+    : "....................................................................";
 
   doc.text(`Nom, prénom du membre : ${nameStr}`, { lineGap: 4 });
   doc.moveDown(1);
