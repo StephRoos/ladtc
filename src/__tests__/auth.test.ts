@@ -53,6 +53,7 @@ describe("registerSchema", () => {
       email: "jean@example.com",
       password: "password123",
       confirmPassword: "password123",
+      dateOfBirth: "1990-05-15",
     });
     expect(result.success).toBe(true);
   });
@@ -64,6 +65,7 @@ describe("registerSchema", () => {
       email: "jean@example.com",
       password: "password123",
       confirmPassword: "password123",
+      dateOfBirth: "1990-05-15",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -83,6 +85,7 @@ describe("registerSchema", () => {
       email: "jean@example.com",
       password: "password123",
       confirmPassword: "password123",
+      dateOfBirth: "1990-05-15",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -102,6 +105,7 @@ describe("registerSchema", () => {
       email: "invalid",
       password: "password123",
       confirmPassword: "password123",
+      dateOfBirth: "1990-05-15",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -119,6 +123,7 @@ describe("registerSchema", () => {
       email: "jean@example.com",
       password: "short",
       confirmPassword: "short",
+      dateOfBirth: "1990-05-15",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -138,6 +143,7 @@ describe("registerSchema", () => {
       email: "jean@example.com",
       password: "password123",
       confirmPassword: "differentpassword",
+      dateOfBirth: "1990-05-15",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -157,8 +163,34 @@ describe("registerSchema", () => {
       email: "ab@example.com",
       password: "12345678",
       confirmPassword: "12345678",
+      dateOfBirth: "1990-05-15",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("rejects missing date of birth", () => {
+    const result = registerSchema.safeParse({
+      firstName: "Jean",
+      lastName: "Dupont",
+      email: "jean@example.com",
+      password: "password123",
+      confirmPassword: "password123",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects future date of birth", () => {
+    const future = new Date();
+    future.setFullYear(future.getFullYear() + 1);
+    const result = registerSchema.safeParse({
+      firstName: "Jean",
+      lastName: "Dupont",
+      email: "jean@example.com",
+      password: "password123",
+      confirmPassword: "password123",
+      dateOfBirth: future.toISOString().split("T")[0],
+    });
+    expect(result.success).toBe(false);
   });
 });
 

@@ -23,6 +23,11 @@ export const auth = betterAuth({
         defaultValue: "MEMBER",
         input: false,
       },
+      dateOfBirth: {
+        type: "date",
+        required: false,
+        input: true,
+      },
     },
   },
   emailAndPassword: {

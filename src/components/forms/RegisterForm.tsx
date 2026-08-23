@@ -59,6 +59,19 @@ export function RegisterForm(): React.ReactNode {
       return;
     }
 
+    // Save date of birth separately — BetterAuth's signUp.email doesn't
+    // accept custom additionalFields from the client. The endpoint finds
+    // the user by email and updates the field directly.
+    try {
+      await fetch("/api/auth/date-of-birth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email, dateOfBirth: data.dateOfBirth }),
+      });
+    } catch {
+      // Non-blocking — the member can add it later from their profile
+    }
+
     // Redirect to email verification page. Email verification is now required
     // before the user can log in or pay for membership.
     router.push(`/auth/verify-email?email=${encodeURIComponent(data.email)}`);
@@ -118,6 +131,24 @@ export function RegisterForm(): React.ReactNode {
                   </p>
                 )}
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="dateOfBirth">Date de naissance</Label>
+              <Input
+                id="dateOfBirth"
+                type="date"
+                autoComplete="bday"
+                {...register("dateOfBirth")}
+              />
+              <p className="text-xs text-muted-foreground">
+                Nécessaire pour l&apos;attestation d&apos;inscription (remboursement mutuelle)
+              </p>
+              {errors.dateOfBirth && (
+                <p className="text-sm text-destructive">
+                  {errors.dateOfBirth.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">

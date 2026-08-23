@@ -78,6 +78,14 @@ export const registerSchema = z
       .string()
       .min(2, "Le nom doit contenir au moins 2 caractères"),
     email: z.string().email("Email invalide"),
+    dateOfBirth: z
+      .string()
+      .date("Date de naissance invalide")
+      .refine((val) => {
+        const dob = new Date(val);
+        const now = new Date();
+        return dob < now && dob > new Date("1900-01-01");
+      }, "Date de naissance invalide"),
     password: z
       .string()
       .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
