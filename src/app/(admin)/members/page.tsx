@@ -35,6 +35,7 @@ export default function AdminMembersPage(): React.ReactNode {
   const [sort, setSort] = useState<string>("name");
   const [page, setPage] = useState(1);
   const [rolloverLoading, setRolloverLoading] = useState(false);
+  const [attestationLoading, setAttestationLoading] = useState(false);
 
   const { data: stats, isLoading: statsLoading } = useMemberStats();
   const { data: membersData, isLoading: membersLoading } = useMembers({
@@ -85,11 +86,44 @@ export default function AdminMembersPage(): React.ReactNode {
     }
   }
 
+  async function handleSendAttestations(): Promise<void> {
+    if (
+      !window.confirm(
+        "Envoie l'attestation d'inscription par email à tous les membres en ordre de cotisation pour la saison en cours. Continuer ?",
+      )
+    ) {
+      return;
+    }
+    setAttestationLoading(true);
+    try {
+      const res = await fetch("/api/admin/members/send-attestations", {
+        method: "POST",
+      });
+      const data = (await res.json()) as { message?: string; error?: string };
+      if (!res.ok) {
+        alert(data.error ?? "Erreur lors de l'envoi");
+      } else {
+        alert(data.message ?? "Attestations envoyées");
+      }
+    } catch {
+      alert("Erreur de connexion");
+    } finally {
+      setAttestationLoading(false);
+    }
+  }
+
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Gestion des membres</h1>
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleSendAttestations}
+            disabled={attestationLoading}
+          >
+            {attestationLoading ? "Envoi en cours..." : "Envoyer attestations"}
+          </Button>
           <Button
             variant="outline"
             onClick={handleSeasonRollover}
