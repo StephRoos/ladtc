@@ -53,7 +53,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const name = m.user.name ?? m.user.email;
       const pdf = await generateAttestationPdf({
         memberName: name,
-        dateOfBirth: m.user.dateOfBirth,
         season: currentSeason,
         amount: m.amount,
         paidAt: m.paidAt ?? new Date(),

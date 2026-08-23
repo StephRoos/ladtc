@@ -12,7 +12,6 @@ import path from "path";
 
 interface AttestationData {
   memberName: string;
-  dateOfBirth: Date | null;
   season: string;
   amount: number;
   paidAt: Date;
@@ -114,14 +113,9 @@ export function generateAttestationPdf(data: AttestationData): Promise<Buffer> {
   );
   doc.moveDown(1);
 
-  const birthStr = data.dateOfBirth
-    ? formatDate(data.dateOfBirth)
-    : "....................................................................";
   const nameStr = data.memberName || "....................................................................";
 
   doc.text(`Nom, prénom du membre : ${nameStr}`, { lineGap: 4 });
-  doc.moveDown(0.5);
-  doc.text(`Date de naissance : ${birthStr}`, { lineGap: 4 });
   doc.moveDown(1);
 
   doc.text(

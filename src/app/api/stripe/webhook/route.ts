@@ -134,7 +134,6 @@ async function handleMembershipDues(session: Stripe.Checkout.Session): Promise<v
     // Generate the attestation PDF and attach it to the confirmation email.
     const attestationPdf = await generateAttestationPdf({
       memberName: name,
-      dateOfBirth: membership.user.dateOfBirth,
       season: currentSeason,
       amount: membership.amount,
       paidAt: new Date(),
