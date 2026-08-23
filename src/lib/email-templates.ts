@@ -458,9 +458,17 @@ export function membershipPaymentConfirmationTemplate(
         </tr>
       </table>
     </div>
-    <p style="margin:0 0 8px 0;color:#cbd5e1;line-height:1.6;">
+    <p style="margin:0 0 16px 0;color:#cbd5e1;line-height:1.6;">
       Votre adhésion est désormais active. Profitez de tous les avantages du club !
     </p>
+    <div style="background-color:${BACKGROUND_COLOR};border-radius:6px;padding:20px;margin:24px 0;">
+      <p style="margin:0 0 8px 0;color:#94a3b8;font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;">Attestation d'inscription</p>
+      <p style="margin:0;color:#cbd5e1;font-size:14px;line-height:1.6;">
+        Vous trouverez l'attestation d'inscription en pièce jointe de cet email.
+        Ce document permet de solliciter auprès de votre mutuelle le remboursement
+        prévu dans le cadre des activités sportives.
+      </p>
+    </div>
     ${buttonHtml(`${CLUB_WEBSITE}/profile`, "Mon profil")}
     <p style="margin:24px 0 0 0;color:#94a3b8;font-size:13px;">
       Cordialement,<br/>

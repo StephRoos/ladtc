@@ -38,6 +38,9 @@ export function ProfileForm({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
       name: user.name ?? "",
+      dateOfBirth: user.dateOfBirth
+        ? new Date(user.dateOfBirth).toISOString().split("T")[0]
+        : "",
       phone: membership?.phone ?? "",
       emergencyContact: membership?.emergencyContact ?? "",
       emergencyContactPhone: membership?.emergencyContactPhone ?? "",
@@ -85,6 +88,22 @@ export function ProfileForm({
         />
         {errors.name && (
           <p className="text-sm text-destructive">{errors.name.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="dateOfBirth">Date de naissance</Label>
+        <Input
+          id="dateOfBirth"
+          type="date"
+          {...register("dateOfBirth")}
+        />
+        <p className="text-xs text-muted-foreground">
+          Nécessaire pour l&apos;attestation d&apos;inscription envoyée après
+          le paiement de la cotisation (remboursement mutuelle).
+        </p>
+        {errors.dateOfBirth && (
+          <p className="text-sm text-destructive">{errors.dateOfBirth.message}</p>
         )}
       </div>
 

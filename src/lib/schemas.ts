@@ -120,6 +120,7 @@ export type NewPasswordFormData = z.infer<typeof newPasswordSchema>;
  */
 export const profileUpdateSchema = z.object({
   name: z.string().min(2, "Le nom doit contenir au moins 2 caractères").optional(),
+  dateOfBirth: z.string().date().nullable().optional(),
   phone: z.string().optional(),
   emergencyContact: z.string().optional(),
   emergencyContactPhone: z.string().optional(),

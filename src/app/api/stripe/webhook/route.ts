@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
 import { sendPaymentConfirmation, sendMembershipPaymentConfirmation, sendEmail } from "@/lib/email";
+import { generateAttestationPdf } from "@/lib/attestation";
 import type Stripe from "stripe";
 
 /**
@@ -130,11 +131,20 @@ async function handleMembershipDues(session: Stripe.Checkout.Session): Promise<v
 
   try {
     const name = membership.user.name ?? membership.user.email;
+    // Generate the attestation PDF and attach it to the confirmation email.
+    const attestationPdf = await generateAttestationPdf({
+      memberName: name,
+      dateOfBirth: membership.user.dateOfBirth,
+      season: currentSeason,
+      amount: membership.amount,
+      paidAt: new Date(),
+    });
     await sendMembershipPaymentConfirmation(
       membership.user.email,
       name,
       membership.amount,
       currentSeason,
+      attestationPdf,
     );
   } catch (err) {
     console.error("[Stripe Webhook] Failed to send membership confirmation email:", err);

@@ -47,13 +47,18 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { name, phone, emergencyContact, emergencyContactPhone } = parsed.data;
+  const { name, dateOfBirth, phone, emergencyContact, emergencyContactPhone } = parsed.data;
 
-  // Update user name if provided
-  await prisma.user.update({
-    where: { id: authResult.user.id },
-    data: { ...(name !== undefined && { name }) },
-  });
+  // Update user fields if provided (name, dateOfBirth)
+  if (name !== undefined || dateOfBirth !== undefined) {
+    await prisma.user.update({
+      where: { id: authResult.user.id },
+      data: {
+        ...(name !== undefined && { name }),
+        ...(dateOfBirth !== undefined && { dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null }),
+      },
+    });
+  }
 
   // Upsert membership contact fields when any contact field is provided
   if (phone !== undefined || emergencyContact !== undefined || emergencyContactPhone !== undefined) {

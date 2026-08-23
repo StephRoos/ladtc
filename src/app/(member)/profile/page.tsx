@@ -96,6 +96,14 @@ export default function ProfilePage(): React.ReactNode {
           ) : (
             <dl className="grid grid-cols-2 gap-4 text-sm">
               <div>
+                <dt className="text-muted-foreground">Date de naissance</dt>
+                <dd className="font-medium">
+                  {user.dateOfBirth
+                    ? new Date(user.dateOfBirth).toLocaleDateString("fr-BE")
+                    : "—"}
+                </dd>
+              </div>
+              <div>
                 <dt className="text-muted-foreground">Téléphone</dt>
                 <dd className="font-medium">{membership?.phone ?? "—"}</dd>
               </div>

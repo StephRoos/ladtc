@@ -21,6 +21,7 @@ model User {
   email              String              @unique
   emailVerified      Boolean             @default(false)
   name               String?
+  dateOfBirth        DateTime?
   image              String?
   role               UserRole            @default(MEMBER)
   committeeRole      String?             @db.VarChar(100)

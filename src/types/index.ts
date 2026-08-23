@@ -20,6 +20,7 @@ export interface User {
   email: string;
   emailVerified: boolean;
   name: string | null;
+  dateOfBirth: Date | null;
   image: string | null;
   role: UserRole;
   committeeRole: string | null;

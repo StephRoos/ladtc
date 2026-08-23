@@ -16,6 +16,7 @@ const COMMITTEE_EMAIL = "bureau@ladtc.be";
 
 interface SendEmailOptions {
   replyTo?: string;
+  attachments?: Array<{ filename: string; content: Buffer }>;
 }
 
 /**
@@ -24,7 +25,7 @@ interface SendEmailOptions {
  * @param to - Recipient email address
  * @param subject - Email subject line
  * @param html - HTML body content
- * @param options - Optional extras (e.g. replyTo for contact form forwarding)
+ * @param options - Optional extras (replyTo, attachments)
  */
 export async function sendEmail(
   to: string,
@@ -39,6 +40,7 @@ export async function sendEmail(
     console.log(`[Email] To: ${to}`);
     console.log(`[Email] Subject: ${subject}`);
     if (options.replyTo) console.log(`[Email] Reply-To: ${options.replyTo}`);
+    if (options.attachments) console.log(`[Email] Attachments: ${options.attachments.map(a => a.filename).join(", ")}`);
     console.log(`[Email] HTML length: ${html.length} chars`);
     return;
   }
@@ -52,6 +54,10 @@ export async function sendEmail(
     subject,
     html,
     replyTo: options.replyTo,
+    attachments: options.attachments?.map((a) => ({
+      filename: a.filename,
+      content: a.content.toString("base64"),
+    })),
   });
 
   if (error) {
@@ -167,22 +173,28 @@ export async function sendPaymentConfirmation(order: Order): Promise<void> {
 }
 
 /**
- * Sends a membership payment confirmation email.
+ * Sends a membership payment confirmation email, optionally with the
+ * attestation PDF attached.
  *
  * @param email - Member's email address
  * @param name - Member's display name
  * @param amount - Amount paid in EUR
  * @param season - Season paid for (e.g. "2025-2026")
+ * @param attestationPdf - Optional attestation PDF buffer to attach
  */
 export async function sendMembershipPaymentConfirmation(
   email: string,
   name: string,
   amount: number,
   season: string,
+  attestationPdf?: Buffer,
 ): Promise<void> {
   const subject = "Cotisation LADTC confirmée";
   const html = membershipPaymentConfirmationTemplate(name, amount, season);
-  await sendEmail(email, subject, html);
+  await sendEmail(email, subject, html, attestationPdf
+    ? { attachments: [{ filename: `attestation-${season}.pdf`, content: attestationPdf }] }
+    : {}
+  );
 }
 
 /**
