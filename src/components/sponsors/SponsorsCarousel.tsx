@@ -28,7 +28,7 @@ export function SponsorsCarousel({
   sponsors,
   title = "Nos sponsors",
   autoplay = true,
-  scrollSpeed = 80,
+  scrollSpeed = 120,
 }: SponsorsCarouselProps): React.ReactNode {
   const uniqueId = useId();
   const carouselId = `sponsors-carousel-${uniqueId}`;
