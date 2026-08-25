@@ -16,6 +16,7 @@ const adminNavLinks: NavLink[] = [
   { href: "/admin/events", label: "Événements" },
   { href: "/admin/backyard", label: "Chrono Backyard" },
   { href: "/admin/gallery", label: "Galerie" },
+  { href: "/admin/sponsors", label: "Sponsors" },
   { href: "/admin/documents", label: "Documents" },
   { href: "/admin/statistics", label: "Statistiques" },
   { href: "/admin/activity-logs", label: "Logs d'activité" },
