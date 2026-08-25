@@ -24,7 +24,7 @@ export function UtcSponsorsSection(): React.ReactNode {
         sponsors={data.sponsors}
         title="Nos sponsors"
         autoplay={true}
-        scrollSpeed={40}
+        scrollSpeed={120}
       />
     </section>
   );
