@@ -11,6 +11,13 @@ Sentry.init({
   integrations: [
     Sentry.replayIntegration(),
   ],
+  ignoreErrors: [
+    // Facebook in-app browser on iOS injects a script that calls
+    // window.webkit.messageHandlers.navigationPerformanceLoggerWithReply
+    // which throws when the handler is undefined. Not a site bug.
+    "navigationPerformanceLoggerWithReply",
+    "setupIosCallbackHandler",
+  ],
 });
 
 // Required by @sentry/nextjs to instrument client-side navigations
