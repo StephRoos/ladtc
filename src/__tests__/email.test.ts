@@ -14,6 +14,7 @@ const mockUser: User = {
   email: "jean.dupont@example.be",
   emailVerified: true,
   name: "Jean Dupont",
+  dateOfBirth: null,
   image: null,
   role: "MEMBER",
   committeeRole: null,
