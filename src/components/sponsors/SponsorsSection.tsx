@@ -5,9 +5,15 @@ import { SponsorCard } from "./SponsorCard";
 
 /**
  * Tier display configuration
- * Order: GOLD first, then SILVER, then BRONZE
+ * Order: GOLD first, then SILVER, BRONZE, SUPPORTER (100 EUR) and AMI (50 EUR)
  */
-const TIER_ORDER = ["GOLD", "SILVER", "BRONZE"] as const;
+const TIER_ORDER = [
+  "GOLD",
+  "SILVER",
+  "BRONZE",
+  "SUPPORTER",
+  "AMI",
+] as const;
 
 /**
  * Tier labels in French for display
@@ -16,6 +22,8 @@ const TIER_LABELS: Record<string, string> = {
   GOLD: "Or",
   SILVER: "Argent",
   BRONZE: "Bronze",
+  SUPPORTER: "Supporter",
+  AMI: "Ami du club",
 };
 
 /**
@@ -25,6 +33,8 @@ const TIER_BORDER_COLORS: Record<string, string> = {
   GOLD: "border-yellow-500",
   SILVER: "border-gray-400",
   BRONZE: "border-amber-600",
+  SUPPORTER: "border-stone-500",
+  AMI: "border-emerald-500",
 };
 
 interface SponsorsSectionProps {
@@ -53,6 +63,8 @@ export function SponsorsSection({
     GOLD: [],
     SILVER: [],
     BRONZE: [],
+    SUPPORTER: [],
+    AMI: [],
   };
 
   sponsors.forEach((sponsor) => {

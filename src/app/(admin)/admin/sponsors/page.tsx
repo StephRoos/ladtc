@@ -33,7 +33,7 @@ import {
 } from "@/hooks/use-sponsors";
 import { SponsorTable } from "@/components/admin/sponsors/SponsorTable";
 import { SponsorForm } from "@/components/admin/sponsors/SponsorForm";
-import type { Sponsor, SponsorFormData } from "@/types/sponsor";
+import type { Sponsor, SponsorFormData, SponsorTier } from "@/types/sponsor";
 
 /**
  * Admin sponsors management page.
@@ -51,7 +51,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
   // State for filters and pagination
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(20);
-  const [tierFilter, setTierFilter] = useState<"GOLD" | "SILVER" | "BRONZE" | "">("");
+  const [tierFilter, setTierFilter] = useState<SponsorTier | "">("");
   const [isActiveFilter, setIsActiveFilter] = useState<boolean | "">("");
   const [search, setSearch] = useState("");
 
@@ -171,9 +171,11 @@ export default function AdminSponsorsPage(): React.ReactNode {
       </div>
 
       {/* Stats cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {sponsorsLoading ? (
           <>
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
             <Skeleton className="h-28 w-full" />
             <Skeleton className="h-28 w-full" />
             <Skeleton className="h-28 w-full" />
@@ -227,6 +229,30 @@ export default function AdminSponsorsPage(): React.ReactNode {
                 </p>
               </CardContent>
             </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-stone-500">
+                  Supporter
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">
+                  {sponsorsData?.sponsors.filter((s) => s.tier === "SUPPORTER").length ?? 0}
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-emerald-500">
+                  Ami du club
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">
+                  {sponsorsData?.sponsors.filter((s) => s.tier === "AMI").length ?? 0}
+                </p>
+              </CardContent>
+            </Card>
           </>
         )}
       </div>
@@ -247,7 +273,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
         <Select
           value={tierFilter || ""}
           onValueChange={(val) => {
-            setTierFilter(val as "GOLD" | "SILVER" | "BRONZE" | "");
+            setTierFilter(val as SponsorTier | "");
           }}
         >
           <SelectTrigger className="w-44">
@@ -257,6 +283,8 @@ export default function AdminSponsorsPage(): React.ReactNode {
             <SelectItem value="GOLD">Or (Gold)</SelectItem>
             <SelectItem value="SILVER">Argent (Silver)</SelectItem>
             <SelectItem value="BRONZE">Bronze</SelectItem>
+            <SelectItem value="SUPPORTER">Supporter (100 €)</SelectItem>
+            <SelectItem value="AMI">Ami du club (50 €)</SelectItem>
           </SelectContent>
         </Select>
         <Select

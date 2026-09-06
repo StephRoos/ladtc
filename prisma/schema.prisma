@@ -248,6 +248,8 @@ enum SponsorTier {
   GOLD
   SILVER
   BRONZE
+  SUPPORTER
+  AMI
 }
 
 model Sponsor {

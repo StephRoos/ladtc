@@ -1,0 +1,3 @@
+-- Add SUPPORTER (100 EUR) and AMI (50 EUR) tiers below BRONZE
+ALTER TYPE "SponsorTier" ADD VALUE 'SUPPORTER';
+ALTER TYPE "SponsorTier" ADD VALUE 'AMI';

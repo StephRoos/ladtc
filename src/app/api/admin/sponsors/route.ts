@@ -84,10 +84,19 @@ export async function POST(
     }
 
     // Validate tier
-    const validTiers: SponsorTier[] = ["GOLD", "SILVER", "BRONZE"];
+    const validTiers: SponsorTier[] = [
+      "GOLD",
+      "SILVER",
+      "BRONZE",
+      "SUPPORTER",
+      "AMI",
+    ];
     if (body.tier && !validTiers.includes(body.tier)) {
       return NextResponse.json(
-        { error: "Tier invalide. Doit être GOLD, SILVER ou BRONZE" },
+        {
+          error:
+            "Tier invalide. Doit être GOLD, SILVER, BRONZE, SUPPORTER ou AMI",
+        },
         { status: 400 }
       );
     }

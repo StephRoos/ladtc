@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import type { SponsorTier } from "@/types/sponsor";
 
 /**
  * GET /api/sponsors - Fetch all active sponsors, optionally filtered by tier.
  * Public route - no authentication required.
- * @param tier - Optional filter by sponsor tier (GOLD, SILVER, BRONZE)
+ * @param tier - Optional filter by sponsor tier (GOLD, SILVER, BRONZE, SUPPORTER, AMI)
  * @param limit - Optional limit for homepage display
  */
 export async function GET(
   request: Request
 ): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
-  const tier = searchParams.get("tier") as "GOLD" | "SILVER" | "BRONZE" | null;
+  const tier = searchParams.get("tier") as SponsorTier | null;
   const limit = searchParams.get("limit")
     ? parseInt(searchParams.get("limit")!, 10)
     : null;

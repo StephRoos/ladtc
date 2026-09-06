@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
   Sponsor,
+  SponsorTier,
   SponsorFormData,
   SponsorsResponse,
   SponsorResponse,
@@ -46,7 +47,7 @@ export function usePublicSponsors(limit?: number) {
 export function useAdminSponsors(
   page: number = 1,
   perPage: number = 20,
-  tier?: "GOLD" | "SILVER" | "BRONZE",
+  tier?: SponsorTier,
   isActive?: boolean,
   search?: string
 ) {

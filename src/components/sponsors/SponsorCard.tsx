@@ -6,7 +6,8 @@ import type { SponsorCardProps } from "@/types/sponsor";
 
 /**
  * Tier configuration for styling
- * Colors: gold = yellow/orange, silver = gray, bronze = amber
+ * Colors: gold = yellow/orange, silver = gray, bronze = amber,
+ * supporter = stone, ami (club friend, 50 EUR) = emerald
  */
 const tierConfig = {
   GOLD: {
@@ -20,6 +21,16 @@ const tierConfig = {
     glow: "ring-primary/50",
   },
   BRONZE: {
+    border: "border-border",
+    hoverBorder: "hover:border-border",
+    glow: "ring-primary/50",
+  },
+  SUPPORTER: {
+    border: "border-border",
+    hoverBorder: "hover:border-border",
+    glow: "ring-primary/50",
+  },
+  AMI: {
     border: "border-border",
     hoverBorder: "hover:border-border",
     glow: "ring-primary/50",

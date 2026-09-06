@@ -2,7 +2,7 @@
  * Type definitions for Sponsors feature
  */
 
-export type SponsorTier = "GOLD" | "SILVER" | "BRONZE";
+export type SponsorTier = "GOLD" | "SILVER" | "BRONZE" | "SUPPORTER" | "AMI";
 
 export interface Sponsor {
   id: string;
@@ -50,4 +50,6 @@ export interface SponsorsByTier {
   gold: Sponsor[];
   silver: Sponsor[];
   bronze: Sponsor[];
+  supporter: Sponsor[];
+  ami: Sponsor[];
 }

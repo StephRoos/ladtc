@@ -37,6 +37,18 @@ const tierConfig = {
     bgColor: "bg-amber-500/10",
     border: "border-amber-500",
   },
+  SUPPORTER: {
+    label: "Supporter",
+    color: "text-stone-500",
+    bgColor: "bg-stone-500/10",
+    border: "border-stone-500",
+  },
+  AMI: {
+    label: "Ami du club",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-500/10",
+    border: "border-emerald-500",
+  },
 } as const;
 
 interface SponsorTableProps {

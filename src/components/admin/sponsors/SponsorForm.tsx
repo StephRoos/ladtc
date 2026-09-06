@@ -21,7 +21,7 @@ import type { Sponsor, SponsorFormData } from "@/types/sponsor";
 // Form schema validation
 const sponsorSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
-  tier: z.enum(["GOLD", "SILVER", "BRONZE"]),
+  tier: z.enum(["GOLD", "SILVER", "BRONZE", "SUPPORTER", "AMI"]),
   websiteUrl: z.string().url("URL invalide").or(z.literal("")),
   order: z.coerce.number().min(0, "L'ordre doit être positif").optional(),
   isActive: z.boolean().optional(),
@@ -167,7 +167,9 @@ export function SponsorForm({
         <Label htmlFor="tier">Niveau</Label>
         <Select
           value={watch("tier")}
-          onValueChange={(value) => setValue("tier", value as "GOLD" | "SILVER" | "BRONZE")}
+          onValueChange={(value) =>
+            setValue("tier", value as "GOLD" | "SILVER" | "BRONZE" | "SUPPORTER" | "AMI")
+          }
           disabled={isLoading || isSubmitting}
         >
           <SelectTrigger>
@@ -177,6 +179,8 @@ export function SponsorForm({
             <SelectItem value="GOLD">Or (Gold)</SelectItem>
             <SelectItem value="SILVER">Argent (Silver)</SelectItem>
             <SelectItem value="BRONZE">Bronze</SelectItem>
+            <SelectItem value="SUPPORTER">Supporter (100 €)</SelectItem>
+            <SelectItem value="AMI">Ami du club (50 €)</SelectItem>
           </SelectContent>
         </Select>
         {errors.tier && (
