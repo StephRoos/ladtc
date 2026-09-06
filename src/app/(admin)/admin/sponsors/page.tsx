@@ -190,7 +190,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold">{sponsorsData?.total ?? 0}</p>
+                <p className="text-3xl font-bold">{sponsorsData?.stats.total ?? 0}</p>
               </CardContent>
             </Card>
             <Card>
@@ -201,7 +201,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold">
-                  {sponsorsData?.sponsors.filter((s) => s.tier === "GOLD").length ?? 0}
+                  {sponsorsData?.stats.byTier.GOLD ?? 0}
                 </p>
               </CardContent>
             </Card>
@@ -213,7 +213,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold">
-                  {sponsorsData?.sponsors.filter((s) => s.tier === "SILVER").length ?? 0}
+                  {sponsorsData?.stats.byTier.SILVER ?? 0}
                 </p>
               </CardContent>
             </Card>
@@ -225,7 +225,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold">
-                  {sponsorsData?.sponsors.filter((s) => s.tier === "BRONZE").length ?? 0}
+                  {sponsorsData?.stats.byTier.BRONZE ?? 0}
                 </p>
               </CardContent>
             </Card>
@@ -237,7 +237,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold">
-                  {sponsorsData?.sponsors.filter((s) => s.tier === "SUPPORTER").length ?? 0}
+                  {sponsorsData?.stats.byTier.SUPPORTER ?? 0}
                 </p>
               </CardContent>
             </Card>
@@ -249,7 +249,7 @@ export default function AdminSponsorsPage(): React.ReactNode {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold">
-                  {sponsorsData?.sponsors.filter((s) => s.tier === "AMI").length ?? 0}
+                  {sponsorsData?.stats.byTier.AMI ?? 0}
                 </p>
               </CardContent>
             </Card>

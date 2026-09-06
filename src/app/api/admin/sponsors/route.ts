@@ -39,12 +39,22 @@ export async function GET(
       take: perPage,
     };
 
-    const [sponsors, total] = await Promise.all([
+    const [sponsors, total, tierCounts, totalCount] = await Promise.all([
       prisma.sponsor.findMany(query),
       prisma.sponsor.count({ where: query.where }),
+      // Global stats: counts per tier across ALL sponsors (ignores filters/pagination)
+      prisma.sponsor.groupBy({
+        by: ["tier"],
+        _count: { _all: true },
+      }),
+      prisma.sponsor.count(),
     ]);
 
     const pages = Math.ceil(total / perPage);
+
+    const byTier = Object.fromEntries(
+      tierCounts.map((t) => [t.tier, t._count._all])
+    ) as Partial<Record<SponsorTier, number>>;
 
     return NextResponse.json({
       sponsors,
@@ -52,6 +62,10 @@ export async function GET(
       page,
       pages,
       perPage,
+      stats: {
+        total: totalCount,
+        byTier,
+      },
     });
   } catch (error) {
     console.error("Error fetching sponsors (admin):", error);

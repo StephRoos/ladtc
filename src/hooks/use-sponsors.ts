@@ -5,6 +5,7 @@ import type {
   Sponsor,
   SponsorTier,
   SponsorFormData,
+  SponsorStats,
   SponsorsResponse,
   SponsorResponse,
 } from "@/types/sponsor";
@@ -57,6 +58,7 @@ export function useAdminSponsors(
     page: number;
     pages: number;
     perPage: number;
+    stats: SponsorStats;
   }>({
     queryKey: ["admin-sponsors", page, perPage, tier, isActive, search],
     queryFn: async () => {

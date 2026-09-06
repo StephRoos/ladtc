@@ -45,6 +45,12 @@ export interface SponsorResponse {
   sponsor: Sponsor;
 }
 
+/** Global sponsor statistics (all sponsors, ignoring pagination/filters) */
+export interface SponsorStats {
+  total: number;
+  byTier: Partial<Record<SponsorTier, number>>;
+}
+
 /** Grouped sponsors by tier for display */
 export interface SponsorsByTier {
   gold: Sponsor[];
