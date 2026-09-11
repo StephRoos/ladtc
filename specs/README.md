@@ -69,7 +69,7 @@ Update spec status as you work:
 
 - **PRD.md** — Product requirements and user personas
 - **ARCHITECTURE.md** — System design, data models, API patterns
-- **CLAUDE.md** — Code style, conventions, development workflow
+- **AGENTS.md** — Code style, conventions, development workflow
 
 ## Questions?
 

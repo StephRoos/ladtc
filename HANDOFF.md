@@ -1,7 +1,7 @@
 # HANDOFF — LADTC Website
 
 > AI-handoff document. Lets a fresh agent (or future Stéphane) resume work with zero prior context.
-> Last updated: 2026-07-07. Complements (does not duplicate) `README.md`, `CLAUDE.md`, `ARCHITECTURE.md`, `PRD.md`.
+> Last updated: 2026-07-07. Complements (does not duplicate) `README.md`, `AGENTS.md`, `ARCHITECTURE.md`, `PRD.md`.
 
 ## 1. What this is
 
@@ -92,7 +92,7 @@ External services: Cloudflare (DNS `ladtc.be` + tunnel `6b5cb58d…`), OVH (regi
 
 - Repo: `git@github.com:StephRoos/ladtc.git` (private, default branch `master`)
 - Prod: https://ladtc.be · health: `/api/health` · UTC 4: https://ladtc.be/utc
-- In-repo docs: `PRD.md`, `ARCHITECTURE.md`, `CLAUDE.md`, `PLAN-ECOSYSTEME.md` (LADTC/HillsRun/RecettesApp roadmap), `specs/01-mvp/`
+- In-repo docs: `PRD.md`, `ARCHITECTURE.md`, `AGENTS.md`, `PLAN-ECOSYSTEME.md` (LADTC/HillsRun/RecettesApp roadmap), `specs/01-mvp/`
 - SecondBrain (source of truth for cross-project context — note: no `01-Projects/` folder exists currently; project notes live in-repo under `Documents/`):
   - `~/SecondBrain/Daily/2026-06-28.md` — ladtc.be outage root cause + tunnel-direct architecture
   - `~/SecondBrain/Daily/2026-06-29.md` — homelab proxy model (port publish + CF tunnel, Traefik retired)

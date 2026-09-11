@@ -76,7 +76,7 @@ docs/                      # Documentation (future)
 ### Prerequisites
 
 - Node.js 20+
-- pnpm (see CLAUDE.md for conventions)
+- pnpm (see AGENTS.md for conventions)
 - PostgreSQL 15+ (for future database setup)
 
 ### Installation
@@ -109,7 +109,7 @@ See `.env.example` for required variables. Key vars:
 
 1. **Choose a spec** from `specs/01-mvp/`
 2. **Read the spec** carefully (acceptance criteria, technical details)
-3. **Implement features** following code style in CLAUDE.md
+3. **Implement features** following code style in AGENTS.md
 4. **Run tests**: `pnpm test`
 5. **Build to check for errors**: `pnpm build`
 6. **Commit changes**: Use conventional format `feat:`, `fix:`, `docs:`, etc.
@@ -127,7 +127,7 @@ pnpm test:watch   # Run Vitest in watch mode
 
 ## Code Style & Conventions
 
-See **CLAUDE.md** for detailed conventions:
+See **AGENTS.md** for detailed conventions:
 
 - **Language**: French for docs/conversation, English for code
 - **Package Manager**: pnpm ONLY (never npm or yarn)
@@ -140,7 +140,7 @@ See **CLAUDE.md** for detailed conventions:
 
 - **PRD.md** — Product requirements and user personas
 - **ARCHITECTURE.md** — System design, data models, API patterns
-- **CLAUDE.md** — Project conventions, code style, development workflow
+- **AGENTS.md** — Project conventions, code style, development workflow
 - **specs/** — Detailed implementation specifications for each feature
 
 ## Theme & Design
@@ -177,7 +177,7 @@ Environment variables are set in Coolify project settings.
 
 ## Support
 
-- Review documentation first (PRD.md, ARCHITECTURE.md, CLAUDE.md)
+- Review documentation first (PRD.md, ARCHITECTURE.md, AGENTS.md)
 - Check existing specs for detailed implementation guidance
 - Refer to HillsRun or RecettesApp for shared pattern examples
 

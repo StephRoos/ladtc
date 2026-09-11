@@ -272,4 +272,4 @@ ADMIN_EMAIL=...
 
 - Review ARCHITECTURE.md for system design
 - Check specs/ for task details
-- Consult HillsRun or RecettesApp CLAUDE.md for shared patterns
+- Consult the HillsRun or RecettesApp AGENTS.md for shared patterns

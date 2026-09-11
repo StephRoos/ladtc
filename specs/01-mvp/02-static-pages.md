@@ -259,7 +259,7 @@ export const contactFormSchema = z.object({
 ## Dependencies
 
 - Spec 01: WordPress Integration (for blog posts and events on homepage)
-- Email service (SMTP) for contact form (see CLAUDE.md for env var)
+- Email service (SMTP) for contact form (see AGENTS.md for env var)
 
 ## Blockers
 

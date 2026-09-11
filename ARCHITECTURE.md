@@ -242,7 +242,7 @@ ladtc/
 ├── pnpm-lock.yaml              # Lock file
 ├── PRD.md                       # Product requirements
 ├── ARCHITECTURE.md              # This file
-├── CLAUDE.md                    # Project conventions
+├── AGENTS.md                    # Project conventions
 └── README.md                    # Project overview
 ```
 
