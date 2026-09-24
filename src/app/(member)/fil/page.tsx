@@ -18,8 +18,8 @@ export default function FilPage(): React.ReactNode {
   const isLoading = authLoading || postsLoading;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4 px-4 py-10">
-      <div className="mb-2">
+    <div className="mx-auto max-w-xl space-y-5 px-4 py-8">
+      <div className="mb-1">
         <h1 className="text-2xl font-bold">Le fil du club</h1>
         <p className="text-sm text-muted-foreground">
           Les publications du groupe Facebook des membres, réservées au club.
