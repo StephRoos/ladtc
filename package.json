@@ -12,7 +12,8 @@
     "test:watch": "vitest --watch",
     "db:seed": "pnpm exec prisma db seed",
     "seed:test": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed-test-accounts.ts",
-    "rollover": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/rollover-season.ts"
+    "rollover": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/rollover-season.ts",
+    "import:social": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/import-social-posts.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

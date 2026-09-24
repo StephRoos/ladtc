@@ -95,6 +95,10 @@ public/images/566247058_*
 public/uploads/*
 !public/uploads/.gitkeep
 
+# Facebook group extraction (private member content — never commit)
+/scripts/fb-posts*.json
+/.playwright-cli/
+
 /src/generated
 .vercel
 .env*.local

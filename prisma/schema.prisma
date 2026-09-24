@@ -253,15 +253,15 @@ enum SponsorTier {
 }
 
 model Sponsor {
-  id          String      @id @default(cuid())
-  name        String
-  logoUrl     String?
-  tier        SponsorTier @default(BRONZE)
-  websiteUrl  String?
-  order       Int        @default(0)
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id         String      @id @default(cuid())
+  name       String
+  logoUrl    String?
+  tier       SponsorTier @default(BRONZE)
+  websiteUrl String?
+  order      Int         @default(0)
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
   @@index([tier])
   @@index([isActive])
@@ -279,7 +279,7 @@ model Event {
   type            EventType
   difficulty      String?
   maxParticipants Int?
-  price           Float?              // Optional event registration fee (EUR)
+  price           Float? // Optional event registration fee (EUR)
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
   registrations   EventRegistration[]
@@ -323,8 +323,35 @@ model BlogPost {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
+  socialPost SocialPost?
+
   @@index([published, publishedAt(sort: Desc)])
   @@index([eventDate])
+}
+
+enum SocialPlatform {
+  FACEBOOK
+}
+
+model SocialPost {
+  id         String         @id @default(cuid())
+  platform   SocialPlatform @default(FACEBOOK)
+  externalId String         @unique
+  authorName String?
+  authorUrl  String?
+  content    String
+  mediaUrls  String[]
+  permalink  String?
+  postedAt   DateTime?
+  reactions  Int?
+  comments   Int?
+  sharedFrom String?
+  blogPostId String?        @unique
+  blogPost   BlogPost?      @relation(fields: [blogPostId], references: [id], onDelete: SetNull)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([postedAt(sort: Desc)])
 }
 
 enum DocumentCategory {
