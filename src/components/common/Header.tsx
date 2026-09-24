@@ -115,6 +115,9 @@ export function Header(): React.ReactNode {
           {!isLoading && isAuthenticated && user && (
             <>
               <Button variant="ghost" size="sm" asChild>
+                <Link href="/fil">Le fil</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link href="/profile">Mon profil</Link>
               </Button>
               <span className="text-sm text-muted-foreground">
@@ -235,6 +238,11 @@ export function Header(): React.ReactNode {
                 <p className="text-sm text-muted-foreground">
                   {user.name ?? user.email}
                 </p>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/fil" onClick={() => setMenuOpen(false)}>
+                    Le fil
+                  </Link>
+                </Button>
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/profile" onClick={() => setMenuOpen(false)}>
                     Mon profil

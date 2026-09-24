@@ -28,6 +28,10 @@ export const EXPAND_SNIPPET = `
 })()
 `;
 
+// Comment-section markers: everything from the first one on is not part of
+// the post itself (the container innerText captures comments and reactions).
+export const COMMENT_MARKERS = ["Plus pertinents", "Répondre en tant que", "Plus de commentaires pertinents"];
+
 export const EXTRACT_SNIPPET = `
 (() => {
   const btn = Array.from(document.querySelectorAll('[aria-label]'))
@@ -47,12 +51,21 @@ export const EXTRACT_SNIPPET = `
       .filter(n => ref && ref.split(' ').includes(n.id))
       .map(n => n.textContent)[0] || null;
   }
-  const imgs = Array.from(el.querySelectorAll('img'))
-    .map(i => i.src).filter(s => s.includes('scontent'));
-  const text = (el.innerText || '')
+  let text = (el.innerText || '')
     .replace(/Facebook\\n?/g, '')
     .replace(/Indicateur de statut\\n?En\\n?ligne\\n?/g, '')
+    .replace(/^La DTC \\(groupe privé\\)\\n?/gm, '')
+    .replace(/^${'{'}' + author + '}'}\\n?/gm, '')
     .trim();
+  const markers = ${JSON.stringify(COMMENT_MARKERS)};
+  let cut = text.length;
+  for (const mk of markers) {
+    const i = text.indexOf(mk);
+    if (i >= 0 && i < cut) cut = i;
+  }
+  text = text.slice(0, cut).replace(/\\n\\d+$/, '').trim();
+  const imgs = Array.from(el.querySelectorAll('img'))
+    .map(i => i.src).filter(s => s.includes('scontent'));
   return {
     externalId: m ? m[1] : null,
     authorName: author || null,

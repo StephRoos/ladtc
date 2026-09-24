@@ -65,10 +65,17 @@ function parseFrenchDate(text: string | null): Date | null {
   return isNaN(date.getTime()) ? null : date;
 }
 
+/** Markers where the extracted innerText transitions from the post itself to
+ *  its comments/reactions (captured by the container-level innerText grab). */
+const COMMENT_MARKERS = ["Plus pertinents", "Répondre en tant que", "Plus de commentaires pertinents"];
+
+/** Trailing reaction counts (standalone numbers) left after comment cutting. */
+const TRAILING_COUNTS = /\n\d+\n?\d*$/;
+
 /**
  * Strip leading junk lines duplicated from the post header (status indicator,
- * presence, author name, role, bullet separators) so the wall displays them
- * from dedicated fields instead of baked-in text.
+ * presence, author name, role, bullet separators) and everything from the
+ * first comment-section marker on, so the wall displays clean post text.
  * @param content - Raw post text from extraction
  * @param authorName - Extracted author name
  * @param dateText - Raw date text extracted from the post
@@ -80,6 +87,7 @@ function cleanContent(content: string, authorName: string | null, dateText: stri
     /^En ligne$/,
     /^Admin$/i,
     /^Modérateur$/i,
+    /^La DTC \(groupe privé\)$/i,
     /^\s*·\s*$/,
     /^\s*$/,
   ];
@@ -87,10 +95,13 @@ function cleanContent(content: string, authorName: string | null, dateText: stri
   if (dateText) junkPatterns.push(new RegExp(`^${escapeRegExp(dateText.trim())}$`, "i"));
 
   const lines = content.split("\n");
-  while (lines.length > 0 && junkPatterns.some((pattern) => pattern.test(lines[0]))) {
-    lines.shift();
+  const cleaned: string[] = [];
+  for (const line of lines) {
+    if (COMMENT_MARKERS.some((marker) => line.includes(marker))) break;
+    if (junkPatterns.some((pattern) => pattern.test(line))) continue;
+    cleaned.push(line);
   }
-  return lines.join("\n").trim();
+  return cleaned.join("\n").trim().replace(TRAILING_COUNTS, "").trim();
 }
 
 /**
